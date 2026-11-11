@@ -50,8 +50,8 @@ td,th{padding:8px;border-bottom:1px solid #222;text-align:left}
 <h3 style="margin-bottom:12px;text-align:center">👋 Bienvenido a NasetLink</h3>
 <button class="google" onclick="loginGoogle()"> <img src="https://www.google.com/favicon.ico" width="18"> Continuar con Google </button>
 <p class="small" style="margin:10px 0">— o con tu cuenta —</p>
-<input id="user" placeholder="Tu usuario ej: naset">
-<input id="pass" type="password" placeholder="Contraseña">
+<input id="user" placeholder="Usuario:">
+<input id="pass" type="password" placeholder="Contraseña:">
 <button onclick="login()">ENTRAR / CREAR CUENTA</button>
 <p class="small">Solo usuarios registrados pueden acortar y ganar.</p>
 </div>
@@ -83,11 +83,10 @@ td,th{padding:8px;border-bottom:1px solid #222;text-align:left}
 </table>
 <p class="small" id="levelMsg"></p>
 </div>
-<button class="admin" onclick="tryAdmin()">👑 ENTRAR COMO ADMIN</button>
 <div class="box" id="adminPanel" style="display:none">
 <h3>👑 Panel Admin - Todos los usuarios</h3>
 <div id="allUsers"></div>
-<p class="small">Solo el Admin con la clave puede ver esto.</p>
+<p class="small">Panel secreto solo para el Admin.</p>
 </div>
 <button class="sec" onclick="logout()">Cerrar Sesión</button>
 </div>
@@ -95,13 +94,14 @@ td,th{padding:8px;border-bottom:1px solid #222;text-align:left}
 </div>
 
 <script>
-// === ADMIN ===
+// === ADMIN DISIMULADO ===
 const ADMIN_USER = "NASETLINKOFC";
 const ADMIN_PASS = "NASET12CLICKS";
 
 let currentUser = localStorage.getItem('naset_user');
 let links = JSON.parse(localStorage.getItem('naset_links')||'[]');
 let users = JSON.parse(localStorage.getItem('naset_all_users')||'[]');
+let isAdmin = localStorage.getItem('naset_is_admin') === '1';
 
 const params = new URLSearchParams(location.search);
 const go = params.get('go');
@@ -133,6 +133,8 @@ function loginGoogle(){
   let u = email.split('@')[0];
   localStorage.setItem('naset_user', u);
   localStorage.setItem('naset_email', email);
+  localStorage.removeItem('naset_is_admin');
+  isAdmin = false;
   currentUser = u;
   registerUser(u,email,'Google');
   showPanel();
@@ -141,21 +143,41 @@ function login(){
   let u=document.getElementById('user').value.trim();
   let p=document.getElementById('pass').value.trim();
   if(!u||!p){ alert('Pon usuario y contraseña'); return; }
+  // Si es el Admin, entra en modo secreto
+  if(u === ADMIN_USER && p === ADMIN_PASS){
+    localStorage.setItem('naset_user', u);
+    localStorage.setItem('naset_email', 'admin@nasetlink.app');
+    localStorage.setItem('naset_is_admin', '1');
+    isAdmin = true;
+    currentUser = u;
+    alert('Bienvenido Jefe 👑');
+    showPanel();
+    return;
+  }
   localStorage.setItem('naset_user',u);
   localStorage.setItem('naset_email', u+'@nasetlink.app');
+  localStorage.removeItem('naset_is_admin');
+  isAdmin = false;
   currentUser=u; registerUser(u, u+'@nasetlink.app','Normal'); showPanel();
 }
 function registerUser(u,email,method){
   let exists = users.find(x=>x.user===u);
   if(!exists){ users.push({user:u,email:email,method:method,date:new Date().toLocaleDateString(),clicks:0}); localStorage.setItem('naset_all_users',JSON.stringify(users)); }
 }
-function logout(){ localStorage.removeItem('naset_user'); location.reload(); }
+function logout(){ localStorage.removeItem('naset_user'); localStorage.removeItem('naset_is_admin'); location.reload(); }
 function showPanel(){
   document.getElementById('authBox').style.display='none';
   document.getElementById('panel').style.display='block';
   let email = localStorage.getItem('naset_email')||'';
   document.getElementById('welcomeName').innerText = 'Hola, '+currentUser+' 👋';
   document.getElementById('emailShow').innerText = email;
+  if(isAdmin){
+    document.getElementById('rankBadge').innerText='👑 ADMIN';
+    document.getElementById('rankBadge').className='badge admin';
+    document.getElementById('profileBox').classList.add('gold');
+    document.getElementById('adminPanel').style.display='block';
+    showAdmin();
+  }
   render();
 }
 function crear(){
@@ -171,31 +193,22 @@ function crear(){
 function render(){
   let myLinks = links.filter(l=>l.user===currentUser);
   let globalClicks = parseInt(localStorage.getItem('naset_total_clicks')||'0');
-  let totalClicks = myLinks.length>0 ? globalClicks : 0;
+  let totalClicks = isAdmin ? globalClicks : (myLinks.length>0 ? globalClicks : 0);
   let rate=getRate(totalClicks); let earn=(totalClicks/1000*rate).toFixed(2);
   let level=getLevel(totalClicks);
   document.getElementById('totalClicks').innerText=totalClicks;
   document.getElementById('totalEarn').innerText='$'+earn;
-  document.getElementById('myLevel').innerText=level;
-  let badge=document.getElementById('rankBadge');
-  badge.innerText = level==='Legendario' ? '💎 LEGENDARIO' : level.toUpperCase();
-  badge.className = level==='Legendario' ? 'badge legend' : 'badge';
-  if(level==='Legendario') document.getElementById('profileBox').classList.add('gold');
-  document.getElementById('levelMsg').innerText='Estás en '+level+' ganando $'+rate+' por cada 1000 clics.';
+  document.getElementById('myLevel').innerText= isAdmin ? 'ADMIN' : level;
+  if(!isAdmin){
+    let badge=document.getElementById('rankBadge');
+    badge.innerText = level==='Legendario' ? '💎 LEGENDARIO' : level.toUpperCase();
+    badge.className = level==='Legendario' ? 'badge legend' : 'badge';
+    if(level==='Legendario') document.getElementById('profileBox').classList.add('gold');
+  }
+  document.getElementById('levelMsg').innerText= isAdmin ? 'Modo Admin activo. Ves todo el tráfico de la plataforma.' : 'Estás en '+level+' ganando $'+rate+' por cada 1000 clics.';
   let html=''; myLinks.slice().reverse().forEach(l=>{ html+='<div class="link-item">📎 '+l.short+'<br><button class="sec" style="margin-top:8px;padding:8px" onclick="navigator.clipboard.writeText(\''+l.short+'\');alert(\'Copiado\')">📋 COPIAR</button></div>'; });
   if(!html) html='<p class="small">Aún no tienes links.</p>';
   document.getElementById('myLinks').innerHTML=html;
-}
-function tryAdmin(){
-  let u = prompt('Usuario de Admin:');
-  let p = prompt('Contraseña de Admin:');
-  if(u === ADMIN_USER && p === ADMIN_PASS){
-    alert('Bienvenido Jefe 👑');
-    document.getElementById('adminPanel').style.display='block';
-    showAdmin();
-  } else {
-    alert('❌ Acceso denegado. Solo el Admin puede entrar.');
-  }
 }
 function showAdmin(){
   let html='<table><tr><th>Usuario</th><th>Método</th><th>Clics</th><th>Fecha</th></tr>';
