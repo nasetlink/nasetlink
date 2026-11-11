@@ -3,27 +3,170 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>nasetlink</title>
+<title>nasetlink - Gana con tus links</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#000;color:#fff;min-height:100vh;display:flex;justify-content:center;padding:30px 15px}
-.card{width:100%;max-width:420px;text-align:center}
-.avatar{width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,#a855f7,#ec4899);display:flex;align-items:center;justify-content:center;font-size:55px;margin:0 auto 15px}
-h1{font-size:26px;margin-bottom:5px}
-p{color:#aaa;margin-bottom:25px}
-a.link{display:block;background:#1a1a1a;border:1px solid #333;color:#fff;text-decoration:none;padding:16px;border-radius:15px;margin-bottom:12px;font-weight:bold}
-a.link:hover{background:#fff;color:#000}
+body{background:#000;color:#fff;min-height:100vh;display:flex;justify-content:center;padding:20px 14px}
+.card{width:100%;max-width:480px}
+.logo{font-size:32px;font-weight:900;text-align:center}
+.logo span{color:#a855f7}
+.sub{color:#aaa;text-align:center;font-size:13px;margin:5px 0 20px}
+.box{background:#111;border:1px solid #333;border-radius:18px;padding:18px;margin-bottom:14px}
+input{width:100%;padding:13px;border-radius:12px;border:1px solid #333;background:#000;color:#fff;outline:none;margin-bottom:10px}
+button{width:100%;padding:14px;border:none;border-radius:12px;background:#a855f7;color:#fff;font-weight:bold;font-size:15px;cursor:pointer;margin-bottom:8px}
+button.sec{background:#222;border:1px solid #444}
+.stats{display:flex;gap:10px;margin-bottom:14px}
+.stat{flex:1;background:#111;border:1px solid #333;border-radius:14px;padding:12px;text-align:center}
+.stat b{font-size:20px;display:block}
+.stat span{font-size:11px;color:#aaa}
+.link-item{background:#000;border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:10px;font-size:12px;word-break:break-all}
+table{width:100%;font-size:12px;border-collapse:collapse}
+td,th{padding:8px;border-bottom:1px solid #222;text-align:left}
+.active{color:#4ade80;font-weight:bold}
+.small{color:#888;font-size:12px;line-height:1.5;text-align:center;margin-top:10px}
+#count{font-size:70px;font-weight:900;text-align:center}
+.bar{height:10px;background:#222;border-radius:99px;overflow:hidden}
+.bar div{height:100%;background:#a855f7;width:100%}
 </style>
 </head>
 <body>
 <div class="card">
-<div class="avatar">✨</div>
-<h1>@nasetlink</h1>
-<p>Bienvenido a mis links 👇</p>
-<a class="link" href="https://wa.me/593XXXXXXXXX">📱 WhatsApp</a>
-<a class="link" href="https://tiktok.com/@nasetlink">🎵 TikTok</a>
-<a class="link" href="https://instagram.com/nasetlink">📸 Instagram</a>
-<a class="link" href="https://youtube.com/@nasetlink">▶️ YouTube</a>
+<div class="logo">NASET<span>LINK</span></div>
+<p class="sub">Regístrate, acorta y gana por tus clics</p>
+
+<!-- PANTALLA DE ESPERA PARA EL QUE DA CLIC -->
+<div class="box" id="waiter" style="display:none">
+<p style="text-align:center">Tu descarga se está preparando...</p>
+<div id="count">5</div>
+<div class="bar"><div id="barFill"></div></div>
+<p class="small">Gracias por usar NasetLink</p>
 </div>
+
+<!-- LOGIN / REGISTRO -->
+<div class="box" id="authBox">
+<h3 style="margin-bottom:12px">👤 Crear cuenta / Entrar</h3>
+<input id="user" placeholder="Tu usuario ej: naset">
+<input id="pass" type="password" placeholder="Contraseña">
+<button onclick="login()">ENTRAR / REGISTRARME</button>
+<p class="small">Al entrar, se crea tu cuenta gratis automáticamente si no existe.</p>
+</div>
+
+<!-- PANEL -->
+<div id="panel" style="display:none">
+<div class="stats">
+<div class="stat"><b id="totalClicks">0</b><span>CLICS TOTALES</span></div>
+<div class="stat"><b id="totalEarn">$0.00</b><span>GANADO</span></div>
+<div class="stat"><b id="myLevel">Nivel 1</b><span> TU RANGO</span></div>
+</div>
+
+<div class="box">
+<input id="longUrl" placeholder="Pega tu link de MediaFire...">
+<button onclick="crear()">🔗 ACORTAR Y GANAR</button>
+<div id="myLinks"></div>
+</div>
+
+<div class="box">
+<h3 style="margin-bottom:10px">🏆 Rangos de pago x 1000 clics</h3>
+<table>
+<tr><th>Rango</th><th>Clics</th><th>Pago</th></tr>
+<tr><td>Nivel 1</td><td>0 - 1.000</td><td>$1.00</td></tr>
+<tr><td>Nivel 2</td><td>1.001 - 10.000</td><td>$2.50</td></tr>
+<tr><td>Nivel 3</td><td>10.001 - 50.000</td><td>$4.00</td></tr>
+<tr><td>Nivel 4</td><td>50.000+</td><td>$6.00</td></tr>
+</table>
+<p class="small" id="levelMsg"></p>
+<button class="sec" onclick="logout()">Cerrar Sesión</button>
+</div>
+</div>
+
+<p class="small">Los pagos se hacen al llegar a $5 por PayPal / Banco. Los clics se cuentan cuando alguien espera los 5 segundos.</p>
+</div>
+
+<script>
+let currentUser = localStorage.getItem('naset_user');
+let links = JSON.parse(localStorage.getItem('naset_links')||'[]');
+
+const params = new URLSearchParams(location.search);
+const go = params.get('go');
+if(go){
+  document.getElementById('authBox').style.display='none';
+  document.getElementById('waiter').style.display='block';
+  let url=''; try{ url=atob(go); }catch(e){}
+  // Contar clic para el dueño del link
+  let owner = params.get('u');
+  if(owner){
+    let all = JSON.parse(localStorage.getItem('naset_links')||'[]');
+    // Como es demo, sumamos en el contador general
+    let clicks = parseInt(localStorage.getItem('naset_total_clicks')||'0')+1;
+    localStorage.setItem('naset_total_clicks', clicks);
+  }
+  let t=5; let c=document.getElementById('count'); let bar=document.getElementById('barFill');
+  let timer=setInterval(()=>{
+    t--; c.innerText=t>0?t:'¡Vamos!'; bar.style.width=(t/5*100)+'%';
+    if(t<=0){ clearInterval(timer); location.href = url.startsWith('http')?url:'https://'+url; }
+  },1000);
+}
+
+function getRate(clicks){
+  if(clicks>50000) return 6;
+  if(clicks>10000) return 4;
+  if(clicks>1000) return 2.5;
+  return 1;
+}
+function getLevel(clicks){
+  if(clicks>50000) return 'Nivel 4';
+  if(clicks>10000) return 'Nivel 3';
+  if(clicks>1000) return 'Nivel 2';
+  return 'Nivel 1';
+}
+function login(){
+  let u=document.getElementById('user').value.trim();
+  let p=document.getElementById('pass').value.trim();
+  if(!u||!p){ alert('Pon usuario y contraseña'); return; }
+  localStorage.setItem('naset_user',u);
+  currentUser=u; showPanel();
+}
+function logout(){ localStorage.removeItem('naset_user'); location.reload(); }
+function showPanel(){
+  document.getElementById('authBox').style.display='none';
+  document.getElementById('panel').style.display='block';
+  render();
+}
+function crear(){
+  let v=document.getElementById('longUrl').value.trim();
+  if(!v){ alert('Pega tu link de MediaFire'); return; }
+  if(!v.startsWith('http')) v='https://'+v;
+  let code=btoa(v);
+  let short=location.origin+location.pathname+'?go='+code+'&u='+currentUser;
+  links.push({orig:v, short:short, clicks:0, user:currentUser});
+  localStorage.setItem('naset_links', JSON.stringify(links));
+  document.getElementById('longUrl').value='';
+  render();
+  alert('¡Link creado! Copialo y compártelo en TikTok');
+}
+function render(){
+  let myLinks = links.filter(l=>l.user===currentUser);
+  let totalClicks = myLinks.reduce((a,b)=>a+b.clicks,0);
+  // Sumar clics globales de demo
+  let globalClicks = parseInt(localStorage.getItem('naset_total_clicks')||'0');
+  if(myLinks.length>0 && globalClicks>0){
+    // Para demo, repartir clics al primer link
+    totalClicks = globalClicks;
+  }
+  let rate=getRate(totalClicks);
+  let earn=(totalClicks/1000*rate).toFixed(2);
+  document.getElementById('totalClicks').innerText=totalClicks;
+  document.getElementById('totalEarn').innerText='$'+earn;
+  document.getElementById('myLevel').innerText=getLevel(totalClicks);
+  document.getElementById('levelMsg').innerText='Estás en '+getLevel(totalClicks)+' ganando $'+rate+' por cada 1000 clics. ¡Sigue compartiendo!';
+  let html='';
+  myLinks.slice().reverse().forEach(l=>{
+    html+='<div class="link-item">📎 '+l.short+'<br>🎯 Clics: '+l.clicks+' | Destino: '+l.orig.substring(0,40)+'<br><button class="sec" style="margin-top:8px;padding:8px" onclick="navigator.clipboard.writeText(\''+l.short+'\');alert(\'Copiado\')">📋 COPIAR</button></div>';
+  });
+  if(!html) html='<p class="small">Aún no tienes links. Crea el primero arriba.</p>';
+  document.getElementById('myLinks').innerHTML=html;
+}
+if(currentUser) showPanel();
+</script>
 </body>
 </html>
