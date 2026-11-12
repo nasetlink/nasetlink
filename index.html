@@ -15,7 +15,6 @@ body{margin:0;background:#0f0f1a;color:white;min-height:100vh}
 input{width:100%;padding:13px;border-radius:10px;border:1px solid #333;background:#111;color:white;margin-bottom:10px;font-size:15px}
 .btn{width:100%;padding:14px;border:none;border-radius:12px;background:#a855f7;color:white;font-weight:800;font-size:16px;cursor:pointer;margin-bottom:8px}
 .btn-green{background:#22c55e}.btn-ghost{background:#2a2a3a}.btn-white{background:white;color:black}
-.btn-google{background:white;color:#3c4043;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:600;border:1px solid #dadce0}
 .tabs{display:flex;gap:8px;margin-bottom:12px}
 .tab{flex:1;padding:10px;border-radius:10px;background:#2a2a3a;color:#aaa;border:none;cursor:pointer;font-weight:700}
 .tab.active{background:#a855f7;color:white}
@@ -24,26 +23,6 @@ input{width:100%;padding:13px;border-radius:10px;border:1px solid #333;backgroun
 .ad-box{background:linear-gradient(135deg,#a855f7,#ec4899);padding:20px;border-radius:16px;text-align:center;margin-bottom:12px}
 .hidden{display:none}
 .linkbox{background:#111;border:1px dashed #a855f7;padding:12px;border-radius:12px;font-size:12px;word-break:break-all;margin:10px 0}
-
-/* GOOGLE COMO EN LA FOTO - MODO OSCURO */
-.g-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:99;display:flex;flex-direction:column}
-.g-top{padding:12px 16px;border-bottom:1px solid #333;display:flex;align-items:center;gap:10px}
-.g-top-bar{font-size:13px;color:#e8eaed;display:flex;justify-content:space-between;width:100%;align-items:center}
-.g-header{padding:10px 20px;display:flex;align-items:center;gap:8px;color:#9aa0a6;font-size:14px}
-.g-body{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:20px}
-@media(min-width:600px){ .g-body{flex-direction:row;justify-content:space-between;max-width:800px;margin:0 auto;width:100%} }
-.g-left{flex:1}
-.g-left h1{font-size:28px;font-weight:400;margin:0;color:white;line-height:1.2}
-.g-left p{color:#9aa0a6;font-size:14px;margin:12px 0 0}
-.g-left b{color:#8ab4f8;font-weight:500}
-.g-right{flex:1.2}
-.g-acc{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid #333;cursor:pointer}
-.g-acc:hover{background:#1a1a1a}
-.g-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;color:white;flex-shrink:0}
-.g-acc-info b{font-size:16px;font-weight:500;color:white;display:block}
-.g-acc-info span{font-size:14px;color:#9aa0a6}
-.g-use-other{display:flex;align-items:center;gap:14px;padding:14px 0;cursor:pointer;color:white}
-.g-close{position:absolute;top:14px;left:14px;background:#2a2a2a;border:none;color:white;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;z-index:2}
 </style>
 </head>
 <body>
@@ -51,6 +30,7 @@ input{width:100%;padding:13px;border-radius:10px;border:1px solid #333;backgroun
 <div class="logo">NASET<span>LINK</span></div>
 <div class="sub" id="subtitle">Bienvenido a NASET LINK</div>
 
+<!-- LOGIN / REGISTRO -->
 <div id="loginBox" class="card">
 <div class="tabs">
 <button class="tab active" id="tabLogin" onclick="showTab('login')">Iniciar Sesión</button>
@@ -61,11 +41,6 @@ input{width:100%;padding:13px;border-radius:10px;border:1px solid #333;backgroun
 <input id="user" placeholder="Usuario">
 <input id="pass" type="password" placeholder="Contraseña">
 <button class="btn" onclick="login()">ENTRAR</button>
-<div style="text-align:center;color:#777;font-size:12px;margin:8px 0">o</div>
-<button class="btn btn-google" onclick="openGoogle()">
-<span style="font-size:20px;font-weight:900"><span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC05">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span></span>
-Sign in with Google
-</button>
 </div>
 
 <div id="formReg" class="hidden">
@@ -73,14 +48,10 @@ Sign in with Google
 <input id="regUser" placeholder="Crea tu usuario">
 <input id="regPass" type="password" placeholder="Crea tu contraseña">
 <button class="btn btn-green" onclick="register()">CREAR MI CUENTA</button>
-<div style="text-align:center;color:#777;font-size:12px;margin:8px 0">o</div>
-<button class="btn btn-google" onclick="openGoogle()">
-<span style="font-size:20px;font-weight:900"><span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC05">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span></span>
-Sign in with Google
-</button>
 </div>
 </div>
 
+<!-- ADMIN - SOLO TU LO VES -->
 <div id="adminBox" class="hidden">
 <div class="card">
 <h3 style="margin-top:0">👑 Hola Administradora</h3>
@@ -94,6 +65,7 @@ Sign in with Google
 <button class="btn btn-ghost" onclick="logout()">Cerrar Sesión</button>
 </div>
 
+<!-- USUARIO -->
 <div id="empBox" class="hidden">
 <div class="card"><h3 style="margin-top:0">Hola <span id="empName"></span> 👋</h3><p style="font-size:13px;color:#aaa">Genera tu link y compártelo.</p></div>
 <div class="card"><h3 style="margin-top:0">🔗 Generador Monetag + Mediafire</h3><input id="mediafireLink" placeholder="Pega tu link de Mediafire"><button class="btn" onclick="generarLink()">GENERAR MI LINK</button><div id="generatedBox" class="hidden"><div class="linkbox" id="generatedLink"></div><button class="btn btn-green" onclick="copyGenerated()">COPIAR MI LINK</button><button class="btn btn-white" onclick="probarGenerado()">PROBAR MI LINK</button></div></div>
@@ -103,26 +75,8 @@ Sign in with Google
 <p class="small" id="clicks">Clics hoy: 0</p>
 <button class="btn btn-ghost" onclick="logout()">Cerrar Sesión</button>
 </div>
-</div>
 
-<!-- VENTANA GOOGLE IGUAL A LA FOTO -->
-<div id="googleModal" class="g-modal hidden">
-<button class="g-close" onclick="closeGoogle()">✕</button>
-<div class="g-top"><div class="g-top-bar"><span>accounts.google.com</span><span style="font-size:18px">↗</span></div></div>
-<div class="g-header">
-<span style="font-size:20px;font-weight:900"><span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC05">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span></span>
-<span>Sign in with Google</span>
 </div>
-<div style="height:1px;background:#333"></div>
-<div class="g-body">
-<div class="g-left">
-<h1>Choose an account</h1>
-<p>to continue to <b>NASET LINK</b></p>
-</div>
-<div class="g-right" id="googleAccounts"></div>
-</div>
-</div>
-
 <script>
 const ADMIN_USER="NASETLINKOFC";
 const ADMIN_PASS="NASET12CLICKS";
@@ -154,48 +108,6 @@ function register(){
   employees.push({user:u,pass:p,name:n}); save();
   alert('¡Cuenta creada! Ahora entra.');
   showTab('login'); document.getElementById('user').value=u;
-}
-// GOOGLE IGUAL A LA FOTO
-function openGoogle(){
-  let saved = JSON.parse(localStorage.getItem('google_saved')||'[]');
-  if(saved.length===0){
-    saved=[
-      {name:'Ilda Pulla', email:'ildapullaines1990@gmail.com', color:'#009688'},
-      {name:'Alex Ok', email:'alexorcilla81@gmail.com', color:'#7e7ed1'},
-      {name:'Eduardo Xhub', email:'edxardohub@gmail.com', color:'#ff5722'},
-      {name:'Choco Plox', email:'chocoplox13@gmail.com', color:'#5b7a8a'}
-    ];
-  }
-  document.getElementById('googleAccounts').innerHTML = saved.map((a,i)=>`
-    <div class="g-acc" onclick="pickGoogle(${i})">
-      <div class="g-avatar" style="background:${a.color}">${a.name[0]}</div>
-      <div class="g-acc-info"><b>${a.name}</b><span>${a.email}</span></div>
-    </div>`).join('') + `
-    <div class="g-use-other" onclick="useOtherGoogle()">
-      <div class="g-avatar" style="background:#333;font-size:20px">👤</div>
-      <div><b style="font-size:15px">Use another account</b></div>
-    </div>`;
-  document.getElementById('googleModal').classList.remove('hidden');
-}
-function closeGoogle(){ document.getElementById('googleModal').classList.add('hidden'); }
-function pickGoogle(i){
-  let saved = JSON.parse(localStorage.getItem('google_saved')||'[]');
-  if(saved.length===0) saved=[{name:'Ilda Pulla',email:'ildapullaines1990@gmail.com',color:'#009688'},{name:'Alex Ok',email:'alexorcilla81@gmail.com',color:'#7e7ed1'},{name:'Eduardo Xhub',email:'edxardohub@gmail.com',color:'#ff5722'},{name:'Choco Plox',email:'chocoplox13@gmail.com',color:'#5b7a8a'}];
-  let acc = saved[i]; closeGoogle();
-  let user = acc.email.split('@')[0];
-  if(!employees.find(e=>e.user===user)) employees.push({user:user,pass:'google',name:acc.name});
-  save(); showEmp(employees.find(e=>e.user===user));
-}
-function useOtherGoogle(){
-  let nombre = prompt('Escribe tu nombre:'); if(!nombre) return;
-  let correo = prompt('Escribe tu correo de Google:'); if(!correo) return;
-  let saved = JSON.parse(localStorage.getItem('google_saved')||'[]');
-  saved.push({name:nombre, email:correo, color:'#34A853'});
-  localStorage.setItem('google_saved', JSON.stringify(saved));
-  closeGoogle();
-  let user = correo.split('@')[0];
-  if(!employees.find(e=>e.user===user)) employees.push({user:user,pass:'google',name:nombre});
-  save(); showEmp(employees.find(e=>e.user===user));
 }
 function showAdmin(){
   document.getElementById('loginBox').classList.add('hidden');
