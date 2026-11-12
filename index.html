@@ -66,12 +66,13 @@ label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px;text-align:left}
 .msg{background:#1a1a1a;border-radius:14px;padding:9px 11px;max-width:88%;font-size:13px;line-height:1.4;display:flex;gap:8px}
 .msg.mine{background:#a855f7;color:#fff;align-self:flex-end}
 .msg.influencer{background:linear-gradient(135deg,#facc15,#f97316,#ef4444,#f59e0b)!important;color:#fff!important;border:2px solid #FFD700;box-shadow:0 0 12px rgba(255,180,0,.6)}
-.msg-user{font-weight:bold;font-size:11px;margin-bottom:2px;display:flex;gap:4px;align-items:center}
+.msg-user{font-weight:bold;font-size:11px;margin-bottom:2px;display:flex;gap:3px;align-items:center}
 .msg-time{font-size:10px;opacity:.7;margin-top:3px}
 .chat-input-row{display:flex;gap:8px;padding:10px;background:#111}
 .chat-input-row input{margin-bottom:0}
 .chat-input-row button{width:60px;margin-bottom:0;background:#a855f7}
-.verified-badge{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:99px;background:#1d9bf0;color:#fff;font-size:10px;font-weight:900;line-height:1;flex-shrink:0}
+/* V CHIQUITA COMO LETRA T */
+.verified-badge{display:inline-flex;align-items:center;justify-content:center;width:12px;height:12px;min-width:12px;border-radius:99px;background:#1d9bf0;color:#fff;font-size:8px;font-weight:900;line-height:1;flex-shrink:0;margin-left:2px;vertical-align:middle}
 .user-card{background:#000;border:1px solid #333;border-radius:14px;padding:12px;margin-bottom:10px}
 .user-card.influencer-card{border:2px solid #f59e0b;background:linear-gradient(135deg,#2a1a00,#1a0a00);box-shadow:0 0 12px rgba(255,170,0,.3)}
 .profile-top{display:flex;gap:14px;align-items:center}
@@ -256,7 +257,7 @@ function buildProfileHTML(){
 }
 function getAvatarInner(user){ let p=getProfile(user); if(p.avatar) return '<img src="'+p.avatar+'">'; return user.charAt(0).toUpperCase(); }
 function buildAdminHTML(){
-  return `<h3 style="text-align:center">👑 PANEL ADMIN</h3><p class="small">Solo tú. Aquí ves a todos, cambias rango, baneas y das verificado.</p><label>💰 MI SUELDO REAL DE MONETAG</label><input id="adminRealBalanceSolo" type="number" step="0.01" placeholder="Ej: 1.34"><button class="green" onclick="saveRealBalanceSolo()">💰 GUARDAR MI SUELDO REAL</button><label>👥 MIEMBROS - Ver foto, clics, ganado y links</label><div id="allUsersSolo"></div><label>🔄 CAMBIAR RANGO</label><input id="adminTargetSolo" placeholder="Usuario ej: pedro123"><select id="adminRankSolo" style="width:100%;padding:13px;border-radius:12px;background:#000;color:#fff;border:1px solid #333;margin-bottom:10px"><option value="">Elige rango...</option><option value="2">Nivel 2</option><option value="4">Nivel 4</option><option value="6">Nivel 6</option><option value="8">Nivel 8</option><option value="10">Nivel 10</option></select><button class="green" onclick="adminChangeRankSolo()">🔄 CAMBIAR RANGO</button><label>✅ DAR VERIFICADO AZUL / INFLUENCER</label><input id="verifyUserSolo" placeholder="Usuario ej: NASETLinkOFC"><div class="flex"><button class="smallbtn" style="background:#1d9bf0" onclick="giveVerifiedSolo('verified')">✓ VERIFICADO AZUL</button><button class="smallbtn" style="background:linear-gradient(90deg,#f59e0b,#ef4444,#facc15)" onclick="giveVerifiedSolo('influencer')">⭐ INFLUENCER DORADO</button></div><div class="flex" style="margin-top:8px"><button class="sec smallbtn" onclick="removeVerifiedSolo()">❌ QUITAR VERIFICADO</button></div><label>🚫 BANEAR PERMANENTEMENTE</label><input id="banUserSolo" placeholder="Usuario a banear"><button class="danger" onclick="banUserSolo()">🚫 BANEAR PERMANENTEMENTE</button><button class="sec" onclick="unbanUserSolo()">✅ DESBANEAR</button>`;
+  return `<h3 style="text-align:center">👑 PANEL ADMIN</h3><p class="small">Solo tú. Aquí ves a todos, cambias rango, baneas y das verificado.</p><label>💰 MI SUELDO REAL DE MONETAG</label><input id="adminRealBalanceSolo" type="number" step="0.01" placeholder="Ej: 1.34"><button class="green" onclick="saveRealBalanceSolo()">💰 GUARDAR MI SUELDO REAL</button><label>👥 MIEMBROS - Ver foto, clics, ganado y links</label><div id="allUsersSolo"></div><label>🔄 CAMBIAR RANGO</label><input id="adminTargetSolo" placeholder="Usuario ej: pedro123"><select id="adminRankSolo" style="width:100%;padding:13px;border-radius:12px;background:#000;color:#fff;border:1px solid #333;margin-bottom:10px"><option value="">Elige rango...</option><option value="2">Nivel 2</option><option value="4">Nivel 4</option><option value="6">Nivel 6</option><option value="8">Nivel 8</option><option value="10">Nivel 10</option></select><button class="green" onclick="adminChangeRankSolo()">🔄 CAMBIAR RANGO</button><label>✅ DAR VERIFICADO AZUL / INFLUENCER</label><input id="verifyUserSolo" placeholder="Usuario ej: pedro123"><div class="flex"><button class="smallbtn" style="background:#1d9bf0" onclick="giveVerifiedSolo('verified')">✓ VERIFICADO</button><button class="smallbtn" style="background:linear-gradient(90deg,#f59e0b,#ef4444,#facc15)" onclick="giveVerifiedSolo('influencer')">⭐ INFLUENCER</button></div><label style="margin-top:12px">❌ QUITAR - Elige qué quitar</label><div class="flex"><button class="sec smallbtn" onclick="removeVerifiedSolo('verified')">❌ QUITAR VERIFICADO</button><button class="sec smallbtn" onclick="removeVerifiedSolo('influencer')">❌ QUITAR INFLUENCER</button></div><div style="margin-top:8px"><button class="danger smallbtn" onclick="removeVerifiedSolo('all')">🧹 QUITAR TODO</button></div><label>🚫 BANEAR PERMANENTEMENTE</label><input id="banUserSolo" placeholder="Usuario a banear"><button class="danger" onclick="banUserSolo()">🚫 BANEAR PERMANENTEMENTE</button><button class="sec" onclick="unbanUserSolo()">✅ DESBANEAR</button>`;
 }
 function setMode(mode){
   authMode = mode;
@@ -267,11 +268,18 @@ function setMode(mode){
 }
 function submitAuth(){ if(authMode === 'login'){ login(); } else { register(); } }
 function saveRealBalanceSolo(){ let v = parseFloat(document.getElementById('adminRealBalanceSolo').value); if(isNaN(v)){ alert('Pon tu sueldo real'); return; } localStorage.setItem('naset_real_balance', v); render(); }
-function getTag(user){ if(user === ADMIN_USER) return localStorage.getItem('naset_tag_'+user.toLowerCase()) || 'admin'; return localStorage.getItem('naset_tag_'+user.toLowerCase()) || ''; }
-// V AZULITA TIPO TIKTOK - SIN CORONA
+// ARREGLO: Si es "none" = sin nada, no vuelve a poner V solo por ser admin
+function getTag(user){
+  let stored = localStorage.getItem('naset_tag_'+user.toLowerCase());
+  if(stored === 'none') return '';
+  if(stored) return stored;
+  if(user === ADMIN_USER) return ''; // Admin empieza SIN V, tú decides si le das
+  return '';
+}
+// V CHIQUITA SOLO SI ES VERIFICADO - INFLUENCER NO LLEVA V
 function verifiedIcon(user){
   let t = getTag(user);
-  if(t==='verified' || t==='influencer' || t==='admin') return '<span class="verified-badge">✓</span>';
+  if(t==='verified') return '<span class="verified-badge">✓</span>';
   return '';
 }
 function tagLabel(user){ return verifiedIcon(user); }
@@ -287,7 +295,6 @@ function updateProfileUI(){
   if(!currentUser) return;
   let p = getProfile(currentUser);
   let avatarEl = document.getElementById('myAvatar'); if(avatarEl){ if(p.avatar){ avatarEl.innerHTML='<img src="'+p.avatar+'">'; } else { avatarEl.innerHTML = currentUser.charAt(0).toUpperCase(); } }
-  // SIN CORONA - SOLO NOMBRE + V AZUL
   let wn=document.getElementById('welcomeName'); if(wn) wn.innerHTML = (p.displayName||currentUser)+' '+verifiedIcon(currentUser);
   let pu=document.getElementById('profileUserShow'); if(pu) pu.innerHTML = '@'+currentUser;
   let pb=document.getElementById('profileBioShow'); if(pb) pb.innerText = p.bio || '';
@@ -295,16 +302,28 @@ function updateProfileUI(){
   document.getElementById('topUserName').innerText = '@'+currentUser;
   let topAv = document.getElementById('topAvatar'); if(p.avatar){ topAv.innerHTML='<img src="'+p.avatar+'">'; } else { topAv.innerHTML = currentUser.charAt(0).toUpperCase(); }
   document.getElementById('topAdminBtn').style.display = isAdmin ? 'flex' : 'none';
+  // Badge en perfil principal
+  let mv=document.getElementById('myVerifiedBadge'); if(mv){ let t=getTag(currentUser); if(t==='verified') mv.innerHTML=' <span class="badge verified">✓ VERIFICADO</span>'; else if(t==='influencer') mv.innerHTML=' <span class="badge influ">⭐ INFLUENCER</span>'; else mv.innerHTML=''; }
 }
 function giveVerifiedSolo(type){
   let name = document.getElementById('verifyUserSolo').value.trim(); if(!name){ alert('Pon el usuario'); return; }
   localStorage.setItem('naset_tag_'+name.toLowerCase(), type);
   showAdminSolo(); renderChat(); updateProfileUI();
-  alert(type==='verified' ? '✅ '+name+' ahora tiene VERIFICADO AZUL ✓' : '⭐ '+name+' ahora es INFLUENCER DORADO - su chat saldrá dorado/naranja/rojo');
+  alert(type==='verified' ? '✅ '+name+' ahora tiene VERIFICADO - V chiquita azul' : '⭐ '+name+' ahora es INFLUENCER - solo dorado, SIN V');
 }
-function removeVerifiedSolo(){
+// QUITAR DE VERDAD - YA NO VUELVE A APARECER AL COMENTAR
+function removeVerifiedSolo(what){
   let name = document.getElementById('verifyUserSolo').value.trim(); if(!name){ alert('Pon el usuario'); return; }
-  localStorage.removeItem('naset_tag_'+name.toLowerCase());
+  let current = localStorage.getItem('naset_tag_'+name.toLowerCase());
+  if(what==='verified'){
+    if(current==='verified'){ localStorage.setItem('naset_tag_'+name.toLowerCase(), 'none'); alert('❌ Se quitó VERIFICADO a '+name); }
+    else { alert(name+' no tiene verificado'); return; }
+  }
+  if(what==='influencer'){
+    if(current==='influencer'){ localStorage.setItem('naset_tag_'+name.toLowerCase(), 'none'); alert('❌ Se quitó INFLUENCER a '+name); }
+    else { alert(name+' no tiene influencer'); return; }
+  }
+  if(what==='all'){ localStorage.setItem('naset_tag_'+name.toLowerCase(), 'none'); alert('🧹 Se quitó TODO a '+name); }
   showAdminSolo(); renderChat(); updateProfileUI();
 }
 function banUserSolo(){
@@ -338,7 +357,7 @@ function showAdminSolo(){
     let myLinksCount = links.filter(l=>l.user===u.user).length;
     let banned = localStorage.getItem('naset_banned_'+u.user.toLowerCase())==='1' || u.banned;
     let tag = getTag(u.user);
-    let tagHtml = (tag==='verified'||tag==='influencer'||tag==='admin') ? ' <span class="verified-badge">✓</span>' : '';
+    let tagHtml = tag==='verified' ? ' <span class="verified-badge">✓</span>' : '';
     if(tag==='influencer') tagHtml += ' <span style="color:#f59e0b;font-size:11px;font-weight:bold">⭐ INFLUENCER</span>';
     let bannedHtml = banned ? ' <span style="color:#ff4444;font-weight:bold">🚫 BANEADO</span>' : '';
     let p = getProfile(u.user);
@@ -362,10 +381,10 @@ function renderChat(){
   let html='';
   chat.forEach(m=>{
     let isMine = m.user===currentUser;
-    // Si es influencer, fondo dorado/naranja/rojo. Si no, morado normal.
     let isInflu = m.tag==='influencer';
     let cls = 'msg ' + (isMine?'mine ':'') + (isInflu?'influencer':'');
-    let vIcon = (m.tag==='verified'||m.tag==='influencer'||m.tag==='admin') ? ' <span class="verified-badge">✓</span>' : '';
+    // OJO: Influencer NO lleva V, solo verificado lleva V chiquita
+    let vIcon = (m.tag==='verified') ? ' <span class="verified-badge">✓</span>' : '';
     let av = m.avatar ? '<div class="avatar-small"><img src="'+m.avatar+'"></div>' : '<div class="avatar-small">'+(m.user?m.user.charAt(0).toUpperCase():'?')+'</div>';
     html+='<div class="'+cls+'">'+av+'<div><div class="msg-user">'+(m.displayName||m.user)+vIcon+' <span style="font-weight:normal;opacity:.7">@'+m.user+'</span></div>'+m.text+'<div class="msg-time">'+m.time+'</div></div></div>';
   });
@@ -444,8 +463,8 @@ function showPanel(){
   document.getElementById('authBox').style.display='none'; document.getElementById('waiter').style.display='none'; document.getElementById('panel').style.display='block';
   let table=''; AD_LEVELS.forEach(l=>{ table+='<tr><td>Nivel '+l.level+'</td><td>'+l.ads+' variantes</td><td>'+(l.ads*5)+' seg</td><td>$'+l.price.toFixed(2)+'</td></tr>'; });
   document.getElementById('adTable').innerHTML=table; tempAdLevel=myAdLevel; updateAdUI(); updateProfileUI();
-  if(isAdmin){ document.getElementById('rankBadge').innerText='ADMIN'; document.getElementById('rankBadge').className='badge admin'; document.getElementById('profileBox').classList.add('gold'); document.getElementById('myVerifiedBadge').innerHTML=' <span class="badge verified">✓ VERIFICADO</span>'; }
-  else { let t = getTag(currentUser); document.getElementById('rankBadge').innerText='MIEMBRO'; document.getElementById('rankBadge').className='badge emp'; if(t==='verified') document.getElementById('myVerifiedBadge').innerHTML=' <span class="badge verified">✓ VERIFICADO</span>'; else if(t==='influencer') document.getElementById('myVerifiedBadge').innerHTML=' <span class="badge influ">⭐ INFLUENCER ✓</span>'; else document.getElementById('myVerifiedBadge').innerHTML=''; }
+  if(isAdmin){ document.getElementById('rankBadge').innerText='ADMIN'; document.getElementById('rankBadge').className='badge admin'; document.getElementById('profileBox').classList.add('gold'); }
+  else { let t = getTag(currentUser); document.getElementById('rankBadge').innerText='MIEMBRO'; document.getElementById('rankBadge').className='badge emp'; }
   render(); renderChat();
 }
 function crear(){ let v=document.getElementById('longUrl').value.trim(); if(!v){ alert('Pega tu link'); return; } if(!v.startsWith('http')) v='https://'+v; let code=btoa(v); let short=location.origin+location.pathname+'?go='+code+'&u='+currentUser+'&ad='+myAdLevel; links.push({orig:v,short:short,clicks:0,user:currentUser,adLevel:myAdLevel}); localStorage.setItem('naset_links',JSON.stringify(links)); document.getElementById('longUrl').value=''; render(); }
