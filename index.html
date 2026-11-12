@@ -384,10 +384,10 @@ function buildProfileHTML(){
 }
 function getAvatarInner(user){ let p=getProfile(user); if(p.avatar) return '<img src="'+p.avatar+'">'; return user.charAt(0).toUpperCase(); }
 function buildAdminHTML(){
-  let moneyPart = isMod ? `` : `<label>💰 MI SUELDO REAL DE MONETAG</label><input id="adminRealBalanceSolo" type="number" step="0.01" placeholder="Ej: 1.34"><button class="green" onclick="saveRealBalanceSolo()">💰 GUARDAR MI SUELDO REAL</button>`;
+  let moneyPart = isMod ? `<div style="text-align:center;background:#0a2a0a;border:2px solid #22c55e;border-radius:14px;padding:14px;margin-bottom:12px"><p style="font-size:18px;font-weight:900;color:#22c55e;margin-bottom:6px">🎉 ¡Felicidades!</p><p style="font-size:13px;color:#fff;line-height:1.5">Eres oficialmente <b>Moderador</b> de NASET LINK<br>Tienes acceso al <b>Panel Admin</b> 🛡️</p><p style="font-size:11px;color:#aaa;margin-top:6px">Gracias por ayudar a cuidar la comunidad 💚</p></div>` : `<label>💰 MI SUELDO REAL DE MONETAG</label><input id="adminRealBalanceSolo" type="number" step="0.01" placeholder="Ej: 1.34"><button class="green" onclick="saveRealBalanceSolo()">💰 GUARDAR MI SUELDO REAL</button>`;
   let title = isMod ? '🛡️ PANEL MODERADOR - DANYXITERS' : '👑 PANEL ADMIN - Solo tú, dueño';
-  let sub = isMod ? 'Puedes banear, dar verificado / influencer y dar rango.' : 'Tú eres el dueño, ves todo.';
-  return `<h3 style="text-align:center">${title}</h3><p class="small">${sub}</p>${moneyPart}<label>🏆 SUBIRLE RANGO A ALGUIEN - Con su usuario</label><input id="adminRankUserSolo" placeholder="Usuario ej: NASET LINK OFC o pedro123"><select id="adminRankSelectSolo"><option value="">Elige rango para darle...</option><option value="BRONCE">🥉 BRONCE</option><option value="PLATA">🥈 PLATA</option><option value="ORO">🥇 ORO</option><option value="DIAMANTE">💎 DIAMANTE</option><option value="ÉLITE">👑 ÉLITE</option><option value="LEYENDA">🔥 LEYENDA</option><option value="MÍTICO">🐉 MÍTICO</option><option value="MAESTRO">🌟 MAESTRO</option><option value="DIOS">👑 DIOS</option></select><button class="green" onclick="adminGiveRankSolo()">🏆 DARLE ESE RANGO</button><button class="sec" onclick="adminRemoveRankSolo()">↩️ QUITAR RANGO MANUAL - Que vuelva a subir solo por clics</button><label>👥 MIEMBROS - Solo tú ves su usuario real, su rango y desde cuándo</label><div id="allUsersSolo"></div><label>✅ DAR VERIFICADO AZUL / INFLUENCER - En tiempo real - Solo adorno, no da plata</label><input id="verifyUserSolo" placeholder="Usuario ej: pedro123"><div class="flex"><button class="smallbtn" style="background:#1d9bf0" onclick="giveVerifiedSolo('verified')">✓ VERIFICADO</button><button class="smallbtn" style="background:linear-gradient(90deg,#f59e0b,#ef4444,#facc15)" onclick="giveVerifiedSolo('influencer')">⭐ INFLUENCER</button></div><label style="margin-top:12px">❌ QUITAR</label><div class="flex"><button class="sec smallbtn" onclick="removeVerifiedSolo('verified')">❌ QUITAR VERIFICADO</button><button class="sec smallbtn" onclick="removeVerifiedSolo('influencer')">❌ QUITAR INFLUENCER</button></div><div style="margin-top:8px"><button class="danger smallbtn" onclick="removeVerifiedSolo('all')">🧹 QUITAR TODO</button></div><label>🚫 BANEAR PERMANENTEMENTE</label><input id="banUserSolo" placeholder="Usuario a banear"><button class="danger" onclick="banUserSolo()">🚫 BANEAR PERMANENTEMENTE</button><button class="sec" onclick="unbanUserSolo()">✅ DESBANEAR</button>`;
+  let sub = isMod ? 'Bienvenido al equipo, puedes ayudar a banear, dar verificado / influencer y dar rango.' : 'Tú eres el dueño, ves todo.';
+  return `<h3 style="text-align:center">${title}</h3><p class="small">${sub}</p>${moneyPart}<label>🏆 SUBIRLE RANGO A ALGUIEN - Con su usuario - A ti también te funciona</label><input id="adminRankUserSolo" placeholder="Usuario ej: NASET LINK OFC o pedro123"><select id="adminRankSelectSolo"><option value="">Elige rango para darle...</option><option value="BRONCE">🥉 BRONCE</option><option value="PLATA">🥈 PLATA</option><option value="ORO">🥇 ORO</option><option value="DIAMANTE">💎 DIAMANTE</option><option value="ÉLITE">👑 ÉLITE</option><option value="LEYENDA">🔥 LEYENDA</option><option value="MÍTICO">🐉 MÍTICO</option><option value="MAESTRO">🌟 MAESTRO</option><option value="DIOS">👑 DIOS</option></select><button class="green" onclick="adminGiveRankSolo()">🏆 DARLE ESE RANGO</button><button class="sec" onclick="adminRemoveRankSolo()">↩️ QUITAR RANGO MANUAL - Que vuelva a subir solo por clics</button><label>👥 MIEMBROS - Usuario, rango y desde cuándo</label><div id="allUsersSolo"></div><label>✅ DAR VERIFICADO AZUL / INFLUENCER - En tiempo real - Solo adorno, no da plata</label><input id="verifyUserSolo" placeholder="Usuario ej: pedro123"><div class="flex"><button class="smallbtn" style="background:#1d9bf0" onclick="giveVerifiedSolo('verified')">✓ VERIFICADO</button><button class="smallbtn" style="background:linear-gradient(90deg,#f59e0b,#ef4444,#facc15)" onclick="giveVerifiedSolo('influencer')">⭐ INFLUENCER</button></div><label style="margin-top:12px">❌ QUITAR</label><div class="flex"><button class="sec smallbtn" onclick="removeVerifiedSolo('verified')">❌ QUITAR VERIFICADO</button><button class="sec smallbtn" onclick="removeVerifiedSolo('influencer')">❌ QUITAR INFLUENCER</button></div><div style="margin-top:8px"><button class="danger smallbtn" onclick="removeVerifiedSolo('all')">🧹 QUITAR TODO</button></div><label>🚫 BANEAR PERMANENTEMENTE</label><input id="banUserSolo" placeholder="Usuario a banear"><button class="danger" onclick="banUserSolo()">🚫 BANEAR PERMANENTEMENTE</button><button class="sec" onclick="unbanUserSolo()">✅ DESBANEAR</button>`;
 }
 function setMode(mode){
   authMode = mode;
@@ -731,13 +731,10 @@ let adStartTime = 0;
 const params = new URLSearchParams(location.search);
 const go = params.get('go'); const owner = params.get('u') || ''; const isVisitor = !!go;
 
-// --- ANTI-BOT SOLO EN ANUNCIOS - Aquí es donde importa ---
+// --- ANTI-BOT SOLO EN ANUNCIOS ---
 function isAdBot(){
-  // 1. Si no movió mouse / no tocó pantalla / no hizo scroll, es bot
   if(!humanInteracted) return true;
-  // 2. Si entró y en menos de 1.5 seg ya le dio clic, es bot
   if(Date.now() - pageLoadTime < 1500) return true;
-  // 3. Si le da clics super rápido seguidos, es bot
   if(Date.now() - lastClickTime < 2000){
     rapidClicks++;
     if(rapidClicks > 4) return true;
@@ -748,7 +745,6 @@ function isAdBot(){
 }
 function addClickToOwner(ownerName){
   if(!ownerName) ownerName = 'NASETLINKOFC';
-  // Si es bot, NO cuenta el clic, y suma 1 a bots bloqueados para que lo veas en Estadísticas
   if(isAdBot()){
     let b = parseInt(localStorage.getItem('naset_bots_blocked')||'0')+1;
     localStorage.setItem('naset_bots_blocked', b);
@@ -758,7 +754,6 @@ function addClickToOwner(ownerName){
   let total = parseInt(localStorage.getItem('naset_total_clicks')||'0')+1; localStorage.setItem('naset_total_clicks', total);
   let key = 'naset_clicks_'+ownerName.toLowerCase(); let c = parseInt(localStorage.getItem(key)||'0')+1; localStorage.setItem(key, c);
   let u = users.find(x=>x.user.toLowerCase()===ownerName.toLowerCase()); if(u){ u.clicks = c; localStorage.setItem('naset_all_users', JSON.stringify(users)); }
-  // Esto hace que se vea en tiempo real para todos
   try{ localStorage.setItem('naset_last_click_at', String(Date.now())); }catch(e){}
 }
 if(isVisitor){ document.getElementById('authBox').style.display='none'; document.getElementById('panel').style.display='none'; document.getElementById('waiter').style.display='block'; try{ targetUrl=atob(go); }catch(e){ targetUrl=''; } totalAds = parseInt(params.get('ad')||'2'); shuffledAds = [...ALL_ADS].sort(()=>Math.random()-0.5).slice(0, totalAds); let info = AD_LEVELS.find(x=>x.level===totalAds) || AD_LEVELS[0]; document.getElementById('adLevelShow').innerText = 'Nivel '+info.level+' • '+info.ads+' variantes diferentes • Dale clic y espera 5 seg en cada una • 🛡️ Solo humanos reales'; renderDots(); updateWaitTitle(); }
@@ -766,7 +761,6 @@ function renderDots(){ let h=''; for(let i=1;i<=totalAds;i++){ let cls = i<curre
 function getCurrentAd(){ return shuffledAds[currentAd-1] || ALL_ADS[0]; }
 function updateWaitTitle(){ document.getElementById('waitTitle').innerText='Anuncio '+currentAd+' de '+totalAds; document.getElementById('adNum1').innerText=currentAd; let ad = getCurrentAd(); let letters = ['A','B','C','D','E','F','G','H','I','J']; document.getElementById('variantLabel').innerText = '🎲 Variante '+letters[currentAd-1]+' • Tipo: '+ad.type+' • No se repite'; document.getElementById('adImg').src = ad.img; document.getElementById('adText').innerText = ad.text; document.getElementById('adText').style.background = ad.bg; document.getElementById('waitAdName').innerText = 'Estás viendo: '+ad.type+' • Espera 5 seg y regresa'; }
 function openAd(){
-  // Anti-Bot en anuncios: si no movió nada, no le abre ni le cuenta
   if(!humanInteracted){
     alert('🛡️ Mueve el mouse o toca la pantalla primero para demostrar que eres humano');
     let b = parseInt(localStorage.getItem('naset_bots_blocked')||'0')+1;
@@ -779,7 +773,6 @@ function openAd(){
   let t=5; let c=document.getElementById('count'); c.innerText=t; let btn=document.getElementById('returnBtn'); btn.disabled=true; btn.className=''; btn.innerText='🔒 ESPERA 5 SEGUNDOS...'; clearInterval(timerInt); timerInt=setInterval(()=>{ t--; c.innerText=t>0?t:'¡Listo!'; if(t<=0){ clearInterval(timerInt); btn.disabled=false; btn.className='returnbtn'; btn.innerText='✅ YA VI EL ANUNCIO, REGRESAR'; } },1000);
 }
 function confirmReturn(){
-  // Anti-Bot en anuncios: si no esperó los 5 seg, NO le cuenta el clic
   if(Date.now() - adStartTime < 4000){
     alert('🛡️ Espera los 5 segundos completos para que te cuente el clic.');
     return;
@@ -793,7 +786,7 @@ function getAdInfo(level){ return AD_LEVELS.find(x=>x.level===level) || AD_LEVEL
 function changeAdLevel(v){ tempAdLevel=v; updateAdUI(); }
 function updateAdUI(){ let info=getAdInfo(tempAdLevel); document.getElementById('adLevelInfo').innerText='Nivel '+info.level+' • '+info.ads+' variantes • '+info.ads*5+' seg • Ganas $'+info.price.toFixed(2)+' por 1000 clics'; document.querySelectorAll('.level-btn').forEach(b=>{ b.classList.toggle('active', parseInt(b.dataset.lv)===tempAdLevel); }); }
 function saveAdLevel(){ myAdLevel=tempAdLevel; localStorage.setItem('naset_my_adlevel', myAdLevel); render(); }
-// --- LOGIN / REGISTRO SIN ANTI-BOT, solo usuario y contraseña ---
+// --- LOGIN / REGISTRO SIN ANTI-BOT ---
 function login(){
   let u=document.getElementById('user').value.trim(); let p=document.getElementById('pass').value.trim();
   if(!u||!p){ alert('Pon usuario y contraseña'); return; }
