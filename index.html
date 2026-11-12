@@ -81,16 +81,21 @@ label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px;text-align:left}
 .avatar-small img{width:100%;height:100%;object-fit:cover}
 .avatar-option{width:56px;height:56px;border-radius:99px;object-fit:cover;cursor:pointer;border:3px solid transparent}
 .avatar-option.selected{border-color:#25D366}
-.topbar{display:flex;gap:8px;margin-bottom:14px;position:sticky;top:0;z-index:20;background:#000;padding:8px 0}
-.top-btn{flex:1;display:flex;align-items:center;gap:6px;padding:9px 8px;border-radius:99px;border:2px solid transparent;cursor:pointer;font-weight:bold;font-size:12px;justify-content:center;white-space:nowrap;overflow:hidden}
+.topbar{display:flex;gap:6px;margin-bottom:14px;position:sticky;top:0;z-index:20;background:#000;padding:8px 0;flex-wrap:wrap}
+.top-btn{flex:1;display:flex;align-items:center;gap:6px;padding:9px 8px;border-radius:99px;border:2px solid transparent;cursor:pointer;font-weight:bold;font-size:12px;justify-content:center;white-space:nowrap;overflow:hidden;min-width:80px}
 .top-btn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .top-profile{background:#a855f7;color:#fff;border-color:#a855f7}
 .top-chat{background:#fff;color:#000;border-color:#fff}
 .top-admin{background:linear-gradient(90deg,#FFD700,#FFA500);color:#000;border-color:#FFD700;box-shadow:0 0 14px rgba(255,215,0,.6)}
+.top-stats{background:#16a34a;color:#fff;border-color:#16a34a;box-shadow:0 0 10px rgba(22,163,74,.5)}
 .top-avatar{width:28px;height:28px;border-radius:99px;background:#fff;color:#a855f7;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;overflow:hidden;flex-shrink:0;border:2px solid #fff}
 .top-avatar img{width:100%;height:100%;object-fit:cover}
 .close-btn{width:42px;height:42px;border-radius:99px;background:#222;border:1px solid #444;color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-bottom:12px}
 .view-title{font-size:20px;font-weight:900;margin-bottom:12px;text-align:center}
+.live-dot{display:inline-block;width:8px;height:8px;border-radius:99px;background:#22c55e;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.stat-card{background:#000;border:1px solid #333;border-radius:14px;padding:14px;margin-bottom:10px}
+.stat-card.top-earner{border:2px solid #FFD700;background:linear-gradient(135deg,#2a1a00,#1a0a00)}
 </style>
 </head>
 <body>
@@ -99,6 +104,7 @@ label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px;text-align:left}
 <p class="sub">📢 Dale clic al anuncio • Espera 5 seg • Regresa</p>
 <div class="topbar" id="topbar" style="display:none">
   <div class="top-btn top-admin" id="topAdminBtn" style="display:none" onclick="openView('admin')">👑 <span>Admin</span></div>
+  <div class="top-btn top-stats" id="topStatsBtn" style="display:none" onclick="openView('stats')">📊 <span>Estadísticas</span></div>
   <div class="top-btn top-chat" onclick="openView('chat')">💬 <span>Chat</span></div>
   <div class="top-btn top-profile" onclick="openView('profile')">
     <div class="top-avatar" id="topAvatar">?</div>
@@ -128,6 +134,28 @@ label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px;text-align:left}
   <div class="close-btn" onclick="closeView()">✕</div>
   <p class="view-title">👑 Solo Admin</p>
   <div class="box gold" id="adminPanelSolo"></div>
+</div>
+<div id="viewStats" style="display:none">
+  <div class="close-btn" onclick="closeView()">✕</div>
+  <p class="view-title">📊 Estadísticas - Solo Admin</p>
+  <div class="box" style="border-color:#16a34a">
+    <p style="text-align:center;font-size:13px"><span class="live-dot"></span> EN VIVO • Se actualiza solo cada 3 segundos</p>
+    <p class="small" id="statsUpdated">Actualizado: --</p>
+    <div class="stats">
+      <div class="stat"><b id="statsTotalUsers">0</b><span>USUARIOS</span></div>
+      <div class="stat"><b id="statsTotalClicks">0</b><span>CLICS TOTALES</span></div>
+      <div class="stat"><b id="statsTotalPay" style="color:#25D366">$0.00</b><span>TIENES QUE PAGAR</span></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="statsMyReal" style="color:#FFD700">$0.00</b><span>LO QUE GANASTE TÚ (Monetag)</span></div>
+      <div class="stat"><b id="statsMyProfit" style="color:#22c55e">$0.00</b><span>TE QUEDA PARA TI</span></div>
+    </div>
+    <p class="small" style="text-align:left;color:#fff">💡 <b>Cómo funciona:</b> Lo que ganaste tú en Monetag menos lo que tienes que pagarle a ellos = lo que te queda para ti. Si te queda en negativo, es que les estás pagando más de lo que ganas y tienes que bajar el precio por 1000 clics.</p>
+    <label>🔍 Buscar usuario:</label>
+    <input id="statsSearch" placeholder="Escribe nombre o usuario..." oninput="renderStats()">
+    <label>👥 TODOS LOS USUARIOS - Ordenados por el que más gana</label>
+    <div id="statsList"></div>
+  </div>
 </div>
 <div id="mainView">
 <div class="box" id="waiter" style="display:none">
@@ -232,6 +260,7 @@ function openView(view){
   document.getElementById('viewProfile').style.display='none';
   document.getElementById('viewChat').style.display='none';
   document.getElementById('viewAdmin').style.display='none';
+  document.getElementById('viewStats').style.display='none';
   if(view==='profile'){
     document.getElementById('viewProfile').style.display='block';
     document.getElementById('viewProfile').querySelector('#profileBoxSolo').innerHTML = buildProfileHTML();
@@ -254,15 +283,19 @@ function openView(view){
     let rb = localStorage.getItem('naset_real_balance'); if(rb) document.getElementById('adminRealBalanceSolo').value=rb;
     showAdminSolo(); window.scrollTo(0,0);
   }
+  if(view==='stats'){
+    if(!isAdmin) return;
+    document.getElementById('viewStats').style.display='block';
+    renderStats(); window.scrollTo(0,0);
+  }
 }
-function closeView(){ currentView='home'; document.getElementById('viewProfile').style.display='none'; document.getElementById('viewChat').style.display='none'; document.getElementById('viewAdmin').style.display='none'; document.getElementById('mainView').style.display='block'; window.scrollTo(0,0); render(); updateProfileUI(); }
+function closeView(){ currentView='home'; document.getElementById('viewProfile').style.display='none'; document.getElementById('viewChat').style.display='none'; document.getElementById('viewAdmin').style.display='none'; document.getElementById('viewStats').style.display='none'; document.getElementById('mainView').style.display='block'; window.scrollTo(0,0); render(); updateProfileUI(); }
 function buildProfileHTML(){
-  // En tu propio perfil SÍ ves tu usuario, pero en el chat NADIE lo ve
   return `<div class="profile-top"><div class="avatar" id="myAvatarSolo">${getAvatarInner(currentUser)}</div><div><h3 style="font-size:18px">${getDisplayName(currentUser)} ${verifiedIcon(currentUser)}</h3><p style="color:#aaa;font-size:12px;margin:2px 0">Tu usuario privado: ${currentUser} (solo tú lo ves)</p><p style="color:#aaa;font-size:12px">${getProfile(currentUser).bio||''}</p></div></div><div id="editProfileBoxSolo" style="margin-top:14px;border-top:1px solid #333;padding-top:12px"><p style="font-size:13px;font-weight:bold;margin-bottom:8px">Elige tu foto de perfil:</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px" id="avatarOptionsSolo"></div><label>📸 O sube tu propia foto:</label><input type="file" accept="image/*" onchange="uploadAvatarSolo(event)" style="padding:8px"><label>📝 Tu nombre para mostrar (este es el que sale en el chat):</label><input id="editDisplayNameSolo" placeholder="Ej: Naset"><label>✍️ Tu biografía:</label><input id="editBioSolo" placeholder="Ej: Gano dinero con NasetLink 🔥" maxlength="80"><button class="green" onclick="saveProfileSolo()">💾 GUARDAR MI PERFIL</button></div>`;
 }
 function getAvatarInner(user){ let p=getProfile(user); if(p.avatar) return '<img src="'+p.avatar+'">'; return user.charAt(0).toUpperCase(); }
 function buildAdminHTML(){
-  return `<h3 style="text-align:center">👑 PANEL ADMIN</h3><p class="small">Solo tú ves los usuarios reales. En el chat nadie los ve.</p><label>💰 MI SUELDO REAL DE MONETAG</label><input id="adminRealBalanceSolo" type="number" step="0.01" placeholder="Ej: 1.34"><button class="green" onclick="saveRealBalanceSolo()">💰 GUARDAR MI SUELDO REAL</button><label>👥 MIEMBROS - Solo tú ves su usuario real</label><div id="allUsersSolo"></div><label>🔄 CAMBIAR RANGO</label><input id="adminTargetSolo" placeholder="Usuario ej: pedro123"><select id="adminRankSolo" style="width:100%;padding:13px;border-radius:12px;background:#000;color:#fff;border:1px solid #333;margin-bottom:10px"><option value="">Elige rango...</option><option value="2">Nivel 2</option><option value="4">Nivel 4</option><option value="6">Nivel 6</option><option value="8">Nivel 8</option><option value="10">Nivel 10</option></select><button class="green" onclick="adminChangeRankSolo()">🔄 CAMBIAR RANGO</button><label>✅ DAR VERIFICADO AZUL / INFLUENCER</label><input id="verifyUserSolo" placeholder="Usuario ej: pedro123"><div class="flex"><button class="smallbtn" style="background:#1d9bf0" onclick="giveVerifiedSolo('verified')">✓ VERIFICADO</button><button class="smallbtn" style="background:linear-gradient(90deg,#f59e0b,#ef4444,#facc15)" onclick="giveVerifiedSolo('influencer')">⭐ INFLUENCER</button></div><label style="margin-top:12px">❌ QUITAR</label><div class="flex"><button class="sec smallbtn" onclick="removeVerifiedSolo('verified')">❌ QUITAR VERIFICADO</button><button class="sec smallbtn" onclick="removeVerifiedSolo('influencer')">❌ QUITAR INFLUENCER</button></div><div style="margin-top:8px"><button class="danger smallbtn" onclick="removeVerifiedSolo('all')">🧹 QUITAR TODO</button></div><label>🚫 BANEAR PERMANENTEMENTE</label><input id="banUserSolo" placeholder="Usuario a banear"><button class="danger" onclick="banUserSolo()">🚫 BANEAR PERMANENTEMENTE</button><button class="sec" onclick="unbanUserSolo()">✅ DESBANEAR</button>`;
+  return `<h3 style="text-align:center">👑 PANEL ADMIN</h3><p class="small">Solo tú ves los usuarios reales. En el chat nadie los ve.</p><label>💰 MI SUELDO REAL DE MONETAG - Esto es lo que ganas tú</label><input id="adminRealBalanceSolo" type="number" step="0.01" placeholder="Ej: 1.34"><button class="green" onclick="saveRealBalanceSolo()">💰 GUARDAR MI SUELDO REAL</button><p class="small" style="text-align:left">Pon aquí lo que te dice Monetag que ganaste. Eso se usa en Estadísticas para calcular cuánto te queda después de pagarle a todos.</p><label>👥 MIEMBROS - Solo tú ves su usuario real</label><div id="allUsersSolo"></div><label>🔄 CAMBIAR RANGO</label><input id="adminTargetSolo" placeholder="Usuario ej: pedro123"><select id="adminRankSolo" style="width:100%;padding:13px;border-radius:12px;background:#000;color:#fff;border:1px solid #333;margin-bottom:10px"><option value="">Elige rango...</option><option value="2">Nivel 2</option><option value="4">Nivel 4</option><option value="6">Nivel 6</option><option value="8">Nivel 8</option><option value="10">Nivel 10</option></select><button class="green" onclick="adminChangeRankSolo()">🔄 CAMBIAR RANGO</button><label>✅ DAR VERIFICADO AZUL / INFLUENCER</label><input id="verifyUserSolo" placeholder="Usuario ej: pedro123"><div class="flex"><button class="smallbtn" style="background:#1d9bf0" onclick="giveVerifiedSolo('verified')">✓ VERIFICADO</button><button class="smallbtn" style="background:linear-gradient(90deg,#f59e0b,#ef4444,#facc15)" onclick="giveVerifiedSolo('influencer')">⭐ INFLUENCER</button></div><label style="margin-top:12px">❌ QUITAR</label><div class="flex"><button class="sec smallbtn" onclick="removeVerifiedSolo('verified')">❌ QUITAR VERIFICADO</button><button class="sec smallbtn" onclick="removeVerifiedSolo('influencer')">❌ QUITAR INFLUENCER</button></div><div style="margin-top:8px"><button class="danger smallbtn" onclick="removeVerifiedSolo('all')">🧹 QUITAR TODO</button></div><label>🚫 BANEAR PERMANENTEMENTE</label><input id="banUserSolo" placeholder="Usuario a banear"><button class="danger" onclick="banUserSolo()">🚫 BANEAR PERMANENTEMENTE</button><button class="sec" onclick="unbanUserSolo()">✅ DESBANEAR</button>`;
 }
 function setMode(mode){
   authMode = mode;
@@ -272,7 +305,7 @@ function setMode(mode){
   userInput.value = ''; passInput.value = '';
 }
 function submitAuth(){ if(authMode === 'login'){ login(); } else { register(); } }
-function saveRealBalanceSolo(){ let v = parseFloat(document.getElementById('adminRealBalanceSolo').value); if(isNaN(v)){ alert('Pon tu sueldo real'); return; } localStorage.setItem('naset_real_balance', v); render(); }
+function saveRealBalanceSolo(){ let v = parseFloat(document.getElementById('adminRealBalanceSolo').value); if(isNaN(v)){ alert('Pon tu sueldo real'); return; } localStorage.setItem('naset_real_balance', v); render(); renderStats(); alert('✅ Guardado. Ahora ve a Estadísticas y verás cuánto te queda.'); }
 function getTag(user){
   if(!user) return '';
   let stored = localStorage.getItem('naset_tag_'+user.toLowerCase());
@@ -290,8 +323,25 @@ function getAvatarHTML(user, cls){ let p = getProfile(user); let letter = user ?
 function getDisplayName(user){ let p = getProfile(user); return p.displayName || user; }
 function renderAvatarOptionsSolo(current){ let html=''; PRESET_AVATARS.forEach(url=>{ html+='<img src="'+url+'" class="avatar-option '+(current===url?'selected':'')+'" onclick="selectAvatar(\''+url+'\', this)">'; }); let el=document.getElementById('avatarOptionsSolo'); if(el) el.innerHTML=html; }
 function selectAvatar(url, el){ selectedAvatar = url; document.querySelectorAll('.avatar-option').forEach(i=>i.classList.remove('selected')); if(el) el.classList.add('selected'); }
-function uploadAvatarSolo(e){ let file = e.target.files[0]; if(!file) return; let reader = new FileReader(); reader.onload = function(ev){ selectedAvatar = ev.target.result; let av=document.getElementById('myAvatarSolo'); if(av) av.innerHTML='<img src="'+selectedAvatar+'">'; }; reader.readAsDataURL(file); }
-function saveProfileSolo(){ let displayName = document.getElementById('editDisplayNameSolo').value.trim(); let bio = document.getElementById('editBioSolo').value.trim(); let p = getProfile(currentUser); if(selectedAvatar) p.avatar = selectedAvatar; if(displayName) p.displayName = displayName; p.bio = bio; localStorage.setItem('naset_profile_'+currentUser.toLowerCase(), JSON.stringify(p)); selectedAvatar=''; updateProfileUI(); renderChat(); alert('✅ Perfil guardado'); closeView(); }
+function uploadAvatarSolo(e){
+  let file = e.target.files[0]; if(!file) return;
+  let reader = new FileReader();
+  reader.onload = function(ev){
+    let img = new Image();
+    img.onload = function(){
+      let canvas = document.createElement('canvas');
+      let max = 200; let w = img.width, h = img.height;
+      if(w > h){ if(w > max){ h = h * max / w; w = max; } } else { if(h > max){ w = w * max / h; h = max; } }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      selectedAvatar = canvas.toDataURL('image/jpeg', 0.6);
+      let av=document.getElementById('myAvatarSolo'); if(av) av.innerHTML='<img src="'+selectedAvatar+'">';
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function saveProfileSolo(){ let displayName = document.getElementById('editDisplayNameSolo').value.trim(); let bio = document.getElementById('editBioSolo').value.trim(); let p = getProfile(currentUser); if(selectedAvatar) p.avatar = selectedAvatar; if(displayName) p.displayName = displayName; p.bio = bio; try{ localStorage.setItem('naset_profile_'+currentUser.toLowerCase(), JSON.stringify(p)); }catch(e){ alert('Foto muy pesada, elige una de las de arriba'); return; } selectedAvatar=''; updateProfileUI(); renderChat(); alert('✅ Perfil guardado'); closeView(); }
 function updateProfileUI(){
   if(!currentUser) return;
   let p = getProfile(currentUser);
@@ -303,6 +353,7 @@ function updateProfileUI(){
   document.getElementById('topUserName').innerText = p.displayName || 'Mi Perfil';
   let topAv = document.getElementById('topAvatar'); if(p.avatar){ topAv.innerHTML='<img src="'+p.avatar+'">'; } else { topAv.innerHTML = currentUser.charAt(0).toUpperCase(); }
   document.getElementById('topAdminBtn').style.display = isAdmin ? 'flex' : 'none';
+  document.getElementById('topStatsBtn').style.display = isAdmin ? 'flex' : 'none';
   let mv=document.getElementById('myVerifiedBadge'); if(mv){ let t=getTag(currentUser); if(t==='verified') mv.innerHTML=' <span class="badge verified">✓ VERIFICADO</span>'; else if(t==='influencer') mv.innerHTML=' <span class="badge influ">⭐ INFLUENCER</span>'; else mv.innerHTML=''; }
 }
 function giveVerifiedSolo(type){
@@ -343,64 +394,94 @@ function adminChangeRankSolo(){
   let target=document.getElementById('adminTargetSolo').value.trim(); let nr=document.getElementById('adminRankSolo').value;
   if(!target || !nr){ alert('Pon usuario y rango'); return; }
   let u=users.find(x=>x.user.toLowerCase()===target.toLowerCase()); if(!u){ alert('No existe '+target); return; }
-  u.forcedAdLevel=parseInt(nr); localStorage.setItem('naset_all_users',JSON.stringify(users)); showAdminSolo(); render(); alert('✅ '+u.user+' ahora es Nivel '+nr);
+  u.forcedAdLevel=parseInt(nr); localStorage.setItem('naset_all_users',JSON.stringify(users)); showAdminSolo(); render(); renderStats(); alert('✅ '+u.user+' ahora es Nivel '+nr);
 }
-function showAdminSolo(){
-  let el=document.getElementById('allUsersSolo'); if(!el) return;
-  if(users.length===0){ el.innerHTML='<p class="small">Aún no hay miembros.</p>'; return; }
+// ESTADISTICAS EN TIEMPO REAL - SOLO ADMIN
+function getUserStats(u){
+  let lvl = u.forcedAdLevel>0 ? u.forcedAdLevel : 2;
+  let info = getAdInfo(lvl);
+  let clicks = parseInt(localStorage.getItem('naset_clicks_'+u.user.toLowerCase())||u.clicks||0);
+  let earn = clicks / 1000 * info.price;
+  let myLinksCount = links.filter(l=>l.user===u.user).length;
+  let p = getProfile(u.user);
+  return {user:u.user, displayName:p.displayName||u.user, avatar:p.avatar||'', clicks:clicks, earn:earn, level:lvl, price:info.price, linksCount:myLinksCount, tag:getTag(u.user), banned: localStorage.getItem('naset_banned_'+u.user.toLowerCase())==='1' || u.banned};
+}
+function renderStats(){
+  if(!isAdmin) return;
+  let listEl = document.getElementById('statsList'); if(!listEl) return;
+  // Recargar datos frescos
+  users = JSON.parse(localStorage.getItem('naset_all_users')||'[]');
+  links = JSON.parse(localStorage.getItem('naset_links')||'[]');
+  let search = (document.getElementById('statsSearch')?.value||'').toLowerCase().trim();
+  let all = users.map(getUserStats).sort((a,b)=> b.earn - a.earn);
+  let filtered = search ? all.filter(s=> s.displayName.toLowerCase().includes(search) || s.user.toLowerCase().includes(search)) : all;
+  let totalClicks = all.reduce((s,x)=> s+x.clicks, 0);
+  let totalPay = all.reduce((s,x)=> s+x.earn, 0);
+  let myReal = parseFloat(localStorage.getItem('naset_real_balance')||'0')||0;
+  let myProfit = myReal - totalPay;
+  document.getElementById('statsTotalUsers').innerText = all.length;
+  document.getElementById('statsTotalClicks').innerText = totalClicks;
+  document.getElementById('statsTotalPay').innerText = '$'+totalPay.toFixed(2);
+  document.getElementById('statsMyReal').innerText = '$'+myReal.toFixed(2);
+  let profitEl = document.getElementById('statsMyProfit');
+  profitEl.innerText = '$'+myProfit.toFixed(2);
+  profitEl.style.color = myProfit>=0 ? '#22c55e' : '#ff4444';
+  document.getElementById('statsUpdated').innerText = 'Actualizado: '+new Date().toLocaleTimeString();
+  if(filtered.length===0){ listEl.innerHTML='<p class="small">No hay usuarios con ese nombre.</p>'; return; }
   let html='';
-  users.forEach(u=>{
-    let lvl=u.forcedAdLevel>0?u.forcedAdLevel:2; let info=getAdInfo(lvl);
-    let clicks = parseInt(localStorage.getItem('naset_clicks_'+u.user.toLowerCase())||u.clicks||0);
-    let er = '$'+((clicks/1000*info.price).toFixed(2));
-    let myLinksCount = links.filter(l=>l.user===u.user).length;
-    let banned = localStorage.getItem('naset_banned_'+u.user.toLowerCase())==='1' || u.banned;
-    let tag = getTag(u.user);
-    let tagHtml = tag==='verified' ? ' <span class="verified-badge">✓</span>' : '';
-    if(tag==='influencer') tagHtml += ' <span style="color:#f59e0b;font-size:11px;font-weight:bold">⭐ INFLUENCER</span>';
-    let bannedHtml = banned ? ' <span style="color:#ff4444;font-weight:bold">🚫 BANEADO</span>' : '';
-    let p = getProfile(u.user);
-    let bioHtml = p.bio ? '<div style="font-size:12px;color:#aaa">'+p.bio+'</div>' : '';
-    let cardClass = tag==='influencer' ? 'user-card influencer-card' : 'user-card';
-    // En Admin SÍ sale el usuario real para que tú puedas banear / dar rango
-    html+='<div class="'+cardClass+'"><div style="display:flex;gap:10px;align-items:center">'+getAvatarHTML(u.user,'avatar-small')+'<div><b>'+(p.displayName||u.user)+'</b> '+tagHtml+' <span style="color:#888;font-size:11px">(usuario real: '+u.user+')</span>'+bannedHtml+'</div></div>'+bioHtml+'<br><span style="font-size:12px;color:#aaa">👆 Clics: <b style="color:#fff">'+clicks+'</b> • 💰 Ganado: <b style="color:#25D366">'+er+'</b> • 🔗 Links: <b style="color:#fff">'+myLinksCount+'</b> • Rango: Nivel '+lvl+'</span></div>';
+  filtered.forEach((s,i)=>{
+    let isTop = i===0 && s.earn>0;
+    let tagHtml = s.tag==='verified' ? ' <span class="verified-badge">✓</span>' : (s.tag==='influencer' ? ' <span style="color:#f59e0b;font-size:11px;font-weight:bold">⭐ INFLUENCER</span>' : '');
+    let bannedHtml = s.banned ? ' <span style="color:#ff4444;font-weight:bold">🚫 BANEADO</span>' : '';
+    let medal = i===0 ? '🥇 ' : i===1 ? '🥈 ' : i===2 ? '🥉 ' : (i+1)+'. ';
+    html+='<div class="stat-card '+(isTop?'top-earner':'')+'"><div style="display:flex;gap:10px;align-items:center">'+getAvatarHTML(s.user,'avatar-small')+'<div><b>'+medal+s.displayName+'</b>'+tagHtml+bannedHtml+'<div style="font-size:11px;color:#888">Usuario real: '+s.user+' • Nivel '+s.level+' • $'+s.price.toFixed(2)+' x 1000 clics</div></div></div><div style="display:flex;gap:8px;margin-top:10px"><div style="flex:1;background:#111;border-radius:10px;padding:10px;text-align:center"><b style="font-size:18px">'+s.clicks+'</b><br><span style="font-size:11px;color:#aaa">CLICS</span></div><div style="flex:1;background:#111;border-radius:10px;padding:10px;text-align:center"><b style="font-size:18px;color:#25D366">$'+s.earn.toFixed(2)+'</b><br><span style="font-size:11px;color:#aaa">LE DEBES PAGAR</span></div><div style="flex:1;background:#111;border-radius:10px;padding:10px;text-align:center"><b style="font-size:18px">'+s.linksCount+'</b><br><span style="font-size:11px;color:#aaa">LINKS</span></div></div><div style="font-size:11px;color:#aaa;margin-top:8px">Fórmula: '+s.clicks+' clics / 1000 × $'+s.price.toFixed(2)+' = $'+s.earn.toFixed(2)+'</div></div>';
   });
-  el.innerHTML=html;
+  listEl.innerHTML = html;
 }
-function getChat(){ try{ return JSON.parse(localStorage.getItem('naset_chat')||'[]'); }catch(e){ return []; } }
-// ARREGLO CHAT: Siempre deja escribir, aunque cambies de verificado a influencer
-function sendChat(){
+function getChat(){
   try{
-    let inp = document.getElementById('chatInput');
-    if(!inp) return;
-    let txt = inp.value.trim();
-    if(!txt) return;
-    if(!currentUser){ alert('Inicia sesión para chatear'); return; }
-    let chat = getChat();
-    let p = getProfile(currentUser);
-    let myName = p.displayName || currentUser;
-    let myTag = getTag(currentUser) || '';
-    chat.push({user: currentUser, displayName: myName, avatar: p.avatar||'', text: txt, time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), tag: myTag});
-    if(chat.length>200) chat = chat.slice(-200);
+    let arr = JSON.parse(localStorage.getItem('naset_chat')||'[]');
+    return arr.map(m=>({user:m.user, text:m.text, time:m.time, tag:m.tag||''}));
+  }catch(e){ return []; }
+}
+// CHAT SIN ERRORES: solo guarda texto, no foto
+function sendChat(){
+  let inp = document.getElementById('chatInput');
+  if(!inp) return;
+  let txt = inp.value.trim();
+  if(!txt) return;
+  if(!currentUser){ alert('Inicia sesión para chatear'); return; }
+  let chat = getChat();
+  let myTag = getTag(currentUser) || '';
+  chat.push({user: currentUser, text: txt, time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), tag: myTag});
+  if(chat.length>100) chat = chat.slice(-100);
+  try{
     localStorage.setItem('naset_chat', JSON.stringify(chat));
-    inp.value='';
-    inp.disabled=false;
-    renderChat();
-    inp.focus();
-  }catch(e){ console.log(e); alert('Error al enviar, intenta de nuevo'); }
+  }catch(e){
+    chat = chat.slice(-20);
+    localStorage.setItem('naset_chat', JSON.stringify(chat));
+  }
+  inp.value='';
+  renderChat();
+  inp.focus();
 }
 function renderChat(){
   let box = document.getElementById('chatMessages'); if(!box) return;
   let chat = getChat(); if(chat.length===0){ box.innerHTML='<p class="small">Sé el primero en hablar 👋</p>'; return; }
   let html='';
   chat.forEach(m=>{
+    if(!m.user || !m.text) return;
     let isMine = m.user===currentUser;
-    let isInflu = m.tag==='influencer';
+    let tag = m.tag;
+    if(tag===undefined || tag===null) tag = getTag(m.user);
+    if(tag==='admin') tag = getTag(m.user);
+    let isInflu = tag==='influencer';
     let cls = 'msg ' + (isMine?'mine ':'') + (isInflu?'influencer':'');
-    let vIcon = (m.tag==='verified') ? ' <span class="verified-badge">✓</span>' : '';
-    let av = m.avatar ? '<div class="avatar-small"><img src="'+m.avatar+'"></div>' : '<div class="avatar-small">'+((m.displayName||m.user||'?').charAt(0).toUpperCase())+'</div>';
-    // SOLO NOMBRE, SIN @USUARIO PARA QUE NADIE PUEDA HACKEAR
-    html+='<div class="'+cls+'">'+av+'<div><div class="msg-user">'+(m.displayName||m.user)+vIcon+'</div>'+m.text+'<div class="msg-time">'+m.time+'</div></div></div>';
+    let vIcon = (tag==='verified') ? ' <span class="verified-badge">✓</span>' : '';
+    let p = getProfile(m.user);
+    let displayName = p.displayName || m.user;
+    let av = p.avatar ? '<div class="avatar-small"><img src="'+p.avatar+'"></div>' : '<div class="avatar-small">'+(displayName.charAt(0).toUpperCase())+'</div>';
+    html+='<div class="'+cls+'">'+av+'<div><div class="msg-user">'+displayName+vIcon+'</div>'+m.text+'<div class="msg-time">'+(m.time||'')+'</div></div></div>';
   });
   box.innerHTML=html; box.scrollTop = box.scrollHeight;
 }
@@ -495,8 +576,18 @@ document.addEventListener('DOMContentLoaded', function(){
   let ci = document.getElementById('chatInput');
   if(ci){ ci.addEventListener('keypress', function(e){ if(e.key==='Enter'){ e.preventDefault(); sendChat(); } }); }
 });
-setInterval(()=>{ if(currentUser && !isVisitor){ links = JSON.parse(localStorage.getItem('naset_links')||'[]'); users = JSON.parse(localStorage.getItem('naset_all_users')||'[]'); if(currentView==='home'){ render(); updateProfileUI(); } if(currentView==='admin') showAdminSolo(); renderChat(); } }, 3000);
-window.addEventListener('storage', (e)=>{ if(e.key && e.key.startsWith('naset_')){ if(currentUser){ render(); renderChat(); updateProfileUI(); } } });
+// ACTUALIZACION CADA 3 SEGUNDOS - ESTADISTICAS Y CHAT
+setInterval(()=>{
+  if(currentUser && !isVisitor){
+    links = JSON.parse(localStorage.getItem('naset_links')||'[]');
+    users = JSON.parse(localStorage.getItem('naset_all_users')||'[]');
+    if(currentView==='home'){ render(); updateProfileUI(); }
+    if(currentView==='admin') showAdminSolo();
+    if(currentView==='stats') renderStats();
+    renderChat();
+  }
+}, 3000);
+window.addEventListener('storage', (e)=>{ if(e.key && e.key.startsWith('naset_')){ if(currentUser){ render(); renderChat(); updateProfileUI(); if(currentView==='stats') renderStats(); } } });
 if(currentUser && !isVisitor) showPanel();
 </script>
 </body>
