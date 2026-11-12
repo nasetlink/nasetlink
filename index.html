@@ -165,10 +165,10 @@ label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px;text-align:left}
       <p style="font-size:12px;color:#aaa;margin-top:4px">Solo fecha que entraron y hora exacta.</p>
       <div id="top3Early" style="margin-top:8px"></div>
     </div>
-    <div class="stats">
+    <div class="stats" id="statsTopRow">
       <div class="stat"><b id="statsTotalUsers">0</b><span>USUARIOS</span></div>
       <div class="stat"><b id="statsTotalClicks">0</b><span>CLICS TOTALES</span></div>
-      <div class="stat"><b id="statsTotalPay" style="color:#25D366">$0.00</b><span id="statsTotalPayLabel">TIENES QUE PAGAR</span></div>
+      <div class="stat" id="statsTotalPayCard"><b id="statsTotalPay" style="color:#25D366">$0.00</b><span id="statsTotalPayLabel">TIENES QUE PAGAR</span></div>
     </div>
     <div class="stats" id="statsMoneyRow">
       <div class="stat"><b id="statsMyReal" style="color:#FFD700">$0.00</b><span>LO QUE GANASTE TÚ (Monetag)</span></div>
@@ -222,15 +222,6 @@ label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px;text-align:left}
 </div>
 <input id="user" placeholder="Usuario:">
 <input id="pass" type="password" placeholder="Contraseña:">
-<div class="antibot-box" id="antibotBox">
-  <p style="font-size:13px;font-weight:bold">🛡️ Anti-Bot - Demuestra que eres humano</p>
-  <p style="font-size:11px;color:#aaa;margin:4px 0">Esto protege la plataforma para que Monetag no la bloquee.</p>
-  <label class="checkbox-row"><input type="checkbox" id="humanCheck" onchange="checkHuman()"> <span>✅ No soy un robot</span></label>
-  <p style="font-size:13px;margin-top:10px">¿Cuánto es <b id="captchaQ">3 + 4</b> ?</p>
-  <input id="captchaA" type="number" placeholder="Escribe el resultado" oninput="checkHuman()">
-  <p id="captchaMsg" style="font-size:12px;color:#ff4444"></p>
-  <input id="honeypot" style="display:none" tabindex="-1" autocomplete="off">
-</div>
 <button id="mainAuthBtn" onclick="submitAuth()">ENTRAR</button>
 <div class="auth-divider"><span>o únete</span></div>
 <button class="whatsapp" onclick="joinWhatsApp()">💬 Unirse al Grupo de WhatsApp</button>
@@ -285,13 +276,12 @@ label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px;text-align:left}
 </div>
 <button class="sec" onclick="logout()">Cerrar Sesión</button>
 </div>
-<p class="small">Pago mínimo $5 por PayPal. 🛡️ Protegido Anti-Bot - Solo humanos reales.</p>
+<p class="small">Pago mínimo $5 por PayPal. 🛡️ Protegido Anti-Bot en anuncios - Solo humanos reales.</p>
 </div>
 </div>
 <script>
 const ADMIN_USER = "NASETLINKOFC";
 const ADMIN_PASS = "NASET12CLICKS";
-// MODERADOR - Tu ayudante, NO es dueño, NO ve tu plata
 const MOD_USER = "DANYXITERS";
 const MOD_PASS = "12345689";
 const MONETAG_LINK = "https://uplcm.com/4/12244247";
@@ -301,31 +291,13 @@ let authMode = 'login';
 const PRESET_AVATARS = ["https://i.pravatar.cc/150?img=12","https://i.pravatar.cc/150?img=32","https://i.pravatar.cc/150?img=5","https://i.pravatar.cc/150?img=47","https://i.pravatar.cc/150?img=68","https://i.pravatar.cc/150?img=15","https://i.pravatar.cc/150?img=8","https://i.pravatar.cc/150?img=60"];
 let selectedAvatar = '';
 let currentView = 'home';
-let captchaNum1 = 3, captchaNum2 = 4, captchaAnswer = 7;
 let humanInteracted = false, pageLoadTime = Date.now(), lastClickTime = 0, rapidClicks = 0, lastChatTime = 0;
-document.addEventListener('mousemove', ()=>{ humanInteracted=true; }, {once:true});
-document.addEventListener('touchstart', ()=>{ humanInteracted=true; }, {once:true});
-document.addEventListener('keydown', ()=>{ humanInteracted=true; }, {once:true});
-function newCaptcha(){
-  captchaNum1 = Math.floor(Math.random()*9)+1; captchaNum2 = Math.floor(Math.random()*9)+1; captchaAnswer = captchaNum1 + captchaNum2;
-  let q=document.getElementById('captchaQ'); if(q) q.innerText = captchaNum1 + ' + ' + captchaNum2;
-  let a=document.getElementById('captchaA'); if(a) a.value='';
-  let c=document.getElementById('humanCheck'); if(c) c.checked=false;
-}
-function checkHuman(){
-  let checked = document.getElementById('humanCheck')?.checked;
-  let ans = parseInt(document.getElementById('captchaA')?.value||'');
-  let msg=document.getElementById('captchaMsg');
-  if(checked && ans===captchaAnswer){ if(msg){ msg.style.color='#22c55e'; msg.innerText='✅ Verificado, eres humano'; } return true; }
-  if(msg){ msg.style.color='#ff4444'; msg.innerText='Completa el check y la suma'; }
-  return false;
-}
-function isBotBehavior(){
-  let honey = document.getElementById('honeypot')?.value;
-  if(honey){ return true; }
-  if(Date.now() - pageLoadTime < 1500 && !humanInteracted){ return true; }
-  return false;
-}
+let mouseMoves = 0, touchMoves = 0;
+document.addEventListener('mousemove', ()=>{ humanInteracted=true; mouseMoves++; }, {passive:true});
+document.addEventListener('touchstart', ()=>{ humanInteracted=true; touchMoves++; }, {passive:true});
+document.addEventListener('touchmove', ()=>{ humanInteracted=true; touchMoves++; }, {passive:true});
+document.addEventListener('keydown', ()=>{ humanInteracted=true; }, {passive:true});
+document.addEventListener('scroll', ()=>{ humanInteracted=true; }, {passive:true});
 const RANKS = [
  {name:'BRONCE', emoji:'🥉', cls:'bronce', min:0, max:1000},
  {name:'PLATA', emoji:'🥈', cls:'plata', min:1001, max:2000},
@@ -398,7 +370,7 @@ function openView(view){
   if(view==='stats'){
     if(!isAdmin && !isMod) return;
     document.getElementById('viewStats').style.display='block';
-    document.getElementById('statsViewTitle').innerText = isMod ? '📊 Estadísticas - Moderador (sin ver plata del dueño)' : '📊 Estadísticas - Solo Admin';
+    document.getElementById('statsViewTitle').innerText = isMod ? '📊 Estadísticas - Moderador' : '📊 Estadísticas - Solo Admin';
     renderStats(); window.scrollTo(0,0);
   }
 }
@@ -408,14 +380,14 @@ function buildProfileHTML(){
   let r = getRank(myClicks, currentUser);
   let myUserObj = users.find(u=>u.user.toLowerCase()===currentUser.toLowerCase());
   let since = myUserObj ? ((myUserObj.date||'') + ' - ' + (myUserObj.time||'')) : (isAdmin ? 'Tu cuenta privada de Dueño' : isMod ? 'Tu cuenta de Moderador' : 'Hoy');
-  return `<div class="profile-top"><div class="avatar" id="myAvatarSolo">${getAvatarInner(currentUser)}</div><div><h3 style="font-size:18px">${getDisplayName(currentUser)} ${verifiedIcon(currentUser)}</h3><p style="color:#aaa;font-size:12px;margin:2px 0">Tu usuario privado: ${currentUser} (solo tú lo ves)</p><p style="color:#aaa;font-size:12px">${getProfile(currentUser).bio||''}</p><div style="margin-top:6px">${rankBadgeHTML(myClicks, currentUser)}</div><p style="font-size:11px;color:#aaa;margin-top:4px">${myClicks} clics ${r.manual ? '• Rango puesto por ti ⭐' : (r.next ? '• Te faltan '+(r.nextAt-myClicks)+' para '+r.nextEmoji+' '+r.next : '• Rango DIOS, el máximo')}</p><p style="font-size:11px;color:#aaa">📅 ${since}</p></div></div><div id="editProfileBoxSolo" style="margin-top:14px;border-top:1px solid #333;padding-top:12px"><p style="font-size:13px;font-weight:bold;margin-bottom:8px">Elige tu foto de perfil:</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px" id="avatarOptionsSolo"></div><label>📸 O sube tu propia foto:</label><input type="file" accept="image/*" onchange="uploadAvatarSolo(event)" style="padding:8px"><label>📝 Tu nombre para mostrar:</label><input id="editDisplayNameSolo" placeholder="Ej: Naset"><label>✍️ Tu biografía:</label><input id="editBioSolo" placeholder="Ej: Gano dinero con NasetLink 🔥" maxlength="80"><button class="green" onclick="saveProfileSolo()">💾 GUARDAR MI PERFIL</button></div>`;
+  return `<div class="profile-top"><div class="avatar" id="myAvatarSolo">${getAvatarInner(currentUser)}</div><div><h3 style="font-size:18px">${getDisplayName(currentUser)} ${verifiedIcon(currentUser)}</h3><p style="color:#aaa;font-size:12px;margin:2px 0">Tu usuario privado: ${currentUser}</p><p style="color:#aaa;font-size:12px">${getProfile(currentUser).bio||''}</p><div style="margin-top:6px">${rankBadgeHTML(myClicks, currentUser)}</div><p style="font-size:11px;color:#aaa;margin-top:4px">${myClicks} clics ${r.manual ? '• Rango puesto por ti ⭐' : (r.next ? '• Te faltan '+(r.nextAt-myClicks)+' para '+r.nextEmoji+' '+r.next : '• Rango DIOS, el máximo')}</p><p style="font-size:11px;color:#aaa">📅 ${since}</p></div></div><div id="editProfileBoxSolo" style="margin-top:14px;border-top:1px solid #333;padding-top:12px"><p style="font-size:13px;font-weight:bold;margin-bottom:8px">Elige tu foto de perfil:</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px" id="avatarOptionsSolo"></div><label>📸 O sube tu propia foto:</label><input type="file" accept="image/*" onchange="uploadAvatarSolo(event)" style="padding:8px"><label>📝 Tu nombre para mostrar:</label><input id="editDisplayNameSolo" placeholder="Ej: Naset"><label>✍️ Tu biografía:</label><input id="editBioSolo" placeholder="Ej: Gano dinero con NasetLink 🔥" maxlength="80"><button class="green" onclick="saveProfileSolo()">💾 GUARDAR MI PERFIL</button></div>`;
 }
 function getAvatarInner(user){ let p=getProfile(user); if(p.avatar) return '<img src="'+p.avatar+'">'; return user.charAt(0).toUpperCase(); }
 function buildAdminHTML(){
-  let moneyPart = isMod ? `<p style="text-align:center;color:#ff4444;font-weight:bold;background:#2a0a0a;border:1px solid #ff4444;border-radius:10px;padding:10px">🛡️ Eres MODERADOR - No puedes ver ni tocar el dinero del dueño</p>` : `<label>💰 MI SUELDO REAL DE MONETAG - Solo tú lo ves, el moderador NO lo ve</label><input id="adminRealBalanceSolo" type="number" step="0.01" placeholder="Ej: 1.34"><button class="green" onclick="saveRealBalanceSolo()">💰 GUARDAR MI SUELDO REAL</button>`;
+  let moneyPart = isMod ? `` : `<label>💰 MI SUELDO REAL DE MONETAG</label><input id="adminRealBalanceSolo" type="number" step="0.01" placeholder="Ej: 1.34"><button class="green" onclick="saveRealBalanceSolo()">💰 GUARDAR MI SUELDO REAL</button>`;
   let title = isMod ? '🛡️ PANEL MODERADOR - DANYXITERS' : '👑 PANEL ADMIN - Solo tú, dueño';
-  let sub = isMod ? 'Puedes banear, dar verificado / influencer y dar rango. Pero NO puedes ver el dinero del dueño.' : 'Tú eres el dueño, ves todo.';
-  return `<h3 style="text-align:center">${title}</h3><p class="small">${sub}</p>${moneyPart}<label>🏆 SUBIRLE RANGO A ALGUIEN - Con su usuario - A ti también te funciona</label><input id="adminRankUserSolo" placeholder="Usuario ej: NASET LINK OFC o pedro123"><select id="adminRankSelectSolo"><option value="">Elige rango para darle...</option><option value="BRONCE">🥉 BRONCE</option><option value="PLATA">🥈 PLATA</option><option value="ORO">🥇 ORO</option><option value="DIAMANTE">💎 DIAMANTE</option><option value="ÉLITE">👑 ÉLITE</option><option value="LEYENDA">🔥 LEYENDA</option><option value="MÍTICO">🐉 MÍTICO</option><option value="MAESTRO">🌟 MAESTRO</option><option value="DIOS">👑 DIOS</option></select><button class="green" onclick="adminGiveRankSolo()">🏆 DARLE ESE RANGO</button><button class="sec" onclick="adminRemoveRankSolo()">↩️ QUITAR RANGO MANUAL - Que vuelva a subir solo por clics</button><label>👥 MIEMBROS - Solo tú ves su usuario real, su rango y desde cuándo</label><div id="allUsersSolo"></div><label>✅ DAR VERIFICADO AZUL / INFLUENCER - En tiempo real - Solo adorno, no da plata</label><input id="verifyUserSolo" placeholder="Usuario ej: pedro123"><div class="flex"><button class="smallbtn" style="background:#1d9bf0" onclick="giveVerifiedSolo('verified')">✓ VERIFICADO</button><button class="smallbtn" style="background:linear-gradient(90deg,#f59e0b,#ef4444,#facc15)" onclick="giveVerifiedSolo('influencer')">⭐ INFLUENCER</button></div><label style="margin-top:12px">❌ QUITAR</label><div class="flex"><button class="sec smallbtn" onclick="removeVerifiedSolo('verified')">❌ QUITAR VERIFICADO</button><button class="sec smallbtn" onclick="removeVerifiedSolo('influencer')">❌ QUITAR INFLUENCER</button></div><div style="margin-top:8px"><button class="danger smallbtn" onclick="removeVerifiedSolo('all')">🧹 QUITAR TODO</button></div><label>🚫 BANEAR PERMANENTEMENTE</label><input id="banUserSolo" placeholder="Usuario a banear"><button class="danger" onclick="banUserSolo()">🚫 BANEAR PERMANENTEMENTE</button><button class="sec" onclick="unbanUserSolo()">✅ DESBANEAR</button>`;
+  let sub = isMod ? 'Puedes banear, dar verificado / influencer y dar rango.' : 'Tú eres el dueño, ves todo.';
+  return `<h3 style="text-align:center">${title}</h3><p class="small">${sub}</p>${moneyPart}<label>🏆 SUBIRLE RANGO A ALGUIEN - Con su usuario</label><input id="adminRankUserSolo" placeholder="Usuario ej: NASET LINK OFC o pedro123"><select id="adminRankSelectSolo"><option value="">Elige rango para darle...</option><option value="BRONCE">🥉 BRONCE</option><option value="PLATA">🥈 PLATA</option><option value="ORO">🥇 ORO</option><option value="DIAMANTE">💎 DIAMANTE</option><option value="ÉLITE">👑 ÉLITE</option><option value="LEYENDA">🔥 LEYENDA</option><option value="MÍTICO">🐉 MÍTICO</option><option value="MAESTRO">🌟 MAESTRO</option><option value="DIOS">👑 DIOS</option></select><button class="green" onclick="adminGiveRankSolo()">🏆 DARLE ESE RANGO</button><button class="sec" onclick="adminRemoveRankSolo()">↩️ QUITAR RANGO MANUAL - Que vuelva a subir solo por clics</button><label>👥 MIEMBROS - Solo tú ves su usuario real, su rango y desde cuándo</label><div id="allUsersSolo"></div><label>✅ DAR VERIFICADO AZUL / INFLUENCER - En tiempo real - Solo adorno, no da plata</label><input id="verifyUserSolo" placeholder="Usuario ej: pedro123"><div class="flex"><button class="smallbtn" style="background:#1d9bf0" onclick="giveVerifiedSolo('verified')">✓ VERIFICADO</button><button class="smallbtn" style="background:linear-gradient(90deg,#f59e0b,#ef4444,#facc15)" onclick="giveVerifiedSolo('influencer')">⭐ INFLUENCER</button></div><label style="margin-top:12px">❌ QUITAR</label><div class="flex"><button class="sec smallbtn" onclick="removeVerifiedSolo('verified')">❌ QUITAR VERIFICADO</button><button class="sec smallbtn" onclick="removeVerifiedSolo('influencer')">❌ QUITAR INFLUENCER</button></div><div style="margin-top:8px"><button class="danger smallbtn" onclick="removeVerifiedSolo('all')">🧹 QUITAR TODO</button></div><label>🚫 BANEAR PERMANENTEMENTE</label><input id="banUserSolo" placeholder="Usuario a banear"><button class="danger" onclick="banUserSolo()">🚫 BANEAR PERMANENTEMENTE</button><button class="sec" onclick="unbanUserSolo()">✅ DESBANEAR</button>`;
 }
 function setMode(mode){
   authMode = mode;
@@ -423,11 +395,10 @@ function setMode(mode){
   if(mode === 'login'){ userInput.placeholder = 'Usuario:'; passInput.placeholder = 'Contraseña:'; mainBtn.innerText = 'ENTRAR'; mainBtn.className = ''; tabLogin.className = 'active'; tabReg.className = ''; }
   else { userInput.placeholder = 'Crea tu usuario:'; passInput.placeholder = 'Crea tu contraseña:'; mainBtn.innerText = 'REGISTRARME'; mainBtn.className = ''; tabLogin.className = ''; tabReg.className = 'active-green'; }
   userInput.value = ''; passInput.value = '';
-  newCaptcha();
 }
 function submitAuth(){ if(authMode === 'login'){ login(); } else { register(); } }
 function saveRealBalanceSolo(){
-  if(isMod){ alert('🛡️ Eres moderador, no puedes cambiar el dinero del dueño'); return; }
+  if(isMod){ return; }
   let v = parseFloat(document.getElementById('adminRealBalanceSolo').value); if(isNaN(v)){ alert('Pon tu sueldo real'); return; } localStorage.setItem('naset_real_balance', v); render(); renderStats(); alert('✅ Guardado.'); 
 }
 function getTag(user){
@@ -580,8 +551,7 @@ function showAdminSolo(){
   users.forEach(u=>{
     let lvl=u.forcedAdLevel>0?u.forcedAdLevel:2; let info=getAdInfo(lvl);
     let clicks = parseInt(localStorage.getItem('naset_clicks_'+u.user.toLowerCase())||u.clicks||0);
-    // Al moderador NO le mostramos cuánto gana cada uno en plata, solo clics y rango
-    let er = isMod ? '🔒 Privado' : '$'+((clicks/1000*info.price).toFixed(2));
+    let er = isMod ? '' : '$'+((clicks/1000*info.price).toFixed(2));
     let myLinksCount = links.filter(l=>l.user===u.user).length;
     let banned = localStorage.getItem('naset_banned_'+u.user.toLowerCase())==='1' || u.banned;
     let tag = getTag(u.user);
@@ -593,7 +563,8 @@ function showAdminSolo(){
     let cardClass = tag==='influencer' ? 'user-card influencer-card' : 'user-card';
     let r = getRank(clicks, u.user);
     let fullDate = (u.date||'Hoy') + ' - ' + (u.time||'');
-    html+='<div class="'+cardClass+'"><div style="display:flex;gap:10px;align-items:center">'+getAvatarHTML(u.user,'avatar-small')+'<div><b>'+(p.displayName||u.user)+'</b> '+tagHtml+' <span style="color:#888;font-size:11px">(usuario real: '+u.user+')</span>'+bannedHtml+'<div style="margin-top:4px">'+rankBadgeHTML(clicks, u.user)+'</div><div style="font-size:11px;color:#FFD700">📅 Desde: '+fullDate+'</div></div></div>'+bioHtml+'<br><span style="font-size:12px;color:#aaa">👆 Clics: <b style="color:#fff">'+clicks+'</b> • 💰 Ganado: <b style="color:#25D366">'+er+'</b> • 🔗 Links: <b style="color:#fff">'+myLinksCount+'</b> • Anuncios: Nivel '+lvl+'</span></div>';
+    let earnPart = isMod ? '' : ' • 💰 Ganado: <b style="color:#25D366">'+er+'</b>';
+    html+='<div class="'+cardClass+'"><div style="display:flex;gap:10px;align-items:center">'+getAvatarHTML(u.user,'avatar-small')+'<div><b>'+(p.displayName||u.user)+'</b> '+tagHtml+' <span style="color:#888;font-size:11px">(usuario real: '+u.user+')</span>'+bannedHtml+'<div style="margin-top:4px">'+rankBadgeHTML(clicks, u.user)+'</div><div style="font-size:11px;color:#FFD700">📅 Desde: '+fullDate+'</div></div></div>'+bioHtml+'<br><span style="font-size:12px;color:#aaa">👆 Clics: <b style="color:#fff">'+clicks+'</b>'+earnPart+' • 🔗 Links: <b style="color:#fff">'+myLinksCount+'</b> • Anuncios: Nivel '+lvl+'</span></div>';
   });
   el.innerHTML=html;
 }
@@ -637,21 +608,20 @@ function renderStats(){
   let botsBlocked = parseInt(localStorage.getItem('naset_bots_blocked')||'0');
   document.getElementById('statsTotalUsers').innerText = all.length;
   document.getElementById('statsTotalClicks').innerText = totalClicks;
-  // Si es moderador, NO ve tu plata
   if(isMod){
-    document.getElementById('statsTotalPay').innerText = '🔒 Privado';
-    document.getElementById('statsTotalPayLabel').innerText = 'PLATA - SOLO DUEÑO';
-    document.getElementById('statsMyReal').innerText = '🔒 Privado';
-    document.getElementById('statsMyProfit').innerText = '🔒 Privado';
     document.getElementById('statsMoneyRow').style.display = 'none';
+    let payCard = document.getElementById('statsTotalPayCard');
+    if(payCard) payCard.style.display = 'none';
   } else {
+    document.getElementById('statsMoneyRow').style.display = 'flex';
+    let payCard = document.getElementById('statsTotalPayCard');
+    if(payCard) payCard.style.display = 'block';
     document.getElementById('statsTotalPay').innerText = '$'+totalPay.toFixed(2);
     document.getElementById('statsTotalPayLabel').innerText = 'TIENES QUE PAGAR';
     document.getElementById('statsMyReal').innerText = '$'+myReal.toFixed(2);
     let profitEl = document.getElementById('statsMyProfit');
     profitEl.innerText = '$'+myProfit.toFixed(2);
     profitEl.style.color = myProfit>=0 ? '#22c55e' : '#ff4444';
-    document.getElementById('statsMoneyRow').style.display = 'flex';
   }
   document.getElementById('statsBotsBlocked').innerText = botsBlocked;
   document.getElementById('statsHumans').innerText = all.length;
@@ -664,9 +634,9 @@ function renderStats(){
     let bannedHtml = s.banned ? ' <span style="color:#ff4444;font-weight:bold">🚫 BANEADO</span>' : '';
     let medal = i===0 ? '🥇 ' : i===1 ? '🥈 ' : i===2 ? '🥉 ' : (i+1)+'. ';
     let pct = Math.floor(s.rank.progress);
-    let earnShow = isMod ? '🔒 Privado' : '$'+s.earn.toFixed(2);
-    let formulaShow = isMod ? 'Plata oculta para moderador' : 'Fórmula: '+s.clicks+' / 1000 × $'+s.price.toFixed(2)+' = $'+s.earn.toFixed(2);
-    html+='<div class="stat-card '+(isTop?'top-earner':'')+'"><div style="display:flex;gap:10px;align-items:center">'+getAvatarHTML(s.user,'avatar-small')+'<div><b>'+medal+s.displayName+'</b>'+tagHtml+bannedHtml+'<div style="font-size:11px;color:#888">Usuario real: '+s.user+' • Anuncios Nivel '+s.level+' • $'+s.price.toFixed(2)+' x 1000</div><div style="font-size:11px;color:#FFD700">📅 Desde: '+s.date+' • ⏰ Hora: '+s.time+'</div><div style="margin-top:4px">'+rankBadgeHTML(s.clicks, s.user)+'</div></div></div><div style="margin-top:8px"><div style="display:flex;justify-content:space-between;font-size:12px"><b>Rango: '+s.rank.emoji+' '+s.rank.name+'</b><span>'+(s.rank.manual?'⭐ Puesto por ti': s.rank.name==='DIOS' ? '100% - Máximo' : s.rank.inRank+' / '+(s.rank.max - s.rank.min + 1)+' • '+pct+'%')+'</span></div><div class="rank-bar"><div style="width:'+pct+'%"></div></div></div><div style="display:flex;gap:8px;margin-top:10px"><div style="flex:1;background:#111;border-radius:10px;padding:10px;text-align:center"><b style="font-size:18px">'+s.clicks+'</b><br><span style="font-size:11px;color:#aaa">CLICS</span></div><div style="flex:1;background:#111;border-radius:10px;padding:10px;text-align:center"><b style="font-size:18px;color:#25D366">'+earnShow+'</b><br><span style="font-size:11px;color:#aaa">LE DEBES PAGAR</span></div><div style="flex:1;background:#111;border-radius:10px;padding:10px;text-align:center"><b style="font-size:18px">'+s.linksCount+'</b><br><span style="font-size:11px;color:#aaa">LINKS</span></div></div><div style="font-size:11px;color:#aaa;margin-top:8px">'+formulaShow+' • Rango: '+s.rank.emoji+' '+s.rank.name+' '+(s.rank.manual ? '• ⭐ Puesto por ti' : (s.rank.next ? '• Faltan '+(s.rank.nextAt-s.clicks)+' para '+s.rank.nextEmoji+' '+s.rank.next : '• Máximo DIOS'))+'</div></div>';
+    let earnBlock = isMod ? '' : '<div style="flex:1;background:#111;border-radius:10px;padding:10px;text-align:center"><b style="font-size:18px;color:#25D366">$'+s.earn.toFixed(2)+'</b><br><span style="font-size:11px;color:#aaa">LE DEBES PAGAR</span></div>';
+    let formulaShow = isMod ? '' : 'Fórmula: '+s.clicks+' / 1000 × $'+s.price.toFixed(2)+' = $'+s.earn.toFixed(2)+' • ';
+    html+='<div class="stat-card '+(isTop?'top-earner':'')+'"><div style="display:flex;gap:10px;align-items:center">'+getAvatarHTML(s.user,'avatar-small')+'<div><b>'+medal+s.displayName+'</b>'+tagHtml+bannedHtml+'<div style="font-size:11px;color:#888">Usuario real: '+s.user+' • Anuncios Nivel '+s.level+' • $'+s.price.toFixed(2)+' x 1000</div><div style="font-size:11px;color:#FFD700">📅 Desde: '+s.date+' • ⏰ Hora: '+s.time+'</div><div style="margin-top:4px">'+rankBadgeHTML(s.clicks, s.user)+'</div></div></div><div style="margin-top:8px"><div style="display:flex;justify-content:space-between;font-size:12px"><b>Rango: '+s.rank.emoji+' '+s.rank.name+'</b><span>'+(s.rank.manual?'⭐ Puesto por ti': s.rank.name==='DIOS' ? '100% - Máximo' : s.rank.inRank+' / '+(s.rank.max - s.rank.min + 1)+' • '+pct+'%')+'</span></div><div class="rank-bar"><div style="width:'+pct+'%"></div></div></div><div style="display:flex;gap:8px;margin-top:10px"><div style="flex:1;background:#111;border-radius:10px;padding:10px;text-align:center"><b style="font-size:18px">'+s.clicks+'</b><br><span style="font-size:11px;color:#aaa">CLICS</span></div>'+earnBlock+'<div style="flex:1;background:#111;border-radius:10px;padding:10px;text-align:center"><b style="font-size:18px">'+s.linksCount+'</b><br><span style="font-size:11px;color:#aaa">LINKS</span></div></div><div style="font-size:11px;color:#aaa;margin-top:8px">'+formulaShow+'Rango: '+s.rank.emoji+' '+s.rank.name+' '+(s.rank.manual ? '• ⭐ Puesto por ti' : (s.rank.next ? '• Faltan '+(s.rank.nextAt-s.clicks)+' para '+s.rank.nextEmoji+' '+s.rank.next : '• Máximo DIOS'))+'</div></div>';
   });
   listEl.innerHTML = html;
 }
@@ -760,29 +730,60 @@ let shuffledAds = [];
 let adStartTime = 0;
 const params = new URLSearchParams(location.search);
 const go = params.get('go'); const owner = params.get('u') || ''; const isVisitor = !!go;
+
+// --- ANTI-BOT SOLO EN ANUNCIOS - Aquí es donde importa ---
+function isAdBot(){
+  // 1. Si no movió mouse / no tocó pantalla / no hizo scroll, es bot
+  if(!humanInteracted) return true;
+  // 2. Si entró y en menos de 1.5 seg ya le dio clic, es bot
+  if(Date.now() - pageLoadTime < 1500) return true;
+  // 3. Si le da clics super rápido seguidos, es bot
+  if(Date.now() - lastClickTime < 2000){
+    rapidClicks++;
+    if(rapidClicks > 4) return true;
+  } else {
+    rapidClicks = 0;
+  }
+  return false;
+}
 function addClickToOwner(ownerName){
   if(!ownerName) ownerName = 'NASETLINKOFC';
-  let now = Date.now();
-  if(now - lastClickTime < 2000){ rapidClicks++; if(rapidClicks>5){ let b=parseInt(localStorage.getItem('naset_bots_blocked')||'0')+1; localStorage.setItem('naset_bots_blocked', b); return; } }
-  else rapidClicks=0;
-  lastClickTime = now;
+  // Si es bot, NO cuenta el clic, y suma 1 a bots bloqueados para que lo veas en Estadísticas
+  if(isAdBot()){
+    let b = parseInt(localStorage.getItem('naset_bots_blocked')||'0')+1;
+    localStorage.setItem('naset_bots_blocked', b);
+    return;
+  }
+  lastClickTime = Date.now();
   let total = parseInt(localStorage.getItem('naset_total_clicks')||'0')+1; localStorage.setItem('naset_total_clicks', total);
   let key = 'naset_clicks_'+ownerName.toLowerCase(); let c = parseInt(localStorage.getItem(key)||'0')+1; localStorage.setItem(key, c);
   let u = users.find(x=>x.user.toLowerCase()===ownerName.toLowerCase()); if(u){ u.clicks = c; localStorage.setItem('naset_all_users', JSON.stringify(users)); }
+  // Esto hace que se vea en tiempo real para todos
+  try{ localStorage.setItem('naset_last_click_at', String(Date.now())); }catch(e){}
 }
-if(isVisitor){ document.getElementById('authBox').style.display='none'; document.getElementById('panel').style.display='none'; document.getElementById('waiter').style.display='block'; try{ targetUrl=atob(go); }catch(e){ targetUrl=''; } totalAds = parseInt(params.get('ad')||'2'); shuffledAds = [...ALL_ADS].sort(()=>Math.random()-0.5).slice(0, totalAds); let info = AD_LEVELS.find(x=>x.level===totalAds) || AD_LEVELS[0]; document.getElementById('adLevelShow').innerText = 'Nivel '+info.level+' • '+info.ads+' variantes diferentes • Dale clic y espera 5 seg en cada una • 🛡️ Solo humanos reales'; addClickToOwner(owner); renderDots(); updateWaitTitle(); }
+if(isVisitor){ document.getElementById('authBox').style.display='none'; document.getElementById('panel').style.display='none'; document.getElementById('waiter').style.display='block'; try{ targetUrl=atob(go); }catch(e){ targetUrl=''; } totalAds = parseInt(params.get('ad')||'2'); shuffledAds = [...ALL_ADS].sort(()=>Math.random()-0.5).slice(0, totalAds); let info = AD_LEVELS.find(x=>x.level===totalAds) || AD_LEVELS[0]; document.getElementById('adLevelShow').innerText = 'Nivel '+info.level+' • '+info.ads+' variantes diferentes • Dale clic y espera 5 seg en cada una • 🛡️ Solo humanos reales'; renderDots(); updateWaitTitle(); }
 function renderDots(){ let h=''; for(let i=1;i<=totalAds;i++){ let cls = i<currentAd ? 'dot done' : (i===currentAd ? 'dot current' : 'dot'); h+='<div class="'+cls+'">'+(i<currentAd?'✓':i)+'</div>'; } document.getElementById('dots').innerHTML=h; document.getElementById('barFill').style.width = ((currentAd-1)/totalAds*100)+'%'; }
 function getCurrentAd(){ return shuffledAds[currentAd-1] || ALL_ADS[0]; }
 function updateWaitTitle(){ document.getElementById('waitTitle').innerText='Anuncio '+currentAd+' de '+totalAds; document.getElementById('adNum1').innerText=currentAd; let ad = getCurrentAd(); let letters = ['A','B','C','D','E','F','G','H','I','J']; document.getElementById('variantLabel').innerText = '🎲 Variante '+letters[currentAd-1]+' • Tipo: '+ad.type+' • No se repite'; document.getElementById('adImg').src = ad.img; document.getElementById('adText').innerText = ad.text; document.getElementById('adText').style.background = ad.bg; document.getElementById('waitAdName').innerText = 'Estás viendo: '+ad.type+' • Espera 5 seg y regresa'; }
 function openAd(){
-  if(!humanInteracted){ alert('🛡️ Mueve el mouse o toca la pantalla primero para demostrar que eres humano'); return; }
+  // Anti-Bot en anuncios: si no movió nada, no le abre ni le cuenta
+  if(!humanInteracted){
+    alert('🛡️ Mueve el mouse o toca la pantalla primero para demostrar que eres humano');
+    let b = parseInt(localStorage.getItem('naset_bots_blocked')||'0')+1;
+    localStorage.setItem('naset_bots_blocked', b);
+    return;
+  }
   let ad = getCurrentAd(); let urlToOpen = adminAdLink ? adminAdLink : ad.link; window.open(urlToOpen, '_blank');
   adStartTime = Date.now();
   document.getElementById('stateClick').style.display='none'; document.getElementById('stateWait').style.display='block';
   let t=5; let c=document.getElementById('count'); c.innerText=t; let btn=document.getElementById('returnBtn'); btn.disabled=true; btn.className=''; btn.innerText='🔒 ESPERA 5 SEGUNDOS...'; clearInterval(timerInt); timerInt=setInterval(()=>{ t--; c.innerText=t>0?t:'¡Listo!'; if(t<=0){ clearInterval(timerInt); btn.disabled=false; btn.className='returnbtn'; btn.innerText='✅ YA VI EL ANUNCIO, REGRESAR'; } },1000);
 }
 function confirmReturn(){
-  if(Date.now() - adStartTime < 4000){ alert('🛡️ Espera los 5 segundos completos, si no eres bot te va a contar.'); return; }
+  // Anti-Bot en anuncios: si no esperó los 5 seg, NO le cuenta el clic
+  if(Date.now() - adStartTime < 4000){
+    alert('🛡️ Espera los 5 segundos completos para que te cuente el clic.');
+    return;
+  }
   addClickToOwner(owner);
   if(currentAd>=totalAds){ document.getElementById('stateWait').style.display='none'; document.getElementById('stateDone').style.display='block'; document.getElementById('barFill').style.width='100%'; return; }
   currentAd++; renderDots(); updateWaitTitle(); document.getElementById('stateWait').style.display='none'; document.getElementById('stateClick').style.display='block';
@@ -792,14 +793,10 @@ function getAdInfo(level){ return AD_LEVELS.find(x=>x.level===level) || AD_LEVEL
 function changeAdLevel(v){ tempAdLevel=v; updateAdUI(); }
 function updateAdUI(){ let info=getAdInfo(tempAdLevel); document.getElementById('adLevelInfo').innerText='Nivel '+info.level+' • '+info.ads+' variantes • '+info.ads*5+' seg • Ganas $'+info.price.toFixed(2)+' por 1000 clics'; document.querySelectorAll('.level-btn').forEach(b=>{ b.classList.toggle('active', parseInt(b.dataset.lv)===tempAdLevel); }); }
 function saveAdLevel(){ myAdLevel=tempAdLevel; localStorage.setItem('naset_my_adlevel', myAdLevel); render(); }
+// --- LOGIN / REGISTRO SIN ANTI-BOT, solo usuario y contraseña ---
 function login(){
   let u=document.getElementById('user').value.trim(); let p=document.getElementById('pass').value.trim();
   if(!u||!p){ alert('Pon usuario y contraseña'); return; }
-  if(isBotBehavior()){
-    let b=parseInt(localStorage.getItem('naset_bots_blocked')||'0')+1; localStorage.setItem('naset_bots_blocked', b);
-    alert('🛡️ Detectamos actividad de bot. Mueve el mouse y espera 2 segundos.'); newCaptcha(); return;
-  }
-  if(!checkHuman()){ alert('🛡️ Primero marca "No soy un robot" y resuelve la suma'); return; }
   if(localStorage.getItem('naset_banned_'+u.toLowerCase())==='1'){ alert('🚫 Esta cuenta fue baneada permanentemente.'); return; }
   if(u.toLowerCase()===ADMIN_USER.toLowerCase()){ if(p!==ADMIN_PASS){ alert('❌ Contraseña incorrecta'); return; } localStorage.setItem('naset_user',ADMIN_USER); localStorage.setItem('naset_is_admin','1'); localStorage.removeItem('naset_is_mod'); isAdmin=true; isMod=false; currentUser=ADMIN_USER; showPanel(); return; }
   if(u.toLowerCase()===MOD_USER.toLowerCase()){ if(p!==MOD_PASS){ alert('❌ Contraseña incorrecta'); return; } localStorage.setItem('naset_user',MOD_USER); localStorage.setItem('naset_is_mod','1'); localStorage.removeItem('naset_is_admin'); isAdmin=false; isMod=true; currentUser=MOD_USER; showPanel(); return; }
@@ -813,11 +810,6 @@ function login(){
 function register(){
   let u=document.getElementById('user').value.trim(); let p=document.getElementById('pass').value.trim();
   if(!u||!p){ alert('Pon usuario y contraseña'); return; }
-  if(isBotBehavior()){
-    let b=parseInt(localStorage.getItem('naset_bots_blocked')||'0')+1; localStorage.setItem('naset_bots_blocked', b);
-    alert('🛡️ Detectamos actividad de bot. Mueve el mouse y espera 2 segundos.'); newCaptcha(); return;
-  }
-  if(!checkHuman()){ alert('🛡️ Primero marca "No soy un robot" y resuelve la suma'); return; }
   if(localStorage.getItem('naset_banned_'+u.toLowerCase())==='1'){ alert('🚫 Ese usuario está baneado.'); return; }
   if(u.toLowerCase()===ADMIN_USER.toLowerCase() || u.toLowerCase()===MOD_USER.toLowerCase()){ alert('Ese usuario no se puede usar'); return; }
   if(users.find(x=>x.user.toLowerCase()===u.toLowerCase())){ alert('Ese usuario ya existe. Dale a Iniciar Sesión arriba'); setMode('login'); return; }
@@ -848,7 +840,7 @@ function render(){
   let myClicks = parseInt(localStorage.getItem('naset_clicks_'+currentUser.toLowerCase())||'0'); if(me && me.clicks>myClicks) myClicks = me.clicks;
   let globalClicks=parseInt(localStorage.getItem('naset_total_clicks')||'0'); let adLvl=myAdLevel; if(me && me.forcedAdLevel>0) adLvl=me.forcedAdLevel; let info=getAdInfo(adLvl); let autoEarn = (myClicks/1000*info.price);
   if(isAdmin){ let real = localStorage.getItem('naset_real_balance'); document.getElementById('earnLabel').innerText='MI GANADO • EN VIVO'; document.getElementById('totalEarn').innerText = (real!==null && real!=='' && !isNaN(parseFloat(real))) ? '$'+parseFloat(real).toFixed(2) : '$0.00'; document.getElementById('totalClicks').innerText=globalClicks; document.getElementById('myLevel').innerText='ADMIN'; }
-  else if(isMod){ document.getElementById('earnLabel').innerText='MODERADOR - SIN PLATA'; document.getElementById('totalEarn').innerText='🔒 Privado'; document.getElementById('totalClicks').innerText=globalClicks; document.getElementById('myLevel').innerText='MOD'; }
+  else if(isMod){ document.getElementById('earnLabel').innerText='PANEL MODERADOR'; document.getElementById('totalEarn').innerText='🛡️'; document.getElementById('totalClicks').innerText=globalClicks; document.getElementById('myLevel').innerText='MOD'; }
   else { document.getElementById('earnLabel').innerText='MI GANADO • EN VIVO'; document.getElementById('totalEarn').innerText='$'+autoEarn.toFixed(2); document.getElementById('totalClicks').innerText=myClicks; document.getElementById('myLevel').innerText='Nivel '+adLvl; }
   let r = getRank(myClicks, currentUser);
   document.getElementById('levelMsg').innerText='Estás en Nivel '+adLvl+' de anuncios. Tu rango general es '+r.emoji+' '+r.name+'.';
@@ -856,7 +848,6 @@ function render(){
   let html=''; myLinks.slice().reverse().forEach(l=>{ html+='<div class="link-item">📎 '+l.short+'<br>📢 Nivel: '+(l.adLevel||2)+' variantes<br><button class="sec" style="margin-top:8px;padding:8px" onclick="navigator.clipboard.writeText(\''+l.short+'\');alert(\'Copiado\')">📋 COPIAR</button></div>'; }); if(!html) html='<p class="small">Aún no tienes links. Crea uno arriba.</p>'; document.getElementById('myLinks').innerHTML=html;
 }
 document.addEventListener('DOMContentLoaded', function(){
-  newCaptcha();
   let ci = document.getElementById('chatInput');
   if(ci){ ci.addEventListener('keypress', function(e){ if(e.key==='Enter'){ e.preventDefault(); sendChat(); } }); }
 });
