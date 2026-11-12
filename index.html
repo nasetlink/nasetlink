@@ -363,7 +363,6 @@ if(isVisitor){ document.getElementById('authBox').style.display='none'; document
 function renderDots(){ let h=''; for(let i=1;i<=Math.min(totalAds,8);i++){ let cls = i<currentAd ? 'dot done' : (i===currentAd ? 'dot current' : 'dot'); h+='<div class="'+cls+'">'+(i<currentAd?'✓':i)+'</div>'; } document.getElementById('dots').innerHTML=h; document.getElementById('barFill').style.width = ((currentAd-1)/Math.max(totalAds,1)*100)+'%'; }
 function getCurrentAd(){ return shuffledAds[currentAd-1] || ALL_ADS[0]; }
 function updateWaitTitle(){ document.getElementById('waitTitle').innerText='Anuncio '+currentAd+' • Infinito 🔥'; document.getElementById('adNum1').innerText=currentAd; let ad = getCurrentAd(); let letters = ['A','B','C','D','E','F','G','H','I','J']; document.getElementById('variantLabel').innerText = '🎲 Variante '+letters[(currentAd-1)%10]+' • Tipo: '+ad.type+' • No se repite'; document.getElementById('adImg').src = ad.img; document.getElementById('adText').innerText = ad.text; document.getElementById('adText').style.background = ad.bg; document.getElementById('waitAdName').innerText = 'Estás viendo: '+ad.type+' • Espera 5 seg y regresa'; }
-// NUEVO - EL <a> YA ABRIÓ EL ANUNCIO, AQUÍ SOLO EMPIEZA LA ESPERA
 function empezarEspera(){
   adStartTime = Date.now();
   document.getElementById('stateClick').style.display='none';
@@ -377,7 +376,6 @@ function openAd(){ empezarEspera(); }
 function confirmReturn(){
   if(Date.now() - adStartTime < 4000){ alert('🛡️ Espera los 5 segundos completos para que te cuente el clic.'); return; }
   addClickToOwner(owner);
-  // INFINITO - NUNCA SE ACABA
   currentAd++;
   if(currentAd > shuffledAds.length){
     shuffledAds = [...ALL_ADS].sort(()=>Math.random()-0.5);
