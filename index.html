@@ -10,7 +10,7 @@ body{background:#000;color:#fff;min-height:100vh;display:flex;justify-content:ce
 .card{width:100%;max-width:480px}
 .logo{font-size:34px;font-weight:900;text-align:center}
 .logo span{color:#a855f7}
-.sub{color:#aaa;text-align:center;font-size:13px;margin:5px 0 18px}
+.sub{color:#aaa;text-align:center;font-size:13px;margin:5px 0 14px}
 .box{background:#111;border:1px solid #333;border-radius:18px;padding:18px;margin-bottom:14px}
 .gold{border:2px solid gold!important;box-shadow:0 0 20px rgba(255,215,0,.3)}
 input{width:100%;padding:13px;border-radius:12px;border:1px solid #333;background:#000;color:#fff;outline:none;margin-bottom:10px}
@@ -78,12 +78,32 @@ label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px;text-align:left}
 .avatar-small img{width:100%;height:100%;object-fit:cover}
 .avatar-option{width:56px;height:56px;border-radius:99px;object-fit:cover;cursor:pointer;border:3px solid transparent}
 .avatar-option.selected{border-color:#25D366}
+/* BARRA SUPERIOR */
+.topbar{display:flex;gap:8px;margin-bottom:14px;position:sticky;top:0;z-index:20;background:#000;padding:8px 0}
+.top-btn{flex:1;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:99px;border:2px solid transparent;cursor:pointer;font-weight:bold;font-size:13px;justify-content:center;white-space:nowrap;overflow:hidden}
+.top-btn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top-profile{background:#a855f7;color:#fff;border-color:#a855f7}
+.top-chat{background:#fff;color:#000;border-color:#fff}
+.top-admin{background:linear-gradient(90deg,#FFD700,#FFA500);color:#000;border-color:#FFD700;box-shadow:0 0 14px rgba(255,215,0,.6)}
+.top-avatar{width:28px;height:28px;border-radius:99px;background:#fff;color:#a855f7;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;overflow:hidden;flex-shrink:0;border:2px solid #fff}
+.top-avatar img{width:100%;height:100%;object-fit:cover}
+.top-admin .top-avatar{background:#000;color:#FFD700;border-color:#000}
 </style>
 </head>
 <body>
 <div class="card">
 <div class="logo">NASET<span>LINK</span></div>
 <p class="sub">📢 Dale clic al anuncio • Espera 5 seg • Regresa</p>
+
+<!-- BARRA SUPERIOR - SOLO CUANDO ESTA LOGUEADO -->
+<div class="topbar" id="topbar" style="display:none">
+  <div class="top-btn top-profile" onclick="goProfile()">
+    <div class="top-avatar" id="topAvatar">?</div>
+    <span id="topUserName">@usuario</span>
+  </div>
+  <div class="top-btn top-chat" onclick="goChat()">💬 <span>Chat</span></div>
+  <div class="top-btn top-admin" id="topAdminBtn" style="display:none" onclick="goAdmin()">👑 <span>Admin</span></div>
+</div>
 
 <div class="box" id="waiter" style="display:none">
 <p style="text-align:center;font-weight:bold;font-size:18px" id="waitTitle">Anuncio 1 de 2</p>
@@ -131,7 +151,7 @@ label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px;text-align:left}
 <div id="panel" style="display:none">
 <div class="box" id="profileBox">
 <div class="profile-top">
-<div class="avatar" id="myAvatar">?</div>
+<div class="avatar" id="myAvatar" onclick="toggleEditProfile()" style="cursor:pointer">?</div>
 <div>
 <h3 id="welcomeName" style="font-size:18px">Hola 👋</h3>
 <p id="profileUserShow" style="color:#a855f7;font-weight:bold;font-size:13px;margin:2px 0">@usuario</p>
@@ -182,7 +202,7 @@ label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px;text-align:left}
 <p class="small" id="levelMsg"></p>
 </div>
 
-<div class="box" style="padding:0;overflow:hidden;border-color:#a855f7">
+<div class="box" id="chatSection" style="padding:0;overflow:hidden;border-color:#a855f7">
 <div class="chat-box">
 <div class="chat-header">💬 CHAT MUNDIAL • Todos hablan aquí</div>
 <div class="chat-messages" id="chatMessages"></div>
@@ -243,6 +263,25 @@ const PRESET_AVATARS = [
  "https://i.pravatar.cc/150?img=12","https://i.pravatar.cc/150?img=32","https://i.pravatar.cc/150?img=5","https://i.pravatar.cc/150?img=47","https://i.pravatar.cc/150?img=68","https://i.pravatar.cc/150?img=15","https://i.pravatar.cc/150?img=8","https://i.pravatar.cc/150?img=60"
 ];
 let selectedAvatar = '';
+// BOTONES DE ARRIBA
+function goProfile(){
+  document.getElementById('profileBox').scrollIntoView({behavior:'smooth', block:'center'});
+  // Si el editor está cerrado, lo abre para que edite directo
+  let box = document.getElementById('editProfileBox');
+  if(box.style.display!=='block'){ toggleEditProfile(); }
+}
+function goChat(){
+  document.getElementById('chatSection').scrollIntoView({behavior:'smooth', block:'center'});
+  setTimeout(()=>{ document.getElementById('chatInput').focus(); }, 600);
+}
+function goAdmin(){
+  let panel = document.getElementById('adminPanel');
+  panel.style.display='block';
+  panel.scrollIntoView({behavior:'smooth', block:'start'});
+  // Destello dorado para que se note
+  panel.style.boxShadow='0 0 30px rgba(255,215,0,.8)';
+  setTimeout(()=>{ panel.style.boxShadow='0 0 20px rgba(255,215,0,.3)'; }, 1200);
+}
 function setMode(mode){
   authMode = mode;
   let userInput = document.getElementById('user');
@@ -306,6 +345,7 @@ function toggleEditProfile(){
     document.getElementById('editBio').value = p.bio || '';
     renderAvatarOptions(p.avatar || '');
   }
+  if(!isOpen) box.scrollIntoView({behavior:'smooth', block:'center'});
 }
 function renderAvatarOptions(current){
   let html='';
@@ -325,7 +365,6 @@ function uploadAvatar(e){
   let reader = new FileReader();
   reader.onload = function(ev){
     selectedAvatar = ev.target.result;
-    // Mostrar preview
     document.getElementById('myAvatar').innerHTML = '<img src="'+selectedAvatar+'">';
   };
   reader.readAsDataURL(file);
@@ -353,6 +392,14 @@ function updateProfileUI(){
   document.getElementById('welcomeName').innerText = 'Hola, '+(p.displayName||currentUser)+' 👋';
   document.getElementById('profileUserShow').innerHTML = '@'+currentUser + tagLabel(currentUser);
   document.getElementById('profileBioShow').innerText = p.bio || '';
+  // BARRA SUPERIOR
+  document.getElementById('topbar').style.display='flex';
+  document.getElementById('topUserName').innerText = '@'+currentUser;
+  let topAv = document.getElementById('topAvatar');
+  if(p.avatar){ topAv.innerHTML='<img src="'+p.avatar+'">'; }
+  else { topAv.innerHTML = currentUser.charAt(0).toUpperCase(); }
+  // Botón dorado solo para admin
+  document.getElementById('topAdminBtn').style.display = isAdmin ? 'flex' : 'none';
 }
 function giveVerified(type){
   let name = document.getElementById('verifyUser').value.trim();
