@@ -16,7 +16,7 @@ body{background:#000;color:#fff;min-height:100vh;display:flex;justify-content:ce
 input{width:100%;padding:13px;border-radius:12px;border:1px solid #333;background:#000;color:#fff;outline:none;margin-bottom:10px}
 button{width:100%;padding:14px;border:none;border-radius:12px;background:#a855f7;color:#fff;font-weight:bold;font-size:15px;cursor:pointer;margin-bottom:8px}
 button:disabled{background:#333;color:#888;cursor:not-allowed}
-button.google{background:#fff;color:#000;display:flex;align-items:center;justify-content:center;gap:10px}
+button.whatsapp{background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font-size:15px}
 button.sec{background:#222;border:1px solid #444}
 button.danger{background:#dc2626}
 button.green{background:#16a34a}
@@ -49,7 +49,6 @@ label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px;text-align:left}
 .real-ad{width:100%;border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid #f59e0b;background:#fff}
 .real-ad img{width:100%;height:160px;object-fit:cover;display:block}
 .real-ad-text{padding:11px;font-weight:900;font-size:14px;color:#000}
-.ad-tag{display:inline-block;padding:3px 8px;border-radius:99px;font-size:10px;font-weight:900;background:#000;color:#fff;margin-bottom:8px}
 .variant-badge{font-size:11px;color:#f59e0b;font-weight:bold;margin-top:6px}
 </style>
 </head>
@@ -90,7 +89,7 @@ label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px;text-align:left}
 
 <div class="box" id="authBox">
 <h3 style="margin-bottom:12px;text-align:center">👋 Bienvenido a NasetLink</h3>
-<button class="google" onclick="loginGoogle()"> <img src="https://www.google.com/favicon.ico" width="18"> Continuar con Google </button>
+<button class="whatsapp" onclick="joinWhatsApp()"> 💬 Unirse al Grupo de WhatsApp </button>
 <p class="small" style="margin:10px 0">— o con tu cuenta —</p>
 <input id="user" placeholder="Usuario:">
 <input id="pass" type="password" placeholder="Contraseña:">
@@ -162,7 +161,8 @@ label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px;text-align:left}
 const ADMIN_USER = "NASETLINKOFC";
 const ADMIN_PASS = "NASET12CLICKS";
 const MONETAG_LINK = "https://uplcm.com/4/12244247";
-// 20 VARIANTES DIFERENTES - TODAS CON MONETAG PARA MONETIZAR
+const WHATSAPP_GROUP = "https://chat.whatsapp.com/JAqf2gVEFlz59saw6MVveK?s=cl&p=i&mlu=4&ilr=4&iam=2";
+function joinWhatsApp(){ window.open(WHATSAPP_GROUP, '_blank'); }
 const ALL_ADS = [
  {type:"💰 Dinero", bg:"#f59e0b", img:"https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=300&fit=crop", text:"🔥 ¡GANA $5 DIARIOS DESDE TU CELULAR! 👉 TOCA AQUÍ", link:MONETAG_LINK},
  {type:"🎮 Juegos", bg:"#22c55e", img:"https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=600&h=300&fit=crop", text:"🎮 ¡JUEGA Y GANA DINERO REAL! 👉 TOCA AQUÍ", link:MONETAG_LINK},
@@ -249,7 +249,6 @@ function getAdInfo(level){ return AD_LEVELS.find(x=>x.level===level) || AD_LEVEL
 function changeAdLevel(v){ tempAdLevel=v; updateAdUI(); }
 function updateAdUI(){ let info=getAdInfo(tempAdLevel); document.getElementById('adLevelInfo').innerText='Nivel '+info.level+' • '+info.ads+' variantes • '+info.ads*5+' seg • Ganas $'+info.price.toFixed(2)+' por 1000 clics'; document.querySelectorAll('.level-btn').forEach(b=>{ b.classList.toggle('active', parseInt(b.dataset.lv)===tempAdLevel); }); }
 function saveAdLevel(){ myAdLevel=tempAdLevel; localStorage.setItem('naset_my_adlevel', myAdLevel); alert('✅ Tu Nivel ahora es '+myAdLevel); render(); }
-function loginGoogle(){ let email=prompt('Escribe tu Gmail:'); if(!email) return; let u=email.split('@')[0]; localStorage.setItem('naset_user',u); localStorage.setItem('naset_email',email); localStorage.removeItem('naset_is_admin'); isAdmin=false; currentUser=u; registerUser(u,email,'Google'); showPanel(); }
 function login(){ let u=document.getElementById('user').value.trim(); let p=document.getElementById('pass').value.trim(); if(!u||!p){ alert('Pon usuario y contraseña'); return; } if(u===ADMIN_USER && p===ADMIN_PASS){ localStorage.setItem('naset_user',u); localStorage.setItem('naset_email','admin@nasetlink.app'); localStorage.setItem('naset_is_admin','1'); isAdmin=true; currentUser=u; alert('Bienvenido Jefe 👑'); showPanel(); return; } localStorage.setItem('naset_user',u); localStorage.setItem('naset_email',u+'@nasetlink.app'); localStorage.removeItem('naset_is_admin'); isAdmin=false; currentUser=u; registerUser(u,u+'@nasetlink.app','Normal'); showPanel(); }
 function registerUser(u,email,method){ let exists=users.find(x=>x.user===u); if(!exists){ users.push({user:u,email:email,method:method,date:new Date().toLocaleDateString(),clicks:0,earn:0,forcedAdLevel:0}); localStorage.setItem('naset_all_users',JSON.stringify(users)); } }
 function logout(){ localStorage.removeItem('naset_user'); localStorage.removeItem('naset_is_admin'); location.href='/'; }
