@@ -5,265 +5,141 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NASETLINK</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#000;color:#fff;min-height:100vh;display:flex;justify-content:center;padding:20px 14px}
-.card{width:100%;max-width:480px}
-.logo{font-size:34px;font-weight:900;text-align:center}
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#0f0f1a;color:#fff;min-height:100vh}
+.center{max-width:430px;margin:0 auto;padding:18px}
+.logo{text-align:center;font-size:34px;font-weight:900;letter-spacing:2px;margin:28px 0 5px}
 .logo span{color:#a855f7}
-.sub{color:#aaa;text-align:center;font-size:13px;margin:5px 0 18px}
-.box{background:#111;border:1px solid #333;border-radius:18px;padding:18px;margin-bottom:14px}
-.gold{border:2px solid gold!important;box-shadow:0 0 20px rgba(255,215,0,.3)}
-input{width:100%;padding:13px;border-radius:12px;border:1px solid #333;background:#000;color:#fff;outline:none;margin-bottom:10px}
-button{width:100%;padding:14px;border:none;border-radius:12px;background:#a855f7;color:#fff;font-weight:bold;font-size:15px;cursor:pointer;margin-bottom:8px}
-button:disabled{background:#333;color:#888;cursor:not-allowed}
-button.google{background:#fff;color:#000;display:flex;align-items:center;justify-content:center;gap:10px}
-button.sec{background:#222;border:1px solid #444}
-button.danger{background:#dc2626}
-button.green{background:#16a34a}
-button.smallbtn{padding:9px;font-size:13px;margin-bottom:0}
-button.adbtn{background:#f59e0b;color:#000;font-size:17px;padding:18px}
-button.returnbtn{background:#16a34a;font-size:16px}
-.stats{display:flex;gap:10px;margin-bottom:14px}
-.stat{flex:1;background:#111;border:1px solid #333;border-radius:14px;padding:12px;text-align:center}
-.stat b{font-size:19px;display:block}
-.stat span{font-size:11px;color:#aaa}
-.badge{display:inline-block;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:bold;background:#a855f7;margin-top:6px}
-.badge.admin{background:red;color:#fff}
-.link-item{background:#000;border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:10px;font-size:12px;word-break:break-all}
-table{width:100%;font-size:12px;border-collapse:collapse}
-td,th{padding:8px;border-bottom:1px solid #222;text-align:left}
-.small{color:#888;font-size:12px;line-height:1.5;text-align:center;margin-top:10px}
-label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px;text-align:left}
-#count{font-size:70px;font-weight:900;text-align:center}
-.bar{height:10px;background:#222;border-radius:99px;overflow:hidden}
-.bar div{height:100%;background:#f59e0b;width:100%}
-.flex{display:flex;gap:8px}
-.step-dots{display:flex;gap:6px;justify-content:center;margin:10px 0}
-.dot{width:30px;height:30px;border-radius:99px;background:#222;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold}
-.dot.done{background:#16a34a}
-.dot.current{background:#f59e0b;color:#000}
-.level-btn{padding:14px 0;font-size:16px;background:#222;border:1px solid #444}
-.level-btn.active{background:#a855f7;border-color:#a855f7}
-.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0}
-.ad-preview{background:#000;border:1px dashed #f59e0b;border-radius:14px;padding:12px;text-align:center;margin:12px 0}
-.real-ad{width:100%;border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid #f59e0b;background:#fff}
-.real-ad img{width:100%;height:160px;object-fit:cover;display:block}
-.real-ad-text{padding:11px;font-weight:900;font-size:14px;color:#000}
-.ad-tag{display:inline-block;padding:3px 8px;border-radius:99px;font-size:10px;font-weight:900;background:#000;color:#fff;margin-bottom:8px}
-.variant-badge{font-size:11px;color:#f59e0b;font-weight:bold;margin-top:6px}
+.sub{text-align:center;color:#aaa;font-size:13px;margin-bottom:20px}
+.card{background:#1e1e2e;border:1px solid #333;border-radius:16px;padding:18px;margin-bottom:14px}
+input{width:100%;padding:13px;border-radius:10px;border:1px solid #333;background:#111;color:#fff;margin-bottom:10px;font-size:15px}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;background:#a855f7;color:#fff;font-weight:800;font-size:16px;cursor:pointer;margin-bottom:8px}
+.btn-green{background:#22c55e}.btn-ghost{background:#2a2a3a}.btn-white{background:#fff;color:#000}
+.small{font-size:12px;color:#aaa;text-align:center;margin-top:8px;word-break:break-all}
+.emp{display:flex;justify-content:space-between;align-items:center;background:#2a2a3a;padding:12px;border-radius:12px;margin-bottom:8px}
+.ad-box{background:linear-gradient(135deg,#a855f7,#ec4899);padding:18px;border-radius:16px;text-align:center;margin-bottom:12px}
+.ad-box2{background:linear-gradient(135deg,#22c55e,#0ea5e9)}
+.ad-box3{background:linear-gradient(135deg,#f59e0b,#ef4444)}
+.hidden{display:none}
+.linkbox{background:#111;border:1px dashed #a855f7;padding:12px;border-radius:12px;font-size:13px;word-break:break-all;margin:10px 0}
 </style>
 </head>
 <body>
-<div class="card">
+<div class="center">
 <div class="logo">NASET<span>LINK</span></div>
-<p class="sub">📢 Dale clic al anuncio • Espera 5 seg • Regresa</p>
+<div class="sub" id="subtitle">Panel de equipo - Inicia sesión</div>
 
-<div class="box" id="waiter" style="display:none">
-<p style="text-align:center;font-weight:bold;font-size:18px" id="waitTitle">Anuncio 1 de 2</p>
-<div class="step-dots" id="dots"></div>
-<div class="bar"><div id="barFill"></div></div>
-<p class="small" id="adLevelShow"></p>
-<p class="variant-badge" id="variantLabel">🎲 Variante A • Tipo: Dinero</p>
-
-<div id="stateClick">
-<div class="ad-preview">
-<p style="margin-bottom:10px">📢 ANUNCIO <span id="adNum1">1</span> - PUBLICIDAD</p>
-<div class="real-ad" onclick="openAd()">
-<img id="adImg" src="" alt="Anuncio">
-<div class="real-ad-text" id="adText">Cargando anuncio...</div>
-</div>
-<p style="font-size:12px;color:#aaa;margin-top:8px">Toca el anuncio de arriba o el botón amarillo</p>
-</div>
-<button class="adbtn" onclick="openAd()">👉 DARLE CLIC AL ANUNCIO</button>
-<p class="small">Se abrirá el anuncio en otra pestaña. Luego regresas aquí.</p>
+<!-- LOGIN -->
+<div id="loginBox" class="card">
+<h3 style="margin-top:0">Iniciar Sesión</h3>
+<input id="user" placeholder="Usuario">
+<input id="pass" type="password" placeholder="Contraseña">
+<button class="btn" onclick="login()">ENTRAR</button>
+<p class="small">Admin: NASETLINKOFC<br>Prueba empleado: prueba / 1234</p>
 </div>
 
-<div id="stateWait" style="display:none">
-<p style="text-align:center">⏳ Estás viendo el anuncio...</p>
-<div id="count">5</div>
-<p style="text-align:center;font-weight:bold" id="waitAdName">Espera 5 segundos y regresa aquí</p>
-<button disabled id="returnBtn" onclick="confirmReturn()">🔒 ESPERA 5 SEGUNDOS...</button>
+<!-- ADMIN -->
+<div id="adminBox" class="hidden">
+<div class="card">
+<h3 style="margin-top:0">👑 Hola Administradora</h3>
+<input id="newUser" placeholder="Usuario empleado ej: maria1">
+<input id="newPass" placeholder="Contraseña ej: 1234">
+<input id="newName" placeholder="Nombre ej: María López">
+<button class="btn btn-green" onclick="addEmp()">+ AGREGAR EMPLEADO</button>
+</div>
+<div class="card"><h3 style="margin-top:0">Mis Empleados (<span id="count">0</span>)</h3><div id="list"></div></div>
+<div class="card">
+<h3 style="margin-top:0">Tu Link Monetag</h3>
+<p class="small">https://uplcm.com/4/12244247</p>
+<button class="btn" onclick="window.open('https://uplcm.com/4/12244247','_blank')">Probar Anuncio</button>
+</div>
+<button class="btn btn-ghost" onclick="logout()">Cerrar Sesión</button>
 </div>
 
-<div id="stateDone" style="display:none">
-<p style="text-align:center;font-size:22px">✅ ¡Completaste todos!</p>
-<button class="green" onclick="goToLink()">🔗 IR AL LINK DIRECTO</button>
+<!-- EMPLEADO / PUBLICO -->
+<div id="empBox" class="hidden">
+<div class="card">
+<h3 style="margin-top:0">Hola <span id="empName"></span> 👋</h3>
+<p style="font-size:13px;color:#aaa">Comparte tu link en tu canal. Tu gente entra y elige un anuncio.</p>
+<p style="font-size:12px;color:#a855f7">TU LINK PARA COMPARTIR:</p>
+<div class="linkbox" id="shareLink"></div>
+<button class="btn btn-green" onclick="copyLink()">COPIAR MI LINK</button>
 </div>
-</div>
-
-<div class="box" id="authBox">
-<h3 style="margin-bottom:12px;text-align:center">👋 Bienvenido a NasetLink</h3>
-<button class="google" onclick="loginGoogle()"> <img src="https://www.google.com/favicon.ico" width="18"> Continuar con Google </button>
-<p class="small" style="margin:10px 0">— o con tu cuenta —</p>
-<input id="user" placeholder="Usuario:">
-<input id="pass" type="password" placeholder="Contraseña:">
-<button onclick="login()">ENTRAR / CREAR CUENTA</button>
-</div>
-
-<div id="panel" style="display:none">
-<div class="box" id="profileBox">
-<h3 id="welcomeName">Hola 👋</h3>
-<span id="rankBadge" class="badge">NIVEL 2</span>
-<p class="small" id="emailShow" style="text-align:left"></p>
-</div>
-<div class="stats">
-<div class="stat"><b id="totalClicks">0</b><span>CLICS</span></div>
-<div class="stat"><b id="totalEarn">$0.00</b><span>GANADO</span></div>
-<div class="stat"><b id="myLevel">Nivel 2</b><span>ANUNCIOS</span></div>
-</div>
-<div class="box" style="border-color:#a855f7">
-<h3>📢 Tu Nivel de Anuncios</h3>
-<p class="small" style="text-align:left">Elige 2,4,6,8,10. Si eliges 10, la persona debe ver 10 variantes diferentes.</p>
-<div class="grid5">
-<button class="level-btn" data-lv="2" onclick="changeAdLevel(2)">2</button>
-<button class="level-btn" data-lv="4" onclick="changeAdLevel(4)">4</button>
-<button class="level-btn" data-lv="6" onclick="changeAdLevel(6)">6</button>
-<button class="level-btn" data-lv="8" onclick="changeAdLevel(8)">8</button>
-<button class="level-btn" data-lv="10" onclick="changeAdLevel(10)">10</button>
-</div>
-<p class="small" id="adLevelInfo" style="color:#fff;font-size:13px"></p>
-<button class="green" onclick="saveAdLevel()">💾 GUARDAR MI NIVEL</button>
-</div>
-<div class="box">
-<input id="longUrl" placeholder="Pega tu link de MediaFire...">
-<button onclick="crear()">🔗 ACORTAR Y GANAR</button>
-<div id="myLinks"></div>
-</div>
-<div class="box">
-<h3>🏆 Niveles en Pares</h3>
-<table><tr><th>Nivel</th><th>Variantes</th><th>Tiempo</th><th>Pago x 1000</th></tr><tbody id="adTable"></tbody></table>
-<p class="small" id="levelMsg"></p>
-</div>
-<div class="box gold" id="adminPanel" style="display:none">
-<h3 style="text-align:center">👑 PANEL SECRETO ADMIN</h3>
-<p class="small">Anuncios con variantes ya listos para todos. Si quieres poner tu anuncio de Adsterra, pégalo aquí (opcional).</p>
-<label>🔗 Cambiar anuncio por el tuyo (opcional)</label>
-<input id="adminAdLink" placeholder="Déjalo vacío para usar las variantes que ya vienen">
-<button class="green" onclick="saveAdminAdLink()">💾 GUARDAR MI ANUNCIO</button>
-<button class="sec" onclick="resetAd()">↩️ Volver a variantes listas</button>
-<label>💰 Cambiar precios 2-4-6-8-10</label>
-<div id="ratesInputs"></div>
-<button class="green" onclick="adminSaveRates()">💰 GUARDAR PRECIOS</button>
-<label>Lista de usuarios</label>
-<div id="allUsers"></div>
-<label>✏️ Modificar usuario</label>
-<input id="adminTarget" placeholder="Usuario ej: pedro123">
-<input id="adminClicks" type="number" placeholder="Nuevos clics">
-<input id="adminEarn" type="number" placeholder="Ganado manual">
-<input id="adminRank" placeholder="Nivel: 2,4,6,8,10">
-<div class="flex">
-<button class="green smallbtn" onclick="adminUpdateUser()">💾 GUARDAR</button>
-<button class="danger smallbtn" onclick="adminDeleteUser()">🗑️ BORRAR</button>
-</div>
-</div>
-<button class="sec" onclick="logout()">Cerrar Sesión</button>
-</div>
-<p class="small">Pago mínimo $5 por PayPal.</p>
+<div class="ad-box"><h3 style="margin:0">🔥 ANUNCIO 1</h3><p style="font-size:13px">Contenido recomendado</p><button class="btn btn-white" onclick="openAd()">VER ANUNCIO 1</button></div>
+<div class="ad-box ad-box2"><h3 style="margin:0">⭐ ANUNCIO 2</h3><p style="font-size:13px">Oferta del día</p><button class="btn btn-white" onclick="openAd()">VER ANUNCIO 2</button></div>
+<div class="ad-box ad-box3"><h3 style="margin:0">💰 ANUNCIO 3</h3><p style="font-size:13px">Nuevo contenido</p><button class="btn btn-white" onclick="openAd()">VER ANUNCIO 3</button></div>
+<p class="small" id="clicks">Clics: 0</p>
+<button class="btn btn-ghost" onclick="logout()">Cerrar Sesión</button>
 </div>
 
+</div>
 <script>
-const ADMIN_USER = "NASETLINKOFC";
-const ADMIN_PASS = "NASET12CLICKS";
-// 20 VARIANTES DIFERENTES - TIPO, COLOR, FOTO, TEXTO Y LINK DIFERENTE
-const ALL_ADS = [
- {type:"💰 Dinero", bg:"#f59e0b", img:"https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=300&fit=crop", text:"🔥 ¡GANA $5 DIARIOS DESDE TU CELULAR! 👉 TOCA AQUÍ", link:"https://www.adsterra.com"},
- {type:"🎮 Juegos", bg:"#22c55e", img:"https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=600&h=300&fit=crop", text:"🎮 ¡JUEGA Y GANA DINERO REAL! 👉 TOCA AQUÍ", link:"https://play.google.com"},
- {type:"📱 App", bg:"#3b82f6", img:"https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=300&fit=crop", text:"📱 APP QUE PAGA POR VER VIDEOS 👉 TOCA AQUÍ", link:"https://www.monetag.com"},
- {type:"🛍️ Ofertas", bg:"#ec4899", img:"https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600&h=300&fit=crop", text:"🛍️ ¡50% DE DESCUENTO SOLO HOY! 👉 TOCA AQUÍ", link:"https://www.shein.com"},
- {type:"🎁 Premio", bg:"#a855f7", img:"https://images.unsplash.com/photo-1513151233558-d860c5398176?w=600&h=300&fit=crop", text:"🎁 ¡GANASTE UN PREMIO! RECLÁMALO 👉 TOCA AQUÍ", link:"https://www.amazon.com"},
- {type:"💳 Tarjeta", bg:"#06b6d4", img:"https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=600&h=300&fit=crop", text:"💳 TARJETA CON $10 DE REGALO 👉 TOCA AQUÍ", link:"https://www.paypal.com"},
- {type:"📺 Videos", bg:"#ef4444", img:"https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=300&fit=crop", text:"📺 GANA POR VER VIDEOS 5 MIN 👉 TOCA AQUÍ", link:"https://www.youtube.com"},
- {type:"💸 Cripto", bg:"#facc15", img:"https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=600&h=300&fit=crop", text:"💸 GANA CRIPTO GRATIS CADA DÍA 👉 TOCA AQUÍ", link:"https://www.binance.com"},
- {type:"👗 Moda", bg:"#fb7185", img:"https://images.unsplash.com/photo-1445205170230-053b83016050?w=600&h=300&fit=crop", text:"👗 ROPA A $1 SOLO PARA TI 👉 TOCA AQUÍ", link:"https://www.shein.com"},
- {type:"🍔 Comida", bg:"#fb923c", img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&h=300&fit=crop", text:"🍔 ¡COMIDA GRATIS HOY! PIDE AQUÍ 👉 TOCA", link:"https://www.google.com"},
- {type:"⚽ Deportes", bg:"#16a34a", img:"https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600&h=300&fit=crop", text:"⚽ GANA CON TUS PRONÓSTICOS 👉 TOCA AQUÍ", link:"https://www.google.com"},
- {type:"🎵 Música", bg:"#8b5cf6", img:"https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=300&fit=crop", text:"🎵 ESCUCHA MÚSICA Y GANA 👉 TOCA AQUÍ", link:"https://www.spotify.com"},
- {type:"🏋️ Fitness", bg:"#10b981", img:"https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=300&fit=crop", text:"🏋️ RETO 30 DÍAS Y GANA PREMIO 👉 TOCA AQUÍ", link:"https://www.google.com"},
- {type:"🚗 Autos", bg:"#64748b", img:"https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&h=300&fit=crop", text:"🚗 ¡GÁNATE UN CARRO 0KM! 👉 TOCA AQUÍ", link:"https://www.google.com"},
- {type:"✈️ Viajes", bg:"#0ea5e9", img:"https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&h=300&fit=crop", text:"✈️ VIAJE GRATIS A LA PLAYA 👉 TOCA AQUÍ", link:"https://www.google.com"},
- {type:"📚 Cursos", bg:"#6366f1", img:"https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=600&h=300&fit=crop", text:"📚 CURSO GRATIS PARA GANAR DINERO 👉 TOCA", link:"https://www.google.com"},
- {type:"💄 Belleza", bg:"#f472b6", img:"https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&h=300&fit=crop", text:"💄 MAQUILLAJE GRATIS SOLO HOY 👉 TOCA AQUÍ", link:"https://www.google.com"},
- {type:"🏠 Hogar", bg:"#84cc16", img:"https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=300&fit=crop", text:"🏠 DECORA TU CASA POR $1 👉 TOCA AQUÍ", link:"https://www.google.com"},
- {type:"🐶 Mascotas", bg:"#f97316", img:"https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600&h=300&fit=crop", text:"🐶 PREMIO PARA TU MASCOTA 👉 TOCA AQUÍ", link:"https://www.google.com"},
- {type:"📊 Encuestas", bg:"#14b8a6", img:"https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=300&fit=crop", text:"📊 GANA $1 POR CADA ENCUESTA 👉 TOCA AQUÍ", link:"https://www.google.com"}
-];
-let AD_LEVELS = JSON.parse(localStorage.getItem('naset_ad_levels')||JSON.stringify([
- {level:2, ads:2, price:1},
- {level:4, ads:4, price:2.5},
- {level:6, ads:6, price:4},
- {level:8, ads:8, price:6},
- {level:10, ads:10, price:10}
-]));
-let currentUser = localStorage.getItem('naset_user');
-let links = JSON.parse(localStorage.getItem('naset_links')||'[]');
-let users = JSON.parse(localStorage.getItem('naset_all_users')||'[]');
-let isAdmin = localStorage.getItem('naset_is_admin') === '1';
-let myAdLevel = parseInt(localStorage.getItem('naset_my_adlevel')||'2');
-let tempAdLevel = myAdLevel;
-let adminAdLink = localStorage.getItem('naset_admin_adlink') || '';
-let targetUrl = ''; let totalAds = 2; let currentAd = 1; let timerInt = null;
-let shuffledAds = [];
-const params = new URLSearchParams(location.search);
-const go = params.get('go');
-const isVisitor = !!go;
-if(isVisitor){
-  document.getElementById('authBox').style.display='none';
-  document.getElementById('panel').style.display='none';
-  document.getElementById('waiter').style.display='block';
-  try{ targetUrl=atob(go); }catch(e){ targetUrl=''; }
-  totalAds = parseInt(params.get('ad')||'2');
-  // MEZCLAR VARIANTES AL AZAR - CADA VEZ SALEN DIFERENTES Y SIN REPETIR
-  shuffledAds = [...ALL_ADS].sort(()=>Math.random()-0.5).slice(0, totalAds);
-  let info = AD_LEVELS.find(x=>x.level===totalAds) || AD_LEVELS[0];
-  document.getElementById('adLevelShow').innerText = 'Nivel '+info.level+' • '+info.ads+' variantes diferentes • Dale clic y espera 5 seg en cada una';
-  let clicks = parseInt(localStorage.getItem('naset_total_clicks')||'0')+1;
-  localStorage.setItem('naset_total_clicks', clicks);
-  renderDots(); updateWaitTitle();
+const ADMIN_USER="NASETLINKOFC";
+const ADMIN_PASS="NASET12CLICKS";
+const AD_LINK="https://uplcm.com/4/12244247";
+let employees = JSON.parse(localStorage.getItem('naset_emps')||'[{"user":"prueba","pass":"1234","name":"Empleado Prueba"}]');
+let clicks = parseInt(localStorage.getItem('naset_clicks')||'0');
+let currentEmp = null;
+
+// Si viene con ?ref=usuario, entrar directo como visitante de ese empleado
+const params = new URLSearchParams(window.location.search);
+const ref = params.get('ref');
+if(ref){
+  let f = employees.find(e=>e.user===ref);
+  if(f){ setTimeout(()=>showEmp(f),100); }
 }
-function renderDots(){ let h=''; for(let i=1;i<=totalAds;i++){ let cls = i<currentAd ? 'dot done' : (i===currentAd ? 'dot current' : 'dot'); h+='<div class="'+cls+'">'+(i<currentAd?'✓':i)+'</div>'; } document.getElementById('dots').innerHTML=h; document.getElementById('barFill').style.width = ((currentAd-1)/totalAds*100)+'%'; }
-function getCurrentAd(){ return shuffledAds[currentAd-1] || ALL_ADS[0]; }
-function updateWaitTitle(){
-  document.getElementById('waitTitle').innerText='Anuncio '+currentAd+' de '+totalAds;
-  document.getElementById('adNum1').innerText=currentAd;
-  let ad = getCurrentAd();
-  let letters = ['A','B','C','D','E','F','G','H','I','J'];
-  document.getElementById('variantLabel').innerText = '🎲 Variante '+letters[currentAd-1]+' • Tipo: '+ad.type+' • No se repite';
-  document.getElementById('adImg').src = ad.img;
-  document.getElementById('adText').innerText = ad.text;
-  document.getElementById('adText').style.background = ad.bg;
-  document.getElementById('waitAdName').innerText = 'Estás viendo: '+ad.type+' • Espera 5 seg y regresa';
+
+function save(){ localStorage.setItem('naset_emps', JSON.stringify(employees)); }
+function login(){
+  let u=document.getElementById('user').value.trim();
+  let p=document.getElementById('pass').value.trim();
+  if(u===ADMIN_USER && p===ADMIN_PASS){ showAdmin(); return; }
+  let found=employees.find(e=>e.user===u && e.pass===p);
+  if(found){ showEmp(found); return; }
+  alert('Usuario o contraseña incorrecta');
+}
+function showAdmin(){
+  document.getElementById('loginBox').classList.add('hidden');
+  document.getElementById('empBox').classList.add('hidden');
+  document.getElementById('adminBox').classList.remove('hidden');
+  document.getElementById('subtitle').innerText='Panel Administradora';
+  render();
+}
+function showEmp(emp){
+  currentEmp=emp;
+  document.getElementById('loginBox').classList.add('hidden');
+  document.getElementById('adminBox').classList.add('hidden');
+  document.getElementById('empBox').classList.remove('hidden');
+  document.getElementById('empName').innerText=emp.name;
+  document.getElementById('subtitle').innerText='NASETLINK de '+emp.name;
+  document.getElementById('shareLink').innerText = window.location.origin + window.location.pathname + '?ref=' + emp.user;
+  document.getElementById('clicks').innerText='Clics: '+clicks;
+}
+function addEmp(){
+  let u=document.getElementById('newUser').value.trim();
+  let p=document.getElementById('newPass').value.trim();
+  let n=document.getElementById('newName').value.trim();
+  if(!u||!p||!n){ alert('Llena los 3 campos'); return; }
+  employees.push({user:u,pass:p,name:n});
+  save(); render();
+  document.getElementById('newUser').value='';document.getElementById('newPass').value='';document.getElementById('newName').value='';
+  alert('Empleado '+n+' creado! Su link es: ?ref='+u);
+}
+function delEmp(i){ if(confirm('¿Borrar?')){ employees.splice(i,1); save(); render(); } }
+function render(){
+  document.getElementById('count').innerText=employees.length;
+  document.getElementById('list').innerHTML=employees.map((e,i)=>`<div class="emp"><div><b>${e.name}</b><br><span style="font-size:12px;color:#aaa">Usuario: ${e.user} | Clave: ${e.pass} | Link: ?ref=${e.user}</span></div><button onclick="delEmp(${i})" style="background:#ef4444;border:none;color:white;padding:8px 10px;border-radius:8px">X</button></div>`).join('');
+}
+function copyLink(){
+  let t=document.getElementById('shareLink').innerText;
+  navigator.clipboard.writeText(t); alert('Link copiado! Pégalo en tu canal.');
 }
 function openAd(){
-  let ad = getCurrentAd();
-  let urlToOpen = adminAdLink ? adminAdLink : ad.link;
-  window.open(urlToOpen, '_blank');
-  document.getElementById('stateClick').style.display='none';
-  document.getElementById('stateWait').style.display='block';
-  let t=5; let c=document.getElementById('count'); c.innerText=t;
-  let btn=document.getElementById('returnBtn'); btn.disabled=true; btn.className=''; btn.innerText='🔒 ESPERA 5 SEGUNDOS...';
-  clearInterval(timerInt);
-  timerInt=setInterval(()=>{ t--; c.innerText=t>0?t:'¡Listo!'; if(t<=0){ clearInterval(timerInt); btn.disabled=false; btn.className='returnbtn'; btn.innerText='✅ YA VI EL ANUNCIO, REGRESAR'; } },1000);
+  clicks++; localStorage.setItem('naset_clicks', clicks);
+  document.getElementById('clicks').innerText='Clics: '+clicks;
+  window.open(AD_LINK,'_blank');
 }
-function confirmReturn(){ let clicks = parseInt(localStorage.getItem('naset_total_clicks')||'0')+1; localStorage.setItem('naset_total_clicks', clicks); if(currentAd>=totalAds){ document.getElementById('stateWait').style.display='none'; document.getElementById('stateDone').style.display='block'; document.getElementById('barFill').style.width='100%'; return; } currentAd++; renderDots(); updateWaitTitle(); document.getElementById('stateWait').style.display='none'; document.getElementById('stateClick').style.display='block'; }
-function goToLink(){ if(!targetUrl){ alert('Link no válido'); return; } location.href = targetUrl.startsWith('http')?targetUrl:'https://'+targetUrl; }
-function saveAdminAdLink(){ let v=document.getElementById('adminAdLink').value.trim(); localStorage.setItem('naset_admin_adlink', v); adminAdLink=v; alert(v ? '✅ Tu anuncio guardado.' : '✅ Volviste a las variantes listas.'); }
-function resetAd(){ localStorage.removeItem('naset_admin_adlink'); adminAdLink=''; document.getElementById('adminAdLink').value=''; alert('✅ Variantes listas activadas para todos.'); }
-function getAdInfo(level){ return AD_LEVELS.find(x=>x.level===level) || AD_LEVELS[0]; }
-function changeAdLevel(v){ tempAdLevel=v; updateAdUI(); }
-function updateAdUI(){ let info=getAdInfo(tempAdLevel); document.getElementById('adLevelInfo').innerText='Nivel '+info.level+' • '+info.ads+' variantes • '+info.ads*5+' seg • Ganas $'+info.price.toFixed(2)+' por 1000 clics'; document.querySelectorAll('.level-btn').forEach(b=>{ b.classList.toggle('active', parseInt(b.dataset.lv)===tempAdLevel); }); }
-function saveAdLevel(){ myAdLevel=tempAdLevel; localStorage.setItem('naset_my_adlevel', myAdLevel); alert('✅ Tu Nivel ahora es '+myAdLevel); render(); }
-function loginGoogle(){ let email=prompt('Escribe tu Gmail:'); if(!email) return; let u=email.split('@')[0]; localStorage.setItem('naset_user',u); localStorage.setItem('naset_email',email); localStorage.removeItem('naset_is_admin'); isAdmin=false; currentUser=u; registerUser(u,email,'Google'); showPanel(); }
-function login(){ let u=document.getElementById('user').value.trim(); let p=document.getElementById('pass').value.trim(); if(!u||!p){ alert('Pon usuario y contraseña'); return; } if(u===ADMIN_USER && p===ADMIN_PASS){ localStorage.setItem('naset_user',u); localStorage.setItem('naset_email','admin@nasetlink.app'); localStorage.setItem('naset_is_admin','1'); isAdmin=true; currentUser=u; alert('Bienvenido Jefe 👑'); showPanel(); return; } localStorage.setItem('naset_user',u); localStorage.setItem('naset_email',u+'@nasetlink.app'); localStorage.removeItem('naset_is_admin'); isAdmin=false; currentUser=u; registerUser(u,u+'@nasetlink.app','Normal'); showPanel(); }
-function registerUser(u,email,method){ let exists=users.find(x=>x.user===u); if(!exists){ users.push({user:u,email:email,method:method,date:new Date().toLocaleDateString(),clicks:0,earn:0,forcedAdLevel:0}); localStorage.setItem('naset_all_users',JSON.stringify(users)); } }
-function logout(){ localStorage.removeItem('naset_user'); localStorage.removeItem('naset_is_admin'); location.href='/'; }
-function showPanel(){ if(isVisitor) return; document.getElementById('authBox').style.display='none'; document.getElementById('waiter').style.display='none'; document.getElementById('panel').style.display='block'; document.getElementById('welcomeName').innerText='Hola, '+currentUser+' 👋'; document.getElementById('emailShow').innerText=localStorage.getItem('naset_email')||''; let table=''; AD_LEVELS.forEach(l=>{ table+='<tr><td>Nivel '+l.level+'</td><td>'+l.ads+' variantes</td><td>'+(l.ads*5)+' seg</td><td>$'+l.price.toFixed(2)+'</td></tr>'; }); document.getElementById('adTable').innerHTML=table; tempAdLevel=myAdLevel; updateAdUI(); if(isAdmin){ document.getElementById('rankBadge').innerText='👑 ADMIN'; document.getElementById('rankBadge').className='badge admin'; document.getElementById('profileBox').classList.add('gold'); document.getElementById('adminPanel').style.display='block'; document.getElementById('adminAdLink').value=adminAdLink; let ri=''; AD_LEVELS.forEach((l,i)=>{ ri+='<label>Nivel '+l.level+' - $ por 1000</label><input id="rate_'+i+'" type="number" step="0.1" value="'+l.price+'">'; }); document.getElementById('ratesInputs').innerHTML=ri; showAdmin(); } render(); }
-function crear(){ let v=document.getElementById('longUrl').value.trim(); if(!v){ alert('Pega tu link'); return; } if(!v.startsWith('http')) v='https://'+v; let code=btoa(v); let short=location.origin+location.pathname+'?go='+code+'&u='+currentUser+'&ad='+myAdLevel; links.push({orig:v,short:short,clicks:0,user:currentUser,adLevel:myAdLevel}); localStorage.setItem('naset_links',JSON.stringify(links)); document.getElementById('longUrl').value=''; render(); alert('¡Link creado en Nivel '+myAdLevel+' con variantes!'); }
-function render(){ let myLinks=links.filter(l=>l.user===currentUser); let me=users.find(x=>x.user===currentUser); let globalClicks=parseInt(localStorage.getItem('naset_total_clicks')||'0'); let totalClicks=0, earn=0, adLvl=myAdLevel; if(me && me.forcedAdLevel>0) adLvl=me.forcedAdLevel; if(isAdmin){ totalClicks=globalClicks; adLvl=10; } else if(me){ totalClicks=me.clicks||0; if(myLinks.length>0 && totalClicks===0 && globalClicks>0) totalClicks=globalClicks; } let info=getAdInfo(adLvl); earn= me && me.earn>0 ? me.earn.toFixed(2) : (totalClicks/1000*info.price).toFixed(2); document.getElementById('totalClicks').innerText=totalClicks; document.getElementById('totalEarn').innerText='$'+earn; document.getElementById('myLevel').innerText=isAdmin?'ADMIN':'Nivel '+adLvl; if(!isAdmin){ document.getElementById('rankBadge').innerText='📢 NIVEL '+adLvl; document.getElementById('rankBadge').className='badge'; } document.getElementById('levelMsg').innerText='Estás en Nivel '+adLvl+' con variantes. Si subes a Nivel 10 ganas $'+AD_LEVELS[4].price.toFixed(2)+' por 1000 clics.'; let html=''; myLinks.slice().reverse().forEach(l=>{ html+='<div class="link-item">📎 '+l.short+'<br>📢 Nivel: '+(l.adLevel||2)+' variantes<br><button class="sec" style="margin-top:8px;padding:8px" onclick="navigator.clipboard.writeText(\''+l.short+'\');alert(\'Copiado\')">📋 COPIAR</button></div>'; }); if(!html) html='<p class="small">Aún no tienes links.</p>'; document.getElementById('myLinks').innerHTML=html; }
-function showAdmin(){ let html='<table><tr><th>Usuario</th><th>Clics</th><th>Ganado</th><th>Nivel</th></tr>'; users.forEach(u=>{ let lvl=u.forcedAdLevel>0?u.forcedAdLevel:2; let info=getAdInfo(lvl); let er=u.earn?'$'+u.earn.toFixed(2):'$'+(((u.clicks||0)/1000*info.price).toFixed(2)); html+='<tr><td>'+u.user+'</td><td>'+(u.clicks||0)+'</td><td>'+er+'</td><td>Nivel '+lvl+'</td></tr>'; }); html+='</table><p class="small">Total usuarios: '+users.length+' | Total clics: '+(localStorage.getItem('naset_total_clicks')||0)+'</p>'; document.getElementById('allUsers').innerHTML=html; }
-function adminUpdateUser(){ let target=document.getElementById('adminTarget').value.trim(); if(!target){ alert('Escribe usuario'); return; } let u=users.find(x=>x.user.toLowerCase()===target.toLowerCase()); if(!u){ alert('No existe '+target); return; } let nc=document.getElementById('adminClicks').value; let ne=document.getElementById('adminEarn').value; let nr=document.getElementById('adminRank').value.trim(); if(nc!=='') u.clicks=parseInt(nc); if(ne!=='') u.earn=parseFloat(ne); else if(nc!=='') u.earn=0; if(nr!==''){ let n=parseInt(nr); if([2,4,6,8,10].includes(n)) u.forcedAdLevel=n; } localStorage.setItem('naset_all_users',JSON.stringify(users)); showAdmin(); render(); alert('✅ Actualizado '+u.user); }
-function adminDeleteUser(){ let target=document.getElementById('adminTarget').value.trim(); if(!target) return; if(!confirm('¿Borrar a '+target+'?')) return; users=users.filter(x=>x.user.toLowerCase()!==target.toLowerCase()); links=links.filter(x=>x.user.toLowerCase()!==target.toLowerCase()); localStorage.setItem('naset_all_users',JSON.stringify(users)); localStorage.setItem('naset_links',JSON.stringify(links)); showAdmin(); render(); alert('Borrado'); }
-function adminSaveRates(){ AD_LEVELS.forEach((l,i)=>{ let v=parseFloat(document.getElementById('rate_'+i).value); if(!isNaN(v)) l.price=v; }); localStorage.setItem('naset_ad_levels',JSON.stringify(AD_LEVELS)); showPanel(); alert('💰 Precios guardados'); }
-if(currentUser && !isVisitor) showPanel();
+function logout(){ location.reload(); }
 </script>
 </body>
 </html>
