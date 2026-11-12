@@ -36,6 +36,8 @@ button.returnbtn{background:#16a34a;font-size:16px}
 .badge{display:inline-block;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:bold;background:#a855f7;margin-top:6px}
 .badge.admin{background:red;color:#fff}
 .badge.emp{background:#16a34a;color:#fff}
+.badge.influ{background:linear-gradient(90deg,#f59e0b,#ec4899);color:#fff}
+.badge.verified{background:#1d9bf0;color:#fff}
 .link-item{background:#000;border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:10px;font-size:12px;word-break:break-all}
 table{width:100%;font-size:12px;border-collapse:collapse}
 td,th{padding:8px;border-bottom:1px solid #222;text-align:left}
@@ -57,6 +59,25 @@ label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px;text-align:left}
 .real-ad img{width:100%;height:160px;object-fit:cover;display:block}
 .real-ad-text{padding:11px;font-weight:900;font-size:14px;color:#000}
 .variant-badge{font-size:11px;color:#f59e0b;font-weight:bold;margin-top:6px}
+.chat-box{background:#0a0a0a;border:1px solid #333;border-radius:16px;overflow:hidden}
+.chat-header{background:linear-gradient(90deg,#a855f7,#ec4899);padding:12px;text-align:center;font-weight:bold}
+.chat-messages{height:280px;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.msg{background:#1a1a1a;border-radius:14px;padding:9px 11px;max-width:88%;font-size:13px;line-height:1.4;display:flex;gap:8px}
+.msg.mine{background:#a855f7;color:#fff;align-self:flex-end}
+.msg-user{font-weight:bold;font-size:11px;margin-bottom:2px;display:flex;gap:4px;align-items:center}
+.msg-time{font-size:10px;opacity:.6;margin-top:3px}
+.chat-input-row{display:flex;gap:8px;padding:10px;background:#111}
+.chat-input-row input{margin-bottom:0}
+.chat-input-row button{width:60px;margin-bottom:0;background:#a855f7}
+.verified{color:#1d9bf0;font-weight:bold}
+.user-card{background:#000;border:1px solid #333;border-radius:14px;padding:12px;margin-bottom:10px}
+.profile-top{display:flex;gap:14px;align-items:center}
+.avatar{width:72px;height:72px;border-radius:99px;object-fit:cover;border:3px solid #a855f7;background:#222;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.avatar-small{width:32px;height:32px;border-radius:99px;object-fit:cover;border:2px solid #a855f7;background:#222;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;overflow:hidden}
+.avatar-small img{width:100%;height:100%;object-fit:cover}
+.avatar-option{width:56px;height:56px;border-radius:99px;object-fit:cover;cursor:pointer;border:3px solid transparent}
+.avatar-option.selected{border-color:#25D366}
 </style>
 </head>
 <body>
@@ -109,9 +130,29 @@ label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px;text-align:left}
 
 <div id="panel" style="display:none">
 <div class="box" id="profileBox">
-<h3 id="welcomeName">Hola 👋</h3>
-<span id="rankBadge" class="badge">NIVEL 2</span>
+<div class="profile-top">
+<div class="avatar" id="myAvatar">?</div>
+<div>
+<h3 id="welcomeName" style="font-size:18px">Hola 👋</h3>
+<p id="profileUserShow" style="color:#a855f7;font-weight:bold;font-size:13px;margin:2px 0">@usuario</p>
+<p id="profileBioShow" style="color:#aaa;font-size:12px"></p>
+<div style="margin-top:6px"><span id="rankBadge" class="badge">NIVEL 2</span> <span id="myVerifiedBadge"></span></div>
 </div>
+</div>
+<button class="sec" style="margin-top:12px" onclick="toggleEditProfile()">✏️ EDITAR MI PERFIL</button>
+<div id="editProfileBox" style="display:none;margin-top:12px;border-top:1px solid #333;padding-top:12px">
+<p style="font-size:13px;font-weight:bold;margin-bottom:8px">Elige tu foto de perfil:</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px" id="avatarOptions"></div>
+<label>📸 O sube tu propia foto desde tu celular / galería:</label>
+<input type="file" id="avatarUpload" accept="image/*" onchange="uploadAvatar(event)" style="padding:8px">
+<label>📝 Tu nombre para mostrar:</label>
+<input id="editDisplayName" placeholder="Ej: Pedro El Crack">
+<label>✍️ Tu biografía:</label>
+<input id="editBio" placeholder="Ej: Gano dinero con NasetLink 🔥" maxlength="80">
+<button class="green" onclick="saveProfile()">💾 GUARDAR MI PERFIL</button>
+</div>
+</div>
+
 <div class="stats">
 <div class="stat"><b id="totalClicks">0</b><span>MIS CLICS</span></div>
 <div class="stat"><b id="totalEarn">$0.00</b><span id="earnLabel">MI GANADO</span></div>
@@ -140,36 +181,51 @@ label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px;text-align:left}
 <table><tr><th>Nivel</th><th>Variantes</th><th>Tiempo</th><th>Pago x 1000</th></tr><tbody id="adTable"></tbody></table>
 <p class="small" id="levelMsg"></p>
 </div>
+
+<div class="box" style="padding:0;overflow:hidden;border-color:#a855f7">
+<div class="chat-box">
+<div class="chat-header">💬 CHAT MUNDIAL • Todos hablan aquí</div>
+<div class="chat-messages" id="chatMessages"></div>
+<div class="chat-input-row">
+<input id="chatInput" placeholder="Escribe algo..." maxlength="200" onkeypress="if(event.key==='Enter') sendChat()">
+<button onclick="sendChat()">➤</button>
+</div>
+</div>
+<p class="small">Solo se ve tu foto y tu usuario, nunca tu contraseña.</p>
+</div>
+
 <div class="box gold" id="adminPanel" style="display:none">
-<h3 style="text-align:center">👑 PANEL SECRETO ADMIN</h3>
-<label>💰 MI SUELDO REAL DE MONETAG</label>
+<h3 style="text-align:center">👑 PANEL ADMIN</h3>
+<p class="small">Solo tú. Aquí ves a todos, cambias rango, baneas y das verificado.</p>
+<label>💰 MI SUELDO REAL DE MONETAG - Se actualiza solo en mi GANADO</label>
 <input id="adminRealBalance" type="number" step="0.01" placeholder="Ej: 1.34">
 <button class="green" onclick="saveRealBalance()">💰 GUARDAR MI SUELDO REAL</button>
-<label>👥 PONER SUELDO REAL A UN MIEMBRO (opcional)</label>
-<input id="adminEmpName" placeholder="Usuario del miembro ej: pedro123">
-<input id="adminEmpReal" type="number" step="0.01" placeholder="Sueldo real de ese miembro ej: 0.85">
-<div class="flex">
-<button class="green smallbtn" onclick="saveEmpReal()">💰 GUARDAR SUELDO MIEMBRO</button>
-<button class="sec smallbtn" onclick="clearEmpReal()">↩️ QUITAR - VOLVER A AUTOMÁTICO</button>
-</div>
-<label>🔗 Cambiar anuncio por el tuyo</label>
-<input id="adminAdLink" placeholder="Déjalo vacío para usar las variantes">
-<button class="green" onclick="saveAdminAdLink()">💾 GUARDAR MI ANUNCIO</button>
-<button class="sec" onclick="resetAd()">↩️ Volver a variantes listas</button>
-<label>💰 Cambiar precios 2-4-6-8-10</label>
-<div id="ratesInputs"></div>
-<button class="green" onclick="adminSaveRates()">💰 GUARDAR PRECIOS</button>
-<label>Lista de miembros - Clics y ganado de cada uno</label>
+<label>👥 MIEMBROS - Ver foto, clics, ganado y links</label>
 <div id="allUsers"></div>
-<label>✏️ Modificar miembro</label>
+<label>🔄 CAMBIAR RANGO A UNA PERSONA</label>
 <input id="adminTarget" placeholder="Usuario ej: pedro123">
-<input id="adminClicks" type="number" placeholder="Nuevos clics">
-<input id="adminEarn" type="number" placeholder="Ganado manual">
-<input id="adminRank" placeholder="Nivel: 2,4,6,8,10">
+<select id="adminRank" style="width:100%;padding:13px;border-radius:12px;background:#000;color:#fff;border:1px solid #333;margin-bottom:10px">
+<option value="">Elige rango...</option>
+<option value="2">Nivel 2</option>
+<option value="4">Nivel 4</option>
+<option value="6">Nivel 6</option>
+<option value="8">Nivel 8</option>
+<option value="10">Nivel 10</option>
+</select>
+<button class="green" onclick="adminChangeRank()">🔄 CAMBIAR RANGO</button>
+<label>✅ DAR VERIFICADO AZUL / INFLUENCER</label>
+<input id="verifyUser" placeholder="Usuario ej: pedro123">
 <div class="flex">
-<button class="green smallbtn" onclick="adminUpdateUser()">💾 GUARDAR</button>
-<button class="danger smallbtn" onclick="adminDeleteUser()">🗑️ BORRAR</button>
+<button class="smallbtn" style="background:#1d9bf0" onclick="giveVerified('verified')">✓ VERIFICADO AZUL</button>
+<button class="smallbtn" style="background:linear-gradient(90deg,#f59e0b,#ec4899)" onclick="giveVerified('influencer')">⭐ INFLUENCER</button>
 </div>
+<div class="flex" style="margin-top:8px">
+<button class="sec smallbtn" onclick="removeVerified()">❌ QUITAR VERIFICADO</button>
+</div>
+<label>🚫 VOTAR / BANEAR PERMANENTEMENTE</label>
+<input id="banUser" placeholder="Usuario a banear ej: pedro123">
+<button class="danger" onclick="banUser()">🚫 BANEAR PERMANENTEMENTE</button>
+<button class="sec" onclick="unbanUser()">✅ DESBANEAR</button>
 </div>
 <button class="sec" onclick="logout()">Cerrar Sesión</button>
 </div>
@@ -183,6 +239,10 @@ const MONETAG_LINK = "https://uplcm.com/4/12244247";
 const WHATSAPP_GROUP = "https://chat.whatsapp.com/JAqf2gVEFlz59saw6MVveK?s=cl&p=i&mlu=4&ilr=4&iam=2";
 function joinWhatsApp(){ window.open(WHATSAPP_GROUP, '_blank'); }
 let authMode = 'login';
+const PRESET_AVATARS = [
+ "https://i.pravatar.cc/150?img=12","https://i.pravatar.cc/150?img=32","https://i.pravatar.cc/150?img=5","https://i.pravatar.cc/150?img=47","https://i.pravatar.cc/150?img=68","https://i.pravatar.cc/150?img=15","https://i.pravatar.cc/150?img=8","https://i.pravatar.cc/150?img=60"
+];
+let selectedAvatar = '';
 function setMode(mode){
   authMode = mode;
   let userInput = document.getElementById('user');
@@ -211,29 +271,166 @@ function setMode(mode){
 function submitAuth(){ if(authMode === 'login'){ login(); } else { register(); } }
 function saveRealBalance(){
   let v = parseFloat(document.getElementById('adminRealBalance').value);
-  if(isNaN(v)){ alert('Pon tu sueldo real de Monetag, ej: 1.34'); return; }
+  if(isNaN(v)){ alert('Pon tu sueldo real'); return; }
   localStorage.setItem('naset_real_balance', v);
   render();
 }
-function saveEmpReal(){
-  let name = document.getElementById('adminEmpName').value.trim();
-  let v = parseFloat(document.getElementById('adminEmpReal').value);
-  if(!name){ alert('Pon el usuario del miembro'); return; }
-  if(isNaN(v)){ alert('Pon el sueldo real de ese miembro'); return; }
-  localStorage.setItem('naset_real_'+name.toLowerCase(), v);
-  let u = users.find(x=>x.user.toLowerCase()===name.toLowerCase());
-  if(u){ u.realEarn = v; localStorage.setItem('naset_all_users', JSON.stringify(users)); }
-  showAdmin(); render();
+function getTag(user){ if(user === ADMIN_USER) return 'admin'; return localStorage.getItem('naset_tag_'+user.toLowerCase()) || ''; }
+function tagLabel(user){
+  let t = getTag(user);
+  if(t==='admin') return ' 👑';
+  if(t==='verified') return ' <span style="color:#1d9bf0">✓</span>';
+  if(t==='influencer') return ' <span style="color:#f59e0b">⭐ INFLUENCER</span> <span style="color:#1d9bf0">✓</span>';
+  return '';
 }
-function clearEmpReal(){
-  let name = document.getElementById('adminEmpName').value.trim();
+function getProfile(user){
+  try{ return JSON.parse(localStorage.getItem('naset_profile_'+user.toLowerCase())||'{}'); }catch(e){ return {}; }
+}
+function getAvatarHTML(user, cls){
+  let p = getProfile(user);
+  let letter = user ? user.charAt(0).toUpperCase() : '?';
+  if(p.avatar){ return '<div class="'+cls+'"><img src="'+p.avatar+'"></div>'; }
+  return '<div class="'+cls+'">'+letter+'</div>';
+}
+function getDisplayName(user){
+  let p = getProfile(user);
+  return p.displayName || user;
+}
+function toggleEditProfile(){
+  let box = document.getElementById('editProfileBox');
+  let isOpen = box.style.display==='block';
+  box.style.display = isOpen ? 'none' : 'block';
+  if(!isOpen){
+    let p = getProfile(currentUser);
+    document.getElementById('editDisplayName').value = p.displayName || '';
+    document.getElementById('editBio').value = p.bio || '';
+    renderAvatarOptions(p.avatar || '');
+  }
+}
+function renderAvatarOptions(current){
+  let html='';
+  PRESET_AVATARS.forEach(url=>{
+    html+='<img src="'+url+'" class="avatar-option '+(current===url?'selected':'')+'" onclick="selectAvatar(\''+url+'\', this)">';
+  });
+  document.getElementById('avatarOptions').innerHTML=html;
+}
+function selectAvatar(url, el){
+  selectedAvatar = url;
+  document.querySelectorAll('.avatar-option').forEach(i=>i.classList.remove('selected'));
+  if(el) el.classList.add('selected');
+}
+function uploadAvatar(e){
+  let file = e.target.files[0];
+  if(!file) return;
+  let reader = new FileReader();
+  reader.onload = function(ev){
+    selectedAvatar = ev.target.result;
+    // Mostrar preview
+    document.getElementById('myAvatar').innerHTML = '<img src="'+selectedAvatar+'">';
+  };
+  reader.readAsDataURL(file);
+}
+function saveProfile(){
+  let displayName = document.getElementById('editDisplayName').value.trim();
+  let bio = document.getElementById('editBio').value.trim();
+  let p = getProfile(currentUser);
+  if(selectedAvatar) p.avatar = selectedAvatar;
+  if(displayName) p.displayName = displayName;
+  p.bio = bio;
+  localStorage.setItem('naset_profile_'+currentUser.toLowerCase(), JSON.stringify(p));
+  selectedAvatar='';
+  document.getElementById('editProfileBox').style.display='none';
+  updateProfileUI();
+  renderChat();
+  if(isAdmin) showAdmin();
+}
+function updateProfileUI(){
+  if(!currentUser) return;
+  let p = getProfile(currentUser);
+  let avatarEl = document.getElementById('myAvatar');
+  if(p.avatar){ avatarEl.innerHTML='<img src="'+p.avatar+'">'; }
+  else { avatarEl.innerHTML = currentUser.charAt(0).toUpperCase(); }
+  document.getElementById('welcomeName').innerText = 'Hola, '+(p.displayName||currentUser)+' 👋';
+  document.getElementById('profileUserShow').innerHTML = '@'+currentUser + tagLabel(currentUser);
+  document.getElementById('profileBioShow').innerText = p.bio || '';
+}
+function giveVerified(type){
+  let name = document.getElementById('verifyUser').value.trim();
   if(!name){ alert('Pon el usuario'); return; }
-  localStorage.removeItem('naset_real_'+name.toLowerCase());
-  let u = users.find(x=>x.user.toLowerCase()===name.toLowerCase());
-  if(u){ delete u.realEarn; localStorage.setItem('naset_all_users', JSON.stringify(users)); }
-  showAdmin(); render();
+  localStorage.setItem('naset_tag_'+name.toLowerCase(), type);
+  render(); showAdmin(); renderChat(); updateProfileUI();
+  alert(type==='verified' ? '✅ '+name+' ahora tiene VERIFICADO AZUL ✓' : '⭐ '+name+' ahora es INFLUENCER');
 }
-function refreshNow(){ render(); }
+function removeVerified(){
+  let name = document.getElementById('verifyUser').value.trim();
+  if(!name){ alert('Pon el usuario'); return; }
+  localStorage.removeItem('naset_tag_'+name.toLowerCase());
+  render(); showAdmin(); renderChat(); updateProfileUI();
+  alert('❌ Se quitó el verificado a '+name);
+}
+function banUser(){
+  let name = document.getElementById('banUser').value.trim();
+  if(!name){ alert('Pon el usuario a banear'); return; }
+  if(name===ADMIN_USER){ alert('No te puedes banear a ti mismo'); return; }
+  if(!confirm('¿Seguro quieres BANEAR a '+name+' PERMANENTEMENTE?')) return;
+  localStorage.setItem('naset_banned_'+name.toLowerCase(), '1');
+  let u = users.find(x=>x.user.toLowerCase()===name.toLowerCase());
+  if(u){ u.banned=true; localStorage.setItem('naset_all_users', JSON.stringify(users)); }
+  showAdmin();
+  alert('🚫 '+name+' BANEADO PERMANENTEMENTE');
+}
+function unbanUser(){
+  let name = document.getElementById('banUser').value.trim();
+  if(!name){ alert('Pon el usuario'); return; }
+  localStorage.removeItem('naset_banned_'+name.toLowerCase());
+  let u = users.find(x=>x.user.toLowerCase()===name.toLowerCase());
+  if(u){ delete u.banned; localStorage.setItem('naset_all_users', JSON.stringify(users)); }
+  showAdmin();
+  alert('✅ '+name+' desbaneado');
+}
+function adminChangeRank(){
+  let target=document.getElementById('adminTarget').value.trim();
+  let nr=document.getElementById('adminRank').value;
+  if(!target || !nr){ alert('Pon usuario y elige rango'); return; }
+  let u=users.find(x=>x.user.toLowerCase()===target.toLowerCase());
+  if(!u){ alert('No existe '+target); return; }
+  u.forcedAdLevel=parseInt(nr);
+  localStorage.setItem('naset_all_users',JSON.stringify(users));
+  showAdmin(); render();
+  alert('✅ '+u.user+' ahora es Nivel '+nr);
+}
+function getChat(){ try{ return JSON.parse(localStorage.getItem('naset_chat')||'[]'); }catch(e){ return []; } }
+function sendChat(){
+  let inp = document.getElementById('chatInput');
+  let txt = inp.value.trim();
+  if(!txt) return;
+  if(!currentUser){ alert('Inicia sesión para chatear'); return; }
+  let chat = getChat();
+  let p = getProfile(currentUser);
+  chat.push({user: currentUser, displayName: p.displayName||currentUser, avatar: p.avatar||'', text: txt, time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), tag: getTag(currentUser)});
+  if(chat.length>200) chat = chat.slice(-200);
+  localStorage.setItem('naset_chat', JSON.stringify(chat));
+  inp.value='';
+  renderChat();
+}
+function renderChat(){
+  let box = document.getElementById('chatMessages');
+  if(!box) return;
+  let chat = getChat();
+  if(chat.length===0){ box.innerHTML='<p class="small">Sé el primero en hablar 👋</p>'; return; }
+  let html='';
+  chat.forEach(m=>{
+    let isMine = m.user===currentUser;
+    let label = '';
+    if(m.tag==='admin') label=' 👑';
+    else if(m.tag==='verified') label=' <span style="color:#1d9bf0">✓</span>';
+    else if(m.tag==='influencer') label=' ⭐ <span style="color:#1d9bf0">✓</span> <span style="color:#f59e0b;font-size:10px">INFLUENCER</span>';
+    let av = m.avatar ? '<div class="avatar-small"><img src="'+m.avatar+'"></div>' : '<div class="avatar-small">'+(m.user?m.user.charAt(0).toUpperCase():'?')+'</div>';
+    html+='<div class="msg '+(isMine?'mine':'')+'">'+av+'<div><div class="msg-user">'+(m.displayName||m.user)+label+' <span style="font-weight:normal;opacity:.7">@'+m.user+'</span></div>'+m.text+'<div class="msg-time">'+m.time+'</div></div></div>';
+  });
+  box.innerHTML=html;
+  box.scrollTop = box.scrollHeight;
+}
 const ALL_ADS = [
  {type:"💰 Dinero", bg:"#f59e0b", img:"https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=300&fit=crop", text:"🔥 ¡GANA $5 DIARIOS DESDE TU CELULAR! 👉 TOCA AQUÍ", link:MONETAG_LINK},
  {type:"🎮 Juegos", bg:"#22c55e", img:"https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=600&h=300&fit=crop", text:"🎮 ¡JUEGA Y GANA DINERO REAL! 👉 TOCA AQUÍ", link:MONETAG_LINK},
@@ -324,17 +521,57 @@ function openAd(){
 }
 function confirmReturn(){ addClickToOwner(owner); if(currentAd>=totalAds){ document.getElementById('stateWait').style.display='none'; document.getElementById('stateDone').style.display='block'; document.getElementById('barFill').style.width='100%'; return; } currentAd++; renderDots(); updateWaitTitle(); document.getElementById('stateWait').style.display='none'; document.getElementById('stateClick').style.display='block'; }
 function goToLink(){ if(!targetUrl){ alert('Link no válido'); return; } location.href = targetUrl.startsWith('http')?targetUrl:'https://'+targetUrl; }
-function saveAdminAdLink(){ let v=document.getElementById('adminAdLink').value.trim(); localStorage.setItem('naset_admin_adlink', v); adminAdLink=v; }
-function resetAd(){ localStorage.setItem('naset_admin_adlink', MONETAG_LINK); adminAdLink=MONETAG_LINK; document.getElementById('adminAdLink').value=MONETAG_LINK; }
 function getAdInfo(level){ return AD_LEVELS.find(x=>x.level===level) || AD_LEVELS[0]; }
 function changeAdLevel(v){ tempAdLevel=v; updateAdUI(); }
 function updateAdUI(){ let info=getAdInfo(tempAdLevel); document.getElementById('adLevelInfo').innerText='Nivel '+info.level+' • '+info.ads+' variantes • '+info.ads*5+' seg • Ganas $'+info.price.toFixed(2)+' por 1000 clics'; document.querySelectorAll('.level-btn').forEach(b=>{ b.classList.toggle('active', parseInt(b.dataset.lv)===tempAdLevel); }); }
 function saveAdLevel(){ myAdLevel=tempAdLevel; localStorage.setItem('naset_my_adlevel', myAdLevel); render(); }
-function login(){ let u=document.getElementById('user').value.trim(); let p=document.getElementById('pass').value.trim(); if(!u||!p){ alert('Pon usuario y contraseña'); return; } if(u===ADMIN_USER && p===ADMIN_PASS){ localStorage.setItem('naset_user',u); localStorage.setItem('naset_is_admin','1'); isAdmin=true; currentUser=u; showPanel(); return; } let exists=users.find(x=>x.user===u); if(!exists){ alert('Esa cuenta no existe. Dale a Registrarme arriba'); setMode('register'); return; } localStorage.setItem('naset_user',u); localStorage.removeItem('naset_is_admin'); isAdmin=false; currentUser=u; showPanel(); }
-function register(){ let u=document.getElementById('user').value.trim(); let p=document.getElementById('pass').value.trim(); if(!u||!p){ alert('Pon usuario y contraseña para crear tu cuenta'); return; } if(u===ADMIN_USER){ alert('Ese usuario no se puede usar'); return; } if(users.find(x=>x.user===u)){ alert('Ese usuario ya existe. Dale a Iniciar Sesión arriba'); setMode('login'); return; } registerUser(u,u+'@nasetlink.app','Miembro'); localStorage.setItem('naset_user',u); localStorage.removeItem('naset_is_admin'); isAdmin=false; currentUser=u; showPanel(); }
+function login(){
+  let u=document.getElementById('user').value.trim(); let p=document.getElementById('pass').value.trim();
+  if(!u||!p){ alert('Pon usuario y contraseña'); return; }
+  if(localStorage.getItem('naset_banned_'+u.toLowerCase())==='1'){ alert('🚫 Esta cuenta fue baneada permanentemente.'); return; }
+  if(u===ADMIN_USER && p===ADMIN_PASS){ localStorage.setItem('naset_user',u); localStorage.setItem('naset_is_admin','1'); isAdmin=true; currentUser=u; showPanel(); return; }
+  let exists=users.find(x=>x.user===u);
+  if(!exists){ alert('Esa cuenta no existe. Dale a Registrarme arriba'); setMode('register'); return; }
+  if(exists.banned){ alert('🚫 Esta cuenta fue baneada permanentemente.'); return; }
+  localStorage.setItem('naset_user',u); localStorage.removeItem('naset_is_admin'); isAdmin=false; currentUser=u; showPanel();
+}
+function register(){
+  let u=document.getElementById('user').value.trim(); let p=document.getElementById('pass').value.trim();
+  if(!u||!p){ alert('Pon usuario y contraseña'); return; }
+  if(localStorage.getItem('naset_banned_'+u.toLowerCase())==='1'){ alert('🚫 Ese usuario está baneado.'); return; }
+  if(u===ADMIN_USER){ alert('Ese usuario no se puede usar'); return; }
+  if(users.find(x=>x.user===u)){ alert('Ese usuario ya existe. Dale a Iniciar Sesión arriba'); setMode('login'); return; }
+  registerUser(u,u+'@nasetlink.app','Miembro'); localStorage.setItem('naset_user',u); localStorage.removeItem('naset_is_admin'); isAdmin=false; currentUser=u; showPanel();
+}
 function registerUser(u,email,method){ let exists=users.find(x=>x.user===u); if(!exists){ users.push({user:u,email:email,method:method,date:new Date().toLocaleDateString(),clicks:0,earn:0,forcedAdLevel:0}); localStorage.setItem('naset_all_users',JSON.stringify(users)); } }
 function logout(){ localStorage.removeItem('naset_user'); localStorage.removeItem('naset_is_admin'); location.href='/'; }
-function showPanel(){ if(isVisitor) return; document.getElementById('authBox').style.display='none'; document.getElementById('waiter').style.display='none'; document.getElementById('panel').style.display='block'; document.getElementById('welcomeName').innerText='Hola, '+currentUser+' 👋'; let table=''; AD_LEVELS.forEach(l=>{ table+='<tr><td>Nivel '+l.level+'</td><td>'+l.ads+' variantes</td><td>'+(l.ads*5)+' seg</td><td>$'+l.price.toFixed(2)+'</td></tr>'; }); document.getElementById('adTable').innerHTML=table; tempAdLevel=myAdLevel; updateAdUI(); if(isAdmin){ document.getElementById('rankBadge').innerText='👑 ADMIN'; document.getElementById('rankBadge').className='badge admin'; document.getElementById('profileBox').classList.add('gold'); document.getElementById('adminPanel').style.display='block'; document.getElementById('adminAdLink').value=adminAdLink; let rb = localStorage.getItem('naset_real_balance'); if(rb) document.getElementById('adminRealBalance').value = rb; let ri=''; AD_LEVELS.forEach((l,i)=>{ ri+='<label>Nivel '+l.level+' - $ por 1000</label><input id="rate_'+i+'" type="number" step="0.1" value="'+l.price+'">'; }); document.getElementById('ratesInputs').innerHTML=ri; showAdmin(); } else { document.getElementById('rankBadge').innerText='👤 MIEMBRO'; document.getElementById('rankBadge').className='badge emp'; } render(); }
+function showPanel(){
+  if(isVisitor) return;
+  document.getElementById('authBox').style.display='none';
+  document.getElementById('waiter').style.display='none';
+  document.getElementById('panel').style.display='block';
+  let table=''; AD_LEVELS.forEach(l=>{ table+='<tr><td>Nivel '+l.level+'</td><td>'+l.ads+' variantes</td><td>'+(l.ads*5)+' seg</td><td>$'+l.price.toFixed(2)+'</td></tr>'; });
+  document.getElementById('adTable').innerHTML=table;
+  tempAdLevel=myAdLevel; updateAdUI();
+  updateProfileUI();
+  if(isAdmin){
+    document.getElementById('rankBadge').innerText='👑 ADMIN';
+    document.getElementById('rankBadge').className='badge admin';
+    document.getElementById('profileBox').classList.add('gold');
+    document.getElementById('adminPanel').style.display='block';
+    let rb = localStorage.getItem('naset_real_balance'); if(rb) document.getElementById('adminRealBalance').value = rb;
+    document.getElementById('myVerifiedBadge').innerHTML=' <span class="badge verified">✓ VERIFICADO</span>';
+    showAdmin();
+  } else {
+    let t = getTag(currentUser);
+    document.getElementById('rankBadge').innerText='👤 MIEMBRO';
+    document.getElementById('rankBadge').className='badge emp';
+    if(t==='verified') document.getElementById('myVerifiedBadge').innerHTML=' <span class="badge verified">✓ VERIFICADO</span>';
+    else if(t==='influencer') document.getElementById('myVerifiedBadge').innerHTML=' <span class="badge influ">⭐ INFLUENCER ✓</span>';
+    else document.getElementById('myVerifiedBadge').innerHTML='';
+  }
+  render(); renderChat();
+}
 function crear(){ let v=document.getElementById('longUrl').value.trim(); if(!v){ alert('Pega tu link'); return; } if(!v.startsWith('http')) v='https://'+v; let code=btoa(v); let short=location.origin+location.pathname+'?go='+code+'&u='+currentUser+'&ad='+myAdLevel; links.push({orig:v,short:short,clicks:0,user:currentUser,adLevel:myAdLevel}); localStorage.setItem('naset_links',JSON.stringify(links)); document.getElementById('longUrl').value=''; render(); }
 function render(){
   let myLinks=links.filter(l=>l.user===currentUser);
@@ -349,44 +586,49 @@ function render(){
   if(isAdmin){
     let real = localStorage.getItem('naset_real_balance');
     document.getElementById('earnLabel').innerText='MI GANADO';
-    if(real !== null && real !== '' && !isNaN(parseFloat(real))){
-      document.getElementById('totalEarn').innerText='$'+parseFloat(real).toFixed(2);
-    } else {
-      document.getElementById('totalEarn').innerText='$0.00';
-    }
+    document.getElementById('totalEarn').innerText = (real!==null && real!=='' && !isNaN(parseFloat(real))) ? '$'+parseFloat(real).toFixed(2) : '$0.00';
     document.getElementById('totalClicks').innerText=globalClicks;
     document.getElementById('myLevel').innerText='ADMIN';
   } else {
     document.getElementById('earnLabel').innerText='MI GANADO';
-    let empReal = localStorage.getItem('naset_real_'+currentUser.toLowerCase());
-    if(empReal !== null && empReal !== '' && !isNaN(parseFloat(empReal))){
-      document.getElementById('totalEarn').innerText='$'+parseFloat(empReal).toFixed(2);
-    } else {
-      document.getElementById('totalEarn').innerText='$'+autoEarn.toFixed(2);
-    }
+    document.getElementById('totalEarn').innerText='$'+autoEarn.toFixed(2);
     document.getElementById('totalClicks').innerText=myClicks;
     document.getElementById('myLevel').innerText='Nivel '+adLvl;
   }
   document.getElementById('levelMsg').innerText='Estás en Nivel '+adLvl+' con variantes.';
   let html=''; myLinks.slice().reverse().forEach(l=>{ html+='<div class="link-item">📎 '+l.short+'<br>📢 Nivel: '+(l.adLevel||2)+' variantes<br><button class="sec" style="margin-top:8px;padding:8px" onclick="navigator.clipboard.writeText(\''+l.short+'\');alert(\'Copiado\')">📋 COPIAR</button></div>'; }); if(!html) html='<p class="small">Aún no tienes links. Crea uno arriba.</p>'; document.getElementById('myLinks').innerHTML=html;
 }
-function showAdmin(){ let html='<table><tr><th>Miembro</th><th>Sus Clics</th><th>Su Ganado</th><th>Nivel</th></tr>'; users.forEach(u=>{ let lvl=u.forcedAdLevel>0?u.forcedAdLevel:2; let info=getAdInfo(lvl); let clicks = parseInt(localStorage.getItem('naset_clicks_'+u.user.toLowerCase())||u.clicks||0); let empReal = localStorage.getItem('naset_real_'+u.user.toLowerCase()); let er = empReal ? '$'+parseFloat(empReal).toFixed(2) : '$'+((clicks/1000*info.price).toFixed(2)); html+='<tr><td>'+u.user+'</td><td>'+clicks+'</td><td>'+er+'</td><td>Nivel '+lvl+'</td></tr>'; }); html+='</table><p class="small">Total miembros: '+users.length+' | Total clics: '+(localStorage.getItem('naset_total_clicks')||0)+'</p>'; document.getElementById('allUsers').innerHTML=html; }
-function adminUpdateUser(){ let target=document.getElementById('adminTarget').value.trim(); if(!target){ alert('Escribe usuario'); return; } let u=users.find(x=>x.user.toLowerCase()===target.toLowerCase()); if(!u){ alert('No existe '+target); return; } let nc=document.getElementById('adminClicks').value; let ne=document.getElementById('adminEarn').value; let nr=document.getElementById('adminRank').value.trim(); if(nc!==''){ u.clicks=parseInt(nc); localStorage.setItem('naset_clicks_'+u.user.toLowerCase(), nc); } if(ne!==''){ u.earn=parseFloat(ne); localStorage.setItem('naset_real_'+u.user.toLowerCase(), ne); } else if(nc!=='') u.earn=0; if(nr!==''){ let n=parseInt(nr); if([2,4,6,8,10].includes(n)) u.forcedAdLevel=n; } localStorage.setItem('naset_all_users',JSON.stringify(users)); showAdmin(); render(); }
-function adminDeleteUser(){ let target=document.getElementById('adminTarget').value.trim(); if(!target) return; if(!confirm('¿Borrar a '+target+'?')) return; users=users.filter(x=>x.user.toLowerCase()!==target.toLowerCase()); links=links.filter(x=>x.user.toLowerCase()!==target.toLowerCase()); localStorage.removeItem('naset_clicks_'+target.toLowerCase()); localStorage.removeItem('naset_real_'+target.toLowerCase()); localStorage.setItem('naset_all_users',JSON.stringify(users)); localStorage.setItem('naset_links',JSON.stringify(links)); showAdmin(); render(); }
-function adminSaveRates(){ AD_LEVELS.forEach((l,i)=>{ let v=parseFloat(document.getElementById('rate_'+i).value); if(!isNaN(v)) l.price=v; }); localStorage.setItem('naset_ad_levels',JSON.stringify(AD_LEVELS)); showPanel(); }
+function showAdmin(){
+  if(users.length===0){ document.getElementById('allUsers').innerHTML='<p class="small">Aún no hay miembros.</p>'; return; }
+  let html='';
+  users.forEach(u=>{
+    let lvl=u.forcedAdLevel>0?u.forcedAdLevel:2;
+    let info=getAdInfo(lvl);
+    let clicks = parseInt(localStorage.getItem('naset_clicks_'+u.user.toLowerCase())||u.clicks||0);
+    let er = '$'+((clicks/1000*info.price).toFixed(2));
+    let myLinksCount = links.filter(l=>l.user===u.user).length;
+    let banned = localStorage.getItem('naset_banned_'+u.user.toLowerCase())==='1' || u.banned;
+    let tag = getTag(u.user);
+    let tagHtml = tag==='verified' ? ' <span style="color:#1d9bf0">✓ VERIFICADO</span>' : tag==='influencer' ? ' <span style="color:#f59e0b">⭐ INFLUENCER ✓</span>' : '';
+    let bannedHtml = banned ? ' <span style="color:#ff4444;font-weight:bold">🚫 BANEADO</span>' : '';
+    let p = getProfile(u.user);
+    let bioHtml = p.bio ? '<div style="font-size:12px;color:#aaa">'+p.bio+'</div>' : '';
+    html+='<div class="user-card"><div style="display:flex;gap:10px;align-items:center">'+getAvatarHTML(u.user,'avatar-small')+'<div><b>'+(p.displayName||u.user)+'</b> <span style="color:#a855f7">@'+u.user+'</span>'+tagHtml+bannedHtml+'</div></div>'+bioHtml+'<br><span style="font-size:12px;color:#aaa">👆 Clics: <b style="color:#fff">'+clicks+'</b> • 💰 Ganado: <b style="color:#25D366">'+er+'</b> • 🔗 Links: <b style="color:#fff">'+myLinksCount+'</b> • Rango: Nivel '+lvl+'</span><br>';
+    if(myLinksCount>0){ html+='<div style="margin-top:8px">'; links.filter(l=>l.user===u.user).slice(-3).forEach(l=>{ html+='<div style="font-size:11px;color:#a855f7;word-break:break-all">🔗 '+l.short+'</div>'; }); html+='</div>'; }
+    html+='</div>';
+  });
+  document.getElementById('allUsers').innerHTML=html;
+}
 setInterval(()=>{
   if(currentUser && !isVisitor){
     links = JSON.parse(localStorage.getItem('naset_links')||'[]');
     users = JSON.parse(localStorage.getItem('naset_all_users')||'[]');
-    render();
+    render(); updateProfileUI();
     if(isAdmin) showAdmin();
+    renderChat();
   }
 }, 3000);
-window.addEventListener('storage', (e)=>{
-  if(e.key && e.key.startsWith('naset_')){
-    if(currentUser) render();
-  }
-});
+window.addEventListener('storage', (e)=>{ if(e.key && e.key.startsWith('naset_')){ if(currentUser){ render(); renderChat(); updateProfileUI(); } } });
 if(currentUser && !isVisitor) showPanel();
 </script>
 </body>
