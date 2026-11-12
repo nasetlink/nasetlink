@@ -8,14 +8,14 @@
 *{box-sizing:border-box;font-family:Arial,sans-serif}
 body{margin:0;background:#0f0f1a;color:white;min-height:100vh}
 .center{max-width:420px;margin:0 auto;padding:20px}
-.logo{text-align:center;font-size:32px;font-weight:900;letter-spacing:2px;margin:25px 0 5px}
+.logo{text-align:center;font-size:32px;font-weight:900;letter-spacing:2px;margin:30px 0 5px}
 .logo span{color:#a855f7}
-.sub{text-align:center;color:#aaa;font-size:13px;margin-bottom:20px}
+.sub{text-align:center;color:#aaa;font-size:13px;margin-bottom:25px}
 .card{background:#1e1e2e;border:1px solid #333;border-radius:16px;padding:20px;margin-bottom:15px}
 input{width:100%;padding:13px;border-radius:10px;border:1px solid #333;background:#111;color:white;margin-bottom:10px;font-size:15px}
 .btn{width:100%;padding:14px;border:none;border-radius:12px;background:#a855f7;color:white;font-weight:800;font-size:16px;cursor:pointer;margin-bottom:8px}
 .btn-green{background:#22c55e}.btn-ghost{background:#2a2a3a}.btn-white{background:white;color:black}
-.btn-google{background:white;color:black;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-google{background:white;color:#333;display:flex;align-items:center;justify-content:center;gap:8px}
 .tabs{display:flex;gap:8px;margin-bottom:12px}
 .tab{flex:1;padding:10px;border-radius:10px;background:#2a2a3a;color:#aaa;border:none;cursor:pointer;font-weight:700}
 .tab.active{background:#a855f7;color:white}
@@ -24,12 +24,18 @@ input{width:100%;padding:13px;border-radius:10px;border:1px solid #333;backgroun
 .ad-box{background:linear-gradient(135deg,#a855f7,#ec4899);padding:20px;border-radius:16px;text-align:center;margin-bottom:12px}
 .hidden{display:none}
 .linkbox{background:#111;border:1px dashed #a855f7;padding:12px;border-radius:12px;font-size:12px;word-break:break-all;margin:10px 0}
+/* MODAL GOOGLE */
+.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;padding:20px;z-index:99}
+.modal-box{background:white;color:#333;width:100%;max-width:380px;border-radius:16px;padding:20px}
+.g-acc{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;cursor:pointer;border:1px solid #eee;margin-bottom:8px}
+.g-acc:hover{background:#f5f5f5}
+.avatar{width:38px;height:38px;border-radius:50%;background:#a855f7;color:white;display:flex;align-items:center;justify-content:center;font-weight:900}
 </style>
 </head>
 <body>
 <div class="center">
 <div class="logo">NASET<span>LINK</span></div>
-<div class="sub" id="subtitle">Panel de equipo - Inicia sesión</div>
+<div class="sub" id="subtitle">Bienvenido a NASET LINK</div>
 
 <!-- LOGIN / REGISTRO -->
 <div id="loginBox" class="card">
@@ -38,37 +44,34 @@ input{width:100%;padding:13px;border-radius:10px;border:1px solid #333;backgroun
 <button class="tab" id="tabReg" onclick="showTab('reg')">Registrarse</button>
 </div>
 
-<!-- LOGIN -->
 <div id="formLogin">
 <input id="user" placeholder="Usuario">
 <input id="pass" type="password" placeholder="Contraseña">
 <button class="btn" onclick="login()">ENTRAR</button>
-<button class="btn btn-google" onclick="googleLogin()"> <span style="font-size:18px;font-weight:900;color:#4285F4">G</span> Continuar con Google </button>
-<p class="small">Admin: NASETLINKOFC<br>Prueba: prueba / 1234</p>
+<div style="text-align:center;color:#777;font-size:12px;margin:8px 0">o</div>
+<button class="btn btn-google" onclick="openGoogle()"> <span style="font-size:18px;font-weight:900;color:#4285F4">G</span> Continuar con Google </button>
 </div>
 
-<!-- REGISTRO -->
 <div id="formReg" class="hidden">
 <input id="regName" placeholder="Tu nombre completo">
-<input id="regUser" placeholder="Crea tu usuario ej: maria1">
+<input id="regUser" placeholder="Crea tu usuario">
 <input id="regPass" type="password" placeholder="Crea tu contraseña">
 <button class="btn btn-green" onclick="register()">CREAR MI CUENTA</button>
-<button class="btn btn-google" onclick="googleLogin()"> <span style="font-size:18px;font-weight:900;color:#4285F4">G</span> Registrarme con Google </button>
-<p class="small">Al registrarte aceptas usar NASETLINK para compartir tus links.</p>
+<div style="text-align:center;color:#777;font-size:12px;margin:8px 0">o</div>
+<button class="btn btn-google" onclick="openGoogle()"> <span style="font-size:18px;font-weight:900;color:#4285F4">G</span> Registrarme con Google </button>
 </div>
 </div>
 
-<!-- ADMIN -->
+<!-- ADMIN - SOLO TU LO VES AL ENTRAR CON TU CUENTA -->
 <div id="adminBox" class="hidden">
 <div class="card">
 <h3 style="margin-top:0">👑 Hola Administradora</h3>
-<p style="font-size:13px;color:#aaa">Aquí ves y creas empleados.</p>
-<input id="newUser" placeholder="Usuario empleado ej: maria1">
-<input id="newPass" placeholder="Contraseña ej: 1234">
-<input id="newName" placeholder="Nombre ej: María López">
-<button class="btn btn-green" onclick="addEmp()">+ AGREGAR EMPLEADO</button>
+<input id="newUser" placeholder="Usuario empleado">
+<input id="newPass" placeholder="Contraseña">
+<input id="newName" placeholder="Nombre completo">
+<button class="btn btn-green" onclick="addEmp()">+ AGREGAR USUARIO</button>
 </div>
-<div class="card"><h3 style="margin-top:0">Mis Usuarios (<span id="count">0</span>)</h3><div id="list"></div></div>
+<div class="card"><h3 style="margin-top:0">Usuarios (<span id="count">0</span>)</h3><div id="list"></div></div>
 <div class="card">
 <h3 style="margin-top:0">Tu Link de Monetag</h3>
 <p class="small">https://uplcm.com/4/12244247</p>
@@ -77,26 +80,22 @@ input{width:100%;padding:13px;border-radius:10px;border:1px solid #333;backgroun
 <button class="btn btn-ghost" onclick="logout()">Cerrar Sesión</button>
 </div>
 
-<!-- USUARIO / EMPLEADO -->
+<!-- USUARIO -->
 <div id="empBox" class="hidden">
 <div class="card">
 <h3 style="margin-top:0">Hola <span id="empName"></span> 👋</h3>
-<p style="font-size:13px;color:#aaa">Genera tu link con Monetag + Mediafire y compártelo.</p>
+<p style="font-size:13px;color:#aaa">Genera tu link y compártelo.</p>
 </div>
-
-<!-- GENERADOR MONETAG + MEDIAFIRE -->
 <div class="card">
 <h3 style="margin-top:0">🔗 Generador Monetag + Mediafire</h3>
-<p style="font-size:12px;color:#aaa">1. Pega tu link de Mediafire<br>2. Dale a Generar<br>3. Comparte el link generado</p>
-<input id="mediafireLink" placeholder="Pega tu link de Mediafire ej: https://www.mediafire.com/file/...">
-<button class="btn" onclick="generarLink()">GENERAR MI LINK CON ANUNCIO</button>
+<input id="mediafireLink" placeholder="Pega tu link de Mediafire">
+<button class="btn" onclick="generarLink()">GENERAR MI LINK</button>
 <div id="generatedBox" class="hidden">
 <div class="linkbox" id="generatedLink"></div>
-<button class="btn btn-green" onclick="copyGenerated()">COPIAR MI LINK GENERADO</button>
+<button class="btn btn-green" onclick="copyGenerated()">COPIAR MI LINK</button>
 <button class="btn btn-white" onclick="probarGenerado()">PROBAR MI LINK</button>
 </div>
 </div>
-
 <div class="ad-box">
 <h3 style="margin:0">🔥 ANUNCIO 1 - RECOMENDADO</h3>
 <p style="font-size:13px">Haz clic y espera que cargue</p>
@@ -117,11 +116,25 @@ input{width:100%;padding:13px;border-radius:10px;border:1px solid #333;backgroun
 </div>
 
 </div>
+
+<!-- VENTANA DE GOOGLE - ELEGIR CUENTA -->
+<div id="googleModal" class="modal hidden">
+<div class="modal-box">
+<div style="text-align:center;margin-bottom:10px"><span style="font-size:28px;font-weight:900"><span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC05">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span></span><p style="font-size:14px;margin:5px 0">Elige una cuenta</p><p style="font-size:12px;color:#777">para continuar a NASET LINK</p></div>
+<div id="googleAccounts"></div>
+<div class="g-acc" onclick="useOtherGoogle()">
+<div class="avatar" style="background:#eee;color:#333">+</div>
+<div><b>Usar otra cuenta</b><br><span style="font-size:12px;color:#777">Inicia sesión con otro correo</span></div>
+</div>
+<button onclick="closeGoogle()" style="width:100%;padding:10px;border:none;background:#eee;border-radius:10px;margin-top:8px;cursor:pointer">Cancelar</button>
+</div>
+</div>
+
 <script>
 const ADMIN_USER="NASETLINKOFC";
 const ADMIN_PASS="NASET12CLICKS";
 const AD_LINK="https://uplcm.com/4/12244247";
-let employees = JSON.parse(localStorage.getItem('naset_emps')||'[{"user":"prueba","pass":"1234","name":"Empleado Prueba"}]');
+let employees = JSON.parse(localStorage.getItem('naset_emps')||'[]');
 let clicks = parseInt(localStorage.getItem('naset_clicks')||'0');
 let myGenerated = "";
 
@@ -138,26 +151,61 @@ function login(){
   if(u===ADMIN_USER && p===ADMIN_PASS){ showAdmin(); return; }
   let f=employees.find(e=>e.user===u && e.pass===p);
   if(f){ showEmp(f); return; }
-  alert('Usuario o contraseña incorrecta. Si no tienes cuenta, dale a Registrarse.');
+  alert('Usuario o contraseña incorrecta.');
 }
 function register(){
   let n=document.getElementById('regName').value.trim();
   let u=document.getElementById('regUser').value.trim();
   let p=document.getElementById('regPass').value.trim();
   if(!n||!u||!p){ alert('Llena los 3 campos'); return; }
-  if(employees.find(e=>e.user===u)){ alert('Ese usuario ya existe, elige otro'); return; }
+  if(employees.find(e=>e.user===u)){ alert('Ese usuario ya existe'); return; }
   employees.push({user:u,pass:p,name:n}); save();
-  alert('¡Cuenta creada! Ahora entra con tu usuario: '+u);
-  showTab('login');
-  document.getElementById('user').value=u;
+  alert('¡Cuenta creada! Ahora entra.');
+  showTab('login'); document.getElementById('user').value=u;
 }
-function googleLogin(){
-  let nombre = prompt('Para continuar con Google, escribe tu nombre:');
+// GOOGLE - VENTANA ELEGIR CUENTA
+function openGoogle(){
+  let saved = JSON.parse(localStorage.getItem('google_saved')||'[]');
+  // Cuentas de ejemplo tipo Google si es primera vez
+  if(saved.length===0){
+    saved = [
+      {name:'María López', email:'maria.lopez@gmail.com', color:'#DB4437'},
+      {name:'José Pérez', email:'jose.perez@gmail.com', color:'#4285F4'}
+    ];
+  }
+  document.getElementById('googleAccounts').innerHTML = saved.map((a,i)=>`
+    <div class="g-acc" onclick="pickGoogle(${i})">
+      <div class="avatar" style="background:${a.color}">${a.name[0]}</div>
+      <div><b>${a.name}</b><br><span style="font-size:12px;color:#777">${a.email}</span></div>
+    </div>`).join('');
+  document.getElementById('googleModal').classList.remove('hidden');
+}
+function closeGoogle(){ document.getElementById('googleModal').classList.add('hidden'); }
+function pickGoogle(i){
+  let saved = JSON.parse(localStorage.getItem('google_saved')||'[]');
+  if(saved.length===0) saved=[{name:'María López',email:'maria.lopez@gmail.com',color:'#DB4437'},{name:'José Pérez',email:'jose.perez@gmail.com',color:'#4285F4'}];
+  let acc = saved[i];
+  closeGoogle();
+  let user = acc.email.split('@')[0];
+  if(!employees.find(e=>e.user===user)){
+    employees.push({user:user,pass:'google',name:acc.name}); save();
+  }
+  let f = employees.find(e=>e.user===user);
+  showEmp(f);
+}
+function useOtherGoogle(){
+  let nombre = prompt('Escribe tu nombre:');
   if(!nombre) return;
-  let user = nombre.toLowerCase().replace(/[^a-z0-9]/g,'') + Math.floor(Math.random()*99);
-  employees.push({user:user,pass:'google',name:nombre}); save();
-  alert('¡Listo! Tu cuenta con Google se creó como: '+user);
-  showEmp({user:user,name:nombre});
+  let correo = prompt('Escribe tu correo de Google:');
+  if(!correo) return;
+  let saved = JSON.parse(localStorage.getItem('google_saved')||'[]');
+  saved.push({name:nombre, email:correo, color:'#34A853'});
+  localStorage.setItem('google_saved', JSON.stringify(saved));
+  closeGoogle();
+  let user = correo.split('@')[0];
+  if(!employees.find(e=>e.user===user)) employees.push({user:user,pass:'google',name:nombre});
+  save();
+  showEmp(employees.find(e=>e.user===user));
 }
 function showAdmin(){
   document.getElementById('loginBox').classList.add('hidden');
@@ -181,9 +229,9 @@ function addEmp(){
   if(!u||!p||!n){ alert('Llena los 3 campos'); return; }
   employees.push({user:u,pass:p,name:n}); save(); render();
   document.getElementById('newUser').value='';document.getElementById('newPass').value='';document.getElementById('newName').value='';
-  alert('Empleado '+n+' creado!');
+  alert('Usuario creado!');
 }
-function delEmp(i){ if(confirm('¿Borrar este usuario?')){ employees.splice(i,1); save(); render(); } }
+function delEmp(i){ if(confirm('¿Borrar?')){ employees.splice(i,1); save(); render(); } }
 function render(){
   document.getElementById('count').innerText=employees.length;
   document.getElementById('list').innerHTML=employees.map((e,i)=>`<div class="emp"><div><b>${e.name}</b><br><span style="font-size:12px;color:#aaa">Usuario: ${e.user} | Clave: ${e.pass}</span></div><button onclick="delEmp(${i})" style="background:#ef4444;border:none;color:white;padding:8px 10px;border-radius:8px">X</button></div>`).join('');
@@ -191,25 +239,14 @@ function render(){
 function generarLink(){
   let mf=document.getElementById('mediafireLink').value.trim();
   if(!mf || !mf.includes('mediafire')){ alert('Pega un link válido de Mediafire'); return; }
-  // Link generado: primero pasa por Monetag, luego a Mediafire
-  // En tu Monetag, este es tu Direct Link
   myGenerated = AD_LINK + "?dest=" + encodeURIComponent(mf);
-  document.getElementById('generatedLink').innerText = myGenerated + "\n\nTu archivo final: " + mf;
+  document.getElementById('generatedLink').innerText = myGenerated + "\n\nArchivo: " + mf;
   document.getElementById('generatedBox').classList.remove('hidden');
-  alert('¡Link generado! Ahora cópialo y compártelo en tu canal.');
+  alert('¡Link generado!');
 }
-function copyGenerated(){
-  navigator.clipboard.writeText(myGenerated);
-  alert('Link copiado! Pégalo en tu canal.');
-}
-function probarGenerado(){
-  if(myGenerated) window.open(myGenerated,'_blank');
-}
-function openAd(){
-  clicks++; localStorage.setItem('naset_clicks', clicks);
-  document.getElementById('clicks').innerText='Clics hoy: '+clicks;
-  window.open(AD_LINK,'_blank');
-}
+function copyGenerated(){ navigator.clipboard.writeText(myGenerated); alert('Link copiado!'); }
+function probarGenerado(){ if(myGenerated) window.open(myGenerated,'_blank'); }
+function openAd(){ clicks++; localStorage.setItem('naset_clicks', clicks); document.getElementById('clicks').innerText='Clics hoy: '+clicks; window.open(AD_LINK,'_blank'); }
 function logout(){ location.reload(); }
 </script>
 </body>
