@@ -3,204 +3,456 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NasetLink - Completo Final</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<title>NASETLINK</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#0f172a;color:#fff;text-align:center;padding-bottom:130px}
-.top{background:#facc15;color:#000;padding:14px;font-weight:bold;font-size:18px;position:sticky;top:0;z-index:99}
-.card{background:#1e293b;margin:14px;padding:18px;border-radius:20px;border:2px solid #facc15;text-align:left}
-input{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:none;font-size:16px}
-.btn{background:#facc15;border:none;padding:14px;font-size:17px;font-weight:bold;border-radius:12px;width:100%;cursor:pointer;color:#000}
-.btn2{background:#22c55e;border:none;padding:14px;font-size:17px;font-weight:bold;border-radius:12px;width:100%;cursor:pointer;color:#fff}
-.btn3{background:#334155;border:none;padding:10px;font-size:15px;border-radius:10px;width:100%;cursor:pointer;color:#fff;margin-top:6px}
-.ad-box{background:#fff;color:#000;border-radius:15px;padding:14px;margin:12px 0;text-align:center}
-.ad-box img{width:100%;border-radius:10px;max-height:200px;object-fit:cover}
-.count{font-size:55px;font-weight:bold;color:#facc15;text-align:center}
-.banner{position:fixed;bottom:0;left:0;right:0;background:#facc15;color:#000;padding:12px;font-weight:bold;z-index:999}
-.banner a{color:#000}
-.tabs{display:flex;gap:8px;margin:12px}.tabs button{flex:1;padding:12px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;background:#334155;color:#fff}.tabs button.on{background:#facc15;color:#000}
-.chatbox{height:240px;overflow-y:auto;background:#0f172a;padding:10px;border-radius:12px;text-align:left}
-.msg{background:#334155;padding:8px 10px;border-radius:10px;margin:6px 0;font-size:14px}
-.stat{display:flex;justify-content:space-between;background:#0f172a;padding:10px;border-radius:10px;margin:6px 0}
-small{color:#cbd5e1}.live{color:#22c55e;font-weight:bold}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#000;color:#fff;min-height:100vh;display:flex;justify-content:center;padding:20px 14px}
+.card{width:100%;max-width:480px}
+.logo{font-size:34px;font-weight:900;text-align:center}
+.logo span{color:#a855f7}
+.sub{color:#aaa;text-align:center;font-size:13px;margin:5px 0 14px}
+.box{background:#111;border:1px solid #333;border-radius:18px;padding:18px;margin-bottom:14px}
+.gold{border:2px solid gold!important;box-shadow:0 0 20px rgba(255,215,0,.3)}
+input{width:100%;padding:13px;border-radius:12px;border:1px solid #333;background:#000;color:#fff;outline:none;margin-bottom:10px}
+button{width:100%;padding:14px;border:none;border-radius:12px;background:#a855f7;color:#fff;font-weight:bold;font-size:15px;cursor:pointer;margin-bottom:8px}
+button:disabled{background:#333;color:#888;cursor:not-allowed}
+button.whatsapp{background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;margin-bottom:0;margin-top:2px}
+button.sec{background:#222;border:1px solid #444}
+button.danger{background:#dc2626}
+button.green{background:#16a34a}
+button.smallbtn{padding:9px;font-size:13px;margin-bottom:0}
+button.adbtn{background:#f59e0b;color:#000;font-size:17px;padding:18px}
+button.returnbtn{background:#16a34a;font-size:16px}
+.auth-tabs{display:flex;gap:8px;margin-bottom:14px}
+.auth-tabs button{margin-bottom:0;flex:1;background:#222;color:#aaa;border:1px solid #333}
+.auth-tabs button.active{background:#a855f7;color:#fff;border-color:#a855f7}
+.auth-tabs button.active-green{background:#a855f7;color:#fff;border-color:#a855f7}
+.auth-divider{display:flex;align-items:center;gap:10px;margin:10px 0 8px;color:#666;font-size:11px}
+.auth-divider::before,.auth-divider::after{content:"";flex:1;height:1px;background:#333}
+.stats{display:flex;gap:10px;margin-bottom:14px}
+.stat{flex:1;background:#111;border:1px solid #333;border-radius:14px;padding:12px;text-align:center}
+.stat b{font-size:19px;display:block}
+.stat span{font-size:11px;color:#aaa}
+.badge{display:inline-block;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:bold;background:#a855f7;margin-top:6px}
+.badge.admin{background:red;color:#fff}
+.badge.mod{background:#f59e0b;color:#000}
+.badge.emp{background:#16a34a;color:#fff}
+.badge.influ{background:linear-gradient(90deg,#f59e0b,#ef4444,#facc15);color:#fff}
+.badge.verified{background:#1d9bf0;color:#fff}
+.badge.bronce{background:#cd7f32;color:#fff}
+.badge.plata{background:#c0c0c0;color:#000}
+.badge.oro{background:#FFD700;color:#000}
+.badge.diamante{background:#00e5ff;color:#000}
+.badge.elite{background:linear-gradient(90deg,#a855f7,#FFD700);color:#fff}
+.badge.leyenda{background:linear-gradient(90deg,#ff6b00,#ff0000);color:#fff}
+.badge.mitico{background:linear-gradient(90deg,#00ff88,#00e5ff);color:#000}
+.badge.maestro{background:linear-gradient(90deg,#FFD700,#fff);color:#000;box-shadow:0 0 12px rgba(255,215,0,.7)}
+.badge.dios{background:linear-gradient(90deg,#ff00ff,#00ffff,#FFD700);color:#fff;box-shadow:0 0 15px rgba(255,0,255,.7)}
+select{width:100%;padding:13px;border-radius:12px;background:#000;color:#fff;border:1px solid #333;margin-bottom:10px}
+.link-item{background:#000;border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:10px;font-size:12px;word-break:break-all}
+table{width:100%;font-size:12px;border-collapse:collapse}
+td,th{padding:8px;border-bottom:1px solid #222;text-align:left}
+.small{color:#888;font-size:12px;line-height:1.5;text-align:center;margin-top:10px}
+label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px;text-align:left}
+#count{font-size:70px;font-weight:900;text-align:center}
+.bar{height:10px;background:#222;border-radius:99px;overflow:hidden}
+.bar div{height:100%;background:#f59e0b;width:100%}
+.flex{display:flex;gap:8px}
+.step-dots{display:flex;gap:6px;justify-content:center;margin:10px 0}
+.dot{width:30px;height:30px;border-radius:99px;background:#222;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold}
+.dot.done{background:#16a34a}
+.dot.current{background:#f59e0b;color:#000}
+.level-btn{padding:14px 0;font-size:16px;background:#222;border:1px solid #444}
+.level-btn.active{background:#a855f7;border-color:#a855f7}
+.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0}
+.ad-preview{background:#000;border:1px dashed #f59e0b;border-radius:14px;padding:12px;text-align:center;margin:12px 0}
+.real-ad{width:100%;border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid #f59e0b;background:#fff;display:block;text-decoration:none}
+.real-ad img{width:100%;height:160px;object-fit:cover;display:block}
+.real-ad-text{padding:11px;font-weight:900;font-size:14px;color:#000}
+.variant-badge{font-size:11px;color:#f59e0b;font-weight:bold;margin-top:6px}
+.chat-box{background:#0a0a0a;border:1px solid #333;border-radius:16px;overflow:hidden}
+.chat-header{background:linear-gradient(90deg,#a855f7,#ec4899);padding:12px;text-align:center;font-weight:bold}
+.chat-messages{height:420px;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.chat-messages.full{height:calc(100vh - 220px)}
+.msg{background:#1a1a1a;border-radius:14px;padding:9px 11px;max-width:88%;font-size:13px;line-height:1.4;display:flex;gap:8px}
+.msg.mine{background:#a855f7;color:#fff;align-self:flex-end}
+.msg.influencer{background:linear-gradient(135deg,#facc15,#f97316,#ef4444,#f59e0b)!important;color:#fff!important;border:2px solid #FFD700;box-shadow:0 0 12px rgba(255,180,0,.6)}
+.msg-user{font-weight:bold;font-size:13px;margin-bottom:2px;display:flex;gap:3px;align-items:center}
+.msg-time{font-size:10px;opacity:.7;margin-top:3px}
+.chat-input-row{display:flex;gap:8px;padding:10px;background:#111}
+.chat-input-row input{margin-bottom:0}
+.chat-input-row button{width:60px;margin-bottom:0;background:#a855f7}
+.verified-badge{display:inline-flex;align-items:center;justify-content:center;width:12px;height:12px;min-width:12px;border-radius:99px;background:#1d9bf0;color:#fff;font-size:8px;font-weight:900;line-height:1;flex-shrink:0;margin-left:2px;vertical-align:middle}
+.user-card{background:#000;border:1px solid #333;border-radius:14px;padding:12px;margin-bottom:10px}
+.user-card.influencer-card{border:2px solid #f59e0b;background:linear-gradient(135deg,#2a1a00,#1a0a00);box-shadow:0 0 12px rgba(255,170,0,.3)}
+.profile-top{display:flex;gap:14px;align-items:center}
+.avatar{width:72px;height:72px;border-radius:99px;object-fit:cover;border:3px solid #a855f7;background:#222;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.avatar-small{width:32px;height:32px;border-radius:99px;object-fit:cover;border:2px solid #a855f7;background:#222;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;overflow:hidden}
+.avatar-small img{width:100%;height:100%;object-fit:cover}
+.avatar-option{width:56px;height:56px;border-radius:99px;object-fit:cover;cursor:pointer;border:3px solid transparent}
+.avatar-option.selected{border-color:#25D366}
+.topbar{display:flex;gap:6px;margin-bottom:14px;position:sticky;top:0;z-index:20;background:#000;padding:8px 0;flex-wrap:wrap}
+.top-btn{flex:1;display:flex;align-items:center;gap:6px;padding:9px 8px;border-radius:99px;border:2px solid transparent;cursor:pointer;font-weight:bold;font-size:12px;justify-content:center;white-space:nowrap;overflow:hidden;min-width:80px}
+.top-btn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top-profile{background:#a855f7;color:#fff;border-color:#a855f7}
+.top-chat{background:#fff;color:#000;border-color:#fff}
+.top-admin{background:linear-gradient(90deg,#FFD700,#FFA500);color:#000;border-color:#FFD700;box-shadow:0 0 14px rgba(255,215,0,.6)}
+.top-mod{background:#f59e0b;color:#000;border-color:#f59e0b}
+.top-stats{background:#16a34a;color:#fff;border-color:#16a34a;box-shadow:0 0 10px rgba(22,163,74,.5)}
+.top-avatar{width:28px;height:28px;border-radius:99px;background:#fff;color:#a855f7;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;overflow:hidden;flex-shrink:0;border:2px solid #fff}
+.top-avatar img{width:100%;height:100%;object-fit:cover}
+.close-btn{width:42px;height:42px;border-radius:99px;background:#222;border:1px solid #444;color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-bottom:12px}
+.view-title{font-size:20px;font-weight:900;margin-bottom:12px;text-align:center}
+.live-dot{display:inline-block;width:8px;height:8px;border-radius:99px;background:#22c55e;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.stat-card{background:#000;border:1px solid #333;border-radius:14px;padding:14px;margin-bottom:10px}
+.stat-card.top-earner{border:2px solid #FFD700;background:linear-gradient(135deg,#2a1a00,#1a0a00)}
+.rank-bar{height:12px;background:#222;border-radius:99px;overflow:hidden;margin-top:6px}
+.rank-bar div{height:100%;background:linear-gradient(90deg,#22c55e,#4ade80);transition:width .5s}
+.rank-row{padding:10px 0;border-bottom:1px solid #222}
 </style>
 </head>
 <body>
-<div class="top">🍎 NASETLINK • COMPLETO FINAL ♾️</div>
-
-<div class="card" id="loginBox">
-<h2 style="margin:0;text-align:center">👋 Entra a NasetLink</h2>
-<p style="text-align:center"><small>Regístrate 1 vez, quedas guardado para siempre</small></p>
-<input id="user" placeholder="Tu usuario">
-<input id="pass" type="password" placeholder="Tu contraseña">
-<button class="btn" onclick="login()">ENTRAR / REGISTRARME</button>
-</div>
-
-<div id="app" style="display:none">
-<div class="tabs">
-<button id="t1" class="on" onclick="showTab(1)">🏠 Anuncios</button>
-<button id="t2" onclick="showTab(2)">📊 Stats</button>
-<button id="t3" onclick="showTab(3)">💬 Chat <span class="live">● EN VIVO</span></button>
-</div>
-<p>Hola <b id="hola"></b> • <span onclick="salir()" style="text-decoration:underline;cursor:pointer">Salir</span> • <span id="estado">🟢 Conectado</span></p>
-
-<div id="tab1">
 <div class="card">
-<div>♾️ Anuncio #<span id="num">1</span> • NUNCA SE ACABA</div>
-<div class="ad-box" id="adBox"></div>
-<div id="paso1"><button class="btn" onclick="abrirAnuncio()">👆 DARLE CLIC AL ANUNCIO</button><p style="text-align:center"><small>Toca la pantalla primero para que sepa que eres humano</small></p></div>
-<div id="paso2" style="display:none"><div style="text-align:center">Espera...</div><div class="count" id="count">5</div><button class="btn2" id="volverBtn" disabled onclick="siguiente()">🔒 ESPERA...</button></div>
-<p>✅ Llevas <b id="total">0</b> anuncios vistos</p>
+<div class="logo">NASET<span>LINK</span></div>
+<p class="sub">📢 Dale clic al anuncio • Espera 5 seg • Regresa</p>
+<div class="topbar" id="topbar" style="display:none">
+  <div class="top-btn top-admin" id="topAdminBtn" style="display:none" onclick="openView('admin')">👑 <span>Admin</span></div>
+  <div class="top-btn top-mod" id="topModBtn" style="display:none" onclick="openView('admin')">🛡️ <span>Moderador</span></div>
+  <div class="top-btn top-stats" id="topStatsBtn" style="display:none" onclick="openView('stats')">📊 <span>Estadísticas</span></div>
+  <div class="top-btn top-chat" onclick="openView('chat')">💬 <span>Chat</span></div>
+  <div class="top-btn top-profile" onclick="openView('profile')"><div class="top-avatar" id="topAvatar">?</div><span id="topUserName">Mi Perfil</span></div>
 </div>
+<div id="viewProfile" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">✏️ Mi Perfil</p><div class="box" id="profileBoxSolo"></div></div>
+<div id="viewChat" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">💬 Chat Mundial - TODOS</p><div class="box" style="padding:0;overflow:hidden;border-color:#a855f7"><div class="chat-box"><div class="chat-header">💬 CHAT MUNDIAL • Todos hablan aquí • En vivo</div><div class="chat-messages full" id="chatMessages"></div><div class="chat-input-row"><input id="chatInput" placeholder="Escribe algo..." maxlength="200" autocomplete="off"><button onclick="sendChat()">➤</button></div></div></div></div>
+<div id="viewAdmin" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title" id="adminViewTitle">👑 Solo Admin</p><div class="box gold" id="adminPanelSolo"></div></div>
+<div id="viewStats" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title" id="statsViewTitle">📊 Estadísticas - Solo Admin</p><div class="box" style="border-color:#16a34a"><p style="text-align:center;font-size:13px"><span class="live-dot"></span> EN VIVO • Nube Supabase • Cada 5 seg</p><p class="small" id="statsUpdated">Actualizado: --</p><div class="stats" id="statsTopRow"><div class="stat"><b id="statsTotalUsers">0</b><span>USUARIOS</span></div><div class="stat"><b id="statsTotalClicks">0</b><span>CLICS TOTALES</span></div><div class="stat" id="statsTotalPayCard"><b id="statsTotalPay" style="color:#25D366">$0.00</b><span id="statsTotalPayLabel">TIENES QUE PAGAR</span></div></div><div class="stats" id="statsMoneyRow"><div class="stat"><b id="statsMyReal" style="color:#FFD700">$0.00</b><span>LO QUE GANASTE TÚ (Monetag)</span></div><div class="stat"><b id="statsMyProfit" style="color:#22c55e">$0.00</b><span>TE QUEDA PARA TI</span></div></div><div class="stats"><div class="stat"><b id="statsBotsBlocked">0</b><span>🤖 BOTS BLOQUEADOS</span></div><div class="stat"><b id="statsHumans">0</b><span>✅ HUMANOS REALES</span></div></div><label>🔍 Buscar usuario:</label><input id="statsSearch" placeholder="Escribe nombre o usuario..." oninput="renderStats()"><label>👥 TODOS - Ordenados por el que más gana</label><div id="statsList"></div></div></div>
+<div id="mainView">
+<div class="box" id="waiter" style="display:none"><p style="text-align:center;font-weight:bold;font-size:18px" id="waitTitle">Anuncio 1 de 2</p><div class="step-dots" id="dots"></div><div class="bar"><div id="barFill"></div></div><p class="small" id="adLevelShow"></p><p class="variant-badge" id="variantLabel">🎲 Variante A • Tipo: Dinero</p><div id="stateClick"><div class="ad-preview"><p style="margin-bottom:10px">📢 ANUNCIO <span id="adNum1">1</span> - PUBLICIDAD</p><a class="real-ad" href="https://uplcm.com/4/12244247" target="_blank" onclick="empezarEspera()"><img id="adImg" src="" alt="Anuncio"><div class="real-ad-text" id="adText">Cargando anuncio...</div></a><p style="font-size:12px;color:#aaa;margin-top:8px">Toca el anuncio de arriba o el botón amarillo</p></div><a href="https://uplcm.com/4/12244247" target="_blank" onclick="empezarEspera()" style="text-decoration:none"><button class="adbtn">👉 DARLE CLIC AL ANUNCIO</button></a><p class="small">Se abrirá el anuncio en otra pestaña. Luego regresas aquí.</p></div><div id="stateWait" style="display:none"><p style="text-align:center">⏳ Estás viendo el anuncio...</p><div id="count">5</div><p style="text-align:center;font-weight:bold" id="waitAdName">Espera 5 segundos y regresa aquí</p><button disabled id="returnBtn" onclick="confirmReturn()">🔒 ESPERA 5 SEGUNDOS...</button></div><div id="stateDone" style="display:none"><p style="text-align:center;font-size:22px">✅ ¡Completaste todos!</p><button class="green" onclick="goToLink()">🔗 IR AL LINK DIRECTO</button></div></div>
+<div class="box" id="authBox" style="padding:20px"><h3 style="margin-bottom:14px;text-align:center;font-size:18px">👋 Bienvenido a NasetLink</h3><div class="auth-tabs"><button id="btnTabLogin" class="active" onclick="setMode('login')">Iniciar Sesión</button><button id="btnTabRegister" onclick="setMode('register')">Registrarme</button></div><input id="user" placeholder="Usuario:"><input id="pass" type="password" placeholder="Contraseña:"><button id="mainAuthBtn" onclick="submitAuth()">ENTRAR</button><div class="auth-divider"><span>o únete</span></div><button class="whatsapp" onclick="joinWhatsApp()">💬 Unirse al Grupo de WhatsApp</button></div>
+<div id="panel" style="display:none"><div class="box" id="profileBox"><div class="profile-top"><div class="avatar" id="myAvatar" onclick="openView('profile')" style="cursor:pointer">?</div><div><h3 id="welcomeName" style="font-size:18px">Hola 👋</h3><p id="profileUserShow" style="color:#aaa;font-size:12px;margin:2px 0"></p><p id="profileBioShow" style="color:#aaa;font-size:12px"></p><div style="margin-top:6px"><span id="rankBadge" class="badge bronce">🥉 BRONCE</span> <span id="myVerifiedBadge"></span></div><p id="rankProgressText" style="font-size:12px;color:#fff;margin-top:8px;font-weight:bold"></p><div class="rank-bar"><div id="rankProgressBar" style="width:0%"></div></div><p id="rankProgressSub" style="font-size:11px;color:#aaa;margin-top:4px"></p></div></div></div><div class="stats"><div class="stat"><b id="totalClicks">0</b><span>MIS CLICS • EN VIVO NUBE</span></div><div class="stat"><b id="totalEarn">$0.00</b><span id="earnLabel">MI GANADO • EN VIVO</span></div><div class="stat"><b id="myLevel">Nivel 2</b><span>ANUNCIOS</span></div></div><div class="box" style="border-color:#a855f7"><h3>🏆 Mis Rangos - Suben solos en vivo</h3><div id="rankTableLive"></div><p class="small" id="rankMsg" style="color:#fff"></p></div><div class="box" style="border-color:#a855f7"><h3>📢 Tu Nivel de Anuncios</h3><p class="small" style="text-align:left">Esto es aparte de tu rango. Es cuántos anuncios tiene que ver la persona que entra a tu link.</p><div class="grid5"><button class="level-btn" data-lv="2" onclick="changeAdLevel(2)">2</button><button class="level-btn" data-lv="4" onclick="changeAdLevel(4)">4</button><button class="level-btn" data-lv="6" onclick="changeAdLevel(6)">6</button><button class="level-btn" data-lv="8" onclick="changeAdLevel(8)">8</button><button class="level-btn" data-lv="10" onclick="changeAdLevel(10)">10</button></div><p class="small" id="adLevelInfo" style="color:#fff;font-size:13px"></p><button class="green" onclick="saveAdLevel()">💾 GUARDAR MI NIVEL</button></div><div class="box"><input id="longUrl" placeholder="Pega tu link de MediaFire..."><button onclick="crear()">🔗 ACORTAR Y GANAR</button><div id="myLinks"></div></div><div class="box"><h3>💰 Pagos por 1000 clics</h3><table><tr><th>Nivel Anuncio</th><th>Variantes</th><th>Tiempo</th><th>Pago x 1000</th></tr><tbody id="adTable"></tbody></table><p class="small" id="levelMsg"></p></div><button class="sec" onclick="logout()">Cerrar Sesión</button></div><p class="small">Pago mínimo $5 por PayPal. 🛡️ Protegido Anti-Bot - Solo humanos reales.</p></div>
 </div>
-
-<div id="tab2" style="display:none">
-<div class="card">
-<h3 style="margin:0">📊 Estadísticas EN VIVO</h3>
-<div class="stat"><span>👥 Usuarios</span><b id="sUsers">0</b></div>
-<div class="stat"><span>🖱️ Clics totales</span><b id="sClicks">0</b></div>
-<div class="stat"><span>✅ Tus clics</span><b id="sMine">0</b></div>
-<div class="stat"><span>🔥 Hoy</span><b id="sToday">0</b></div>
-<button class="btn3" onclick="cargarStats()">🔄 Actualizar ahora</button>
-</div>
-</div>
-
-<div id="tab3" style="display:none">
-<div class="card">
-<h3 style="margin:0">💬 Chat Mundial <span class="live">● EN VIVO AL INSTANTE</span></h3>
-<div class="chatbox" id="chatBox"></div>
-<input id="chatMsg" placeholder="Escribe algo...">
-<button class="btn" onclick="enviarChat()">ENVIAR</button>
-</div>
-</div>
-
-<div class="card" id="adminBox" style="display:none;border-color:#22c55e">
-<h3 style="margin:0">👑 Panel Admin</h3>
-<input id="adminLink" value="https://uplcm.com/4/12244247">
-<button class="btn2" onclick="guardarAdmin()">GUARDAR LINK</button>
-</div>
-</div>
-
-<div class="banner">🔥 <a href="https://uplcm.com/4/12244247" target="_blank">CLIC AQUÍ PARA VER ANUNCIO 👈</a> • ♾️ Infinitos</div>
-
 <script>
-// ============ TU SUPABASE YA PEGADO ============
 const SUPABASE_URL = "https://laponfeqxxspxcasxecg.supabase.co";
 const SUPABASE_KEY = "sb_publishable_TBu_vM0xOlQsLX4aQvMmrQ_Nsp9Fv00";
-const MONETAG_DEFAULT = "https://uplcm.com/4/12244247";
-let adminAdLink = localStorage.getItem('adminLink') || MONETAG_DEFAULT;
-let supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-let currentUser = localStorage.getItem('naset_user') || "";
-let humano = false;
-document.addEventListener('touchstart',()=>{humano=true});
-document.addEventListener('mousemove',()=>{humano=true});
-document.addEventListener('click',()=>{humano=true});
-
+const ADMIN_USER = "NASETLINKOFC";
+const ADMIN_PASS = "NASET12CLICKS";
+const MOD_USER = "DANYXITERS";
+const MOD_PASS = "12345689";
+const MONETAG_LINK = "https://uplcm.com/4/12244247";
+const WHATSAPP_GROUP = "https://chat.whatsapp.com/JAqf2gVEFlz59saw6MVveK?s=cl&p=i&mlr=4&ilr=4&iam=2";
+function joinWhatsApp(){ window.open(WHATSAPP_GROUP, '_blank'); }
+let authMode = 'login';
+const PRESET_AVATARS = ["https://i.pravatar.cc/150?img=12","https://i.pravatar.cc/150?img=32","https://i.pravatar.cc/150?img=5","https://i.pravatar.cc/150?img=47","https://i.pravatar.cc/150?img=68","https://i.pravatar.cc/150?img=15","https://i.pravatar.cc/150?img=8","https://i.pravatar.cc/150?img=60"];
+let selectedAvatar = '';
+let currentView = 'home';
+let humanInteracted = false, pageLoadTime = Date.now(), lastClickTime = 0, rapidClicks = 0, lastChatTime = 0;
+let mouseMoves = 0, touchMoves = 0;
+document.addEventListener('mousemove', ()=>{ humanInteracted=true; mouseMoves++; }, {passive:true});
+document.addEventListener('touchstart', ()=>{ humanInteracted=true; touchMoves++; }, {passive:true});
+document.addEventListener('touchmove', ()=>{ humanInteracted=true; touchMoves++; }, {passive:true});
+document.addEventListener('keydown', ()=>{ humanInteracted=true; }, {passive:true});
+document.addEventListener('scroll', ()=>{ humanInteracted=true; }, {passive:true});
+const H = { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY, "Content-Type":"application/json" };
+async function dbGetUsers(){
+  try{
+    let r = await fetch(SUPABASE_URL + "/rest/v1/naset_users?select=*&order=clicks.desc", { headers: H });
+    let j = await r.json(); if(!Array.isArray(j)) return []; return j;
+  }catch(e){ return []; }
+}
+async function dbSaveUser(u){
+  try{
+    await fetch(SUPABASE_URL + "/rest/v1/naset_users", { method:"POST", headers:{...H, "Prefer":"resolution=merge-duplicates"}, body: JSON.stringify({ username: u.user, pass: u.pass||"", clicks: u.clicks||0, date: u.date||"", time: u.time||"", timestamp: u.timestamp||Date.now() }) });
+  }catch(e){}
+}
+async function dbGetMyClicks(username){
+  try{
+    let r = await fetch(SUPABASE_URL + "/rest/v1/naset_users?username=eq."+encodeURIComponent(username)+"&select=clicks", { headers: H });
+    let j = await r.json(); if(Array.isArray(j) && j[0]) return j[0].clicks||0;
+  }catch(e){}
+  return parseInt(localStorage.getItem('naset_clicks_'+username.toLowerCase())||'0');
+}
+async function addClickToOwnerREAL(ownerName){
+  if(!ownerName) ownerName = "NASETLINKOFC";
+  try{
+    await fetch(SUPABASE_URL + "/rest/v1/naset_clicks", { method:"POST", headers: H, body: JSON.stringify({ owner_user: ownerName }) });
+    let all = await dbGetUsers();
+    let found = all.find(x=> (x.username||'').toLowerCase()===ownerName.toLowerCase());
+    let newClicks = (found ? (found.clicks||0) : 0) + 1;
+    if(found){
+      await fetch(SUPABASE_URL + "/rest/v1/naset_users?username=eq." + encodeURIComponent(found.username), { method:"PATCH", headers: H, body: JSON.stringify({ clicks: newClicks }) });
+    } else {
+      await fetch(SUPABASE_URL + "/rest/v1/naset_users", { method:"POST", headers:{...H, "Prefer":"resolution=merge-duplicates"}, body: JSON.stringify({ username: ownerName, pass:"", clicks: newClicks, date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString(), timestamp: Date.now() }) });
+    }
+    localStorage.setItem('naset_clicks_'+ownerName.toLowerCase(), newClicks);
+  }catch(e){}
+}
+async function fetchChatCloud(){
+  try{
+    let r = await fetch(SUPABASE_URL + "/rest/v1/naset_chat?select=*&order=created_at.asc&limit=100", { headers: H });
+    let j = await r.json();
+    if(Array.isArray(j)) return j.map(m=>({user:m.username||m.user||'?', text:String(m.text||'').slice(0,200), time: m.created_at ? new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '', tag: getTag(m.username||m.user||'') }));
+  }catch(e){}
+  return getChatLocal();
+}
+function getChatLocal(){ try{ let arr = JSON.parse(localStorage.getItem('naset_chat')||'[]'); return arr.filter(m=>m && m.user && m.text); }catch(e){ return []; } }
+function getChat(){ return getChatLocal(); }
+async function sendChat(){
+  let inp = document.getElementById('chatInput'); if(!inp) return;
+  let txt = inp.value.trim().slice(0,200); if(!txt) return;
+  if(!currentUser){ alert('Inicia sesión para chatear'); return; }
+  let now = Date.now(); if(now - lastChatTime < 1000) return; lastChatTime = now;
+  inp.value='';
+  try{
+    await fetch(SUPABASE_URL + "/rest/v1/naset_chat", { method:"POST", headers: H, body: JSON.stringify({ username: currentUser, text: txt }) });
+  }catch(e){
+    let chat = getChatLocal(); chat.push({user: currentUser, text: txt, time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}); localStorage.setItem('naset_chat', JSON.stringify(chat.slice(-100)));
+  }
+  renderChat();
+}
+async function renderChat(){
+  let box = document.getElementById('chatMessages'); if(!box) return;
+  let chat = await fetchChatCloud();
+  if(chat.length===0){ box.innerHTML='<p class="small">Sé el primero en hablar 👋 - Chat mundial para todos</p>'; return; }
+  let html=''; chat.forEach(m=>{ if(!m.user || !m.text) return; let isMine = m.user===currentUser; let tag = m.tag; if(tag!=='verified' && tag!=='influencer') tag = getTag(m.user); let isInflu = tag==='influencer'; let cls = 'msg ' + (isMine?'mine ':'') + (isInflu?'influencer':''); let vIcon = (tag==='verified') ? ' <span class="verified-badge">✓</span>' : ''; let p = getProfile(m.user); let displayName = p.displayName || m.user; let av = p.avatar ? '<div class="avatar-small"><img src="'+p.avatar+'"></div>' : '<div class="avatar-small">'+(displayName.charAt(0).toUpperCase())+'</div>'; let clicks = parseInt(localStorage.getItem('naset_clicks_'+m.user.toLowerCase())||'0'); let r = getRank(clicks, m.user); html+='<div class="'+cls+'">'+av+'<div><div class="msg-user">'+displayName+vIcon+' <span style="font-size:10px;opacity:.8">'+r.emoji+' '+r.name+'</span></div>'+m.text+'<div class="msg-time">'+(m.time||'')+'</div></div></div>'; });
+  box.innerHTML=html; box.scrollTop = box.scrollHeight;
+}
+const RANKS = [
+ {name:'BRONCE', emoji:'🥉', cls:'bronce', min:0, max:1000},
+ {name:'PLATA', emoji:'🥈', cls:'plata', min:1001, max:2000},
+ {name:'ORO', emoji:'🥇', cls:'oro', min:2001, max:3000},
+ {name:'DIAMANTE', emoji:'💎', cls:'diamante', min:3001, max:4000},
+ {name:'ÉLITE', emoji:'👑', cls:'elite', min:4001, max:5000},
+ {name:'LEYENDA', emoji:'🔥', cls:'leyenda', min:5001, max:6000},
+ {name:'MÍTICO', emoji:'🐉', cls:'mitico', min:6001, max:7000},
+ {name:'MAESTRO', emoji:'🌟', cls:'maestro', min:7001, max:10000},
+ {name:'DIOS', emoji:'👑', cls:'dios', min:10001, max:999999999}
+];
+function getRankByName(name){ return RANKS.find(r=>r.name===name) || RANKS[0]; }
+function getRank(clicks, user){
+  clicks = parseInt(clicks||0);
+  if(user){ let manual = null; try{ manual = localStorage.getItem('naset_rank_manual_'+user.toLowerCase()); }catch(e){} if(manual && manual!=='AUTO'){ let r = getRankByName(manual); let idx = RANKS.indexOf(r); let next = RANKS[idx+1] || null; return {...r, manual:true, next: next ? next.name : null, nextAt: next ? next.min : null, progress:100, nextEmoji: next ? next.emoji : '', inRank: clicks}; } }
+  for(let i=0;i<RANKS.length;i++){ let r = RANKS[i]; if(clicks>=r.min && clicks<=r.max){ let next = RANKS[i+1] || null; let range = r.max - r.min + 1; let prog = next ? Math.min(100, ((clicks - r.min + 1)/range*100)) : 100; return {...r, manual:false, next: next ? next.name : null, nextAt: next ? next.min : null, progress: prog, nextEmoji: next ? next.emoji : '', inRank: clicks - r.min + 1, totalInRank: range}; } }
+  return {...RANKS[0], manual:false, next:'PLATA', nextAt:1001, progress:0, nextEmoji:'🥈', inRank:0};
+}
+function rankBadgeHTML(clicks, user){ let r = getRank(clicks, user); return '<span class="badge '+r.cls+'">'+r.emoji+' '+r.name+(r.manual?' ⭐': '')+'</span>'; }
+function openView(view){
+  currentView = view; try{ localStorage.setItem('naset_current_view', view); }catch(e){}
+  document.getElementById('mainView').style.display='none'; document.getElementById('viewProfile').style.display='none'; document.getElementById('viewChat').style.display='none'; document.getElementById('viewAdmin').style.display='none'; document.getElementById('viewStats').style.display='none';
+  if(view==='profile'){ document.getElementById('viewProfile').style.display='block'; document.getElementById('viewProfile').querySelector('#profileBoxSolo').innerHTML = buildProfileHTML(); let p = getProfile(currentUser); let eb = document.getElementById('editProfileBoxSolo'); if(eb){ eb.style.display='block'; renderAvatarOptionsSolo(p.avatar||''); document.getElementById('editDisplayNameSolo').value=p.displayName||''; document.getElementById('editBioSolo').value=p.bio||''; } window.scrollTo(0,0); }
+  if(view==='chat'){ document.getElementById('viewChat').style.display='block'; renderChat(); let inp = document.getElementById('chatInput'); if(inp){ inp.disabled=false; inp.readOnly=false; setTimeout(()=>{ inp.focus(); }, 300); } window.scrollTo(0,0); }
+  if(view==='admin'){ if(!isAdmin && !isMod) return; document.getElementById('viewAdmin').style.display='block'; document.getElementById('adminViewTitle').innerText = isMod ? '🛡️ Panel Moderador - DANYXITERS' : '👑 Solo Admin'; document.getElementById('viewAdmin').querySelector('#adminPanelSolo').innerHTML = buildAdminHTML(); let rb = localStorage.getItem('naset_real_balance'); if(rb && !isMod) document.getElementById('adminRealBalanceSolo').value=rb; showAdminSolo(); window.scrollTo(0,0); }
+  if(view==='stats'){ if(!isAdmin && !isMod) return; document.getElementById('viewStats').style.display='block'; document.getElementById('statsViewTitle').innerText = isMod ? '📊 Estadísticas - Moderador' : '📊 Estadísticas - Solo Admin'; renderStats(); window.scrollTo(0,0); }
+}
+function closeView(){ currentView='home'; try{ localStorage.removeItem('naset_current_view'); }catch(e){} document.getElementById('viewProfile').style.display='none'; document.getElementById('viewChat').style.display='none'; document.getElementById('viewAdmin').style.display='none'; document.getElementById('viewStats').style.display='none'; document.getElementById('mainView').style.display='block'; window.scrollTo(0,0); render(); updateProfileUI(); }
+function buildProfileHTML(){
+  let myClicks = parseInt(localStorage.getItem('naset_clicks_'+currentUser.toLowerCase())||'0');
+  let r = getRank(myClicks, currentUser);
+  let myUserObj = users.find(u=>u.user.toLowerCase()===currentUser.toLowerCase());
+  let since = myUserObj ? ((myUserObj.date||'') + ' - ' + (myUserObj.time||'')) : (isAdmin ? 'Tu cuenta privada de Dueño' : isMod ? 'Tu cuenta de Moderador' : 'Hoy');
+  return `<div class="profile-top"><div class="avatar" id="myAvatarSolo">${getAvatarInner(currentUser)}</div><div><h3 style="font-size:18px">${getDisplayName(currentUser)} ${verifiedIcon(currentUser)}</h3><p style="color:#aaa;font-size:12px;margin:2px 0">Tu usuario privado: ${currentUser}</p><p style="color:#aaa;font-size:12px">${getProfile(currentUser).bio||''}</p><div style="margin-top:6px">${rankBadgeHTML(myClicks, currentUser)}</div><p style="font-size:11px;color:#aaa;margin-top:4px">${myClicks} clics ${r.manual ? '• Rango puesto por ti ⭐' : (r.next ? '• Te faltan '+(r.nextAt-myClicks)+' para '+r.nextEmoji+' '+r.next : '• Rango DIOS, el máximo')}</p><p style="font-size:11px;color:#aaa">📅 ${since}</p></div></div><div id="editProfileBoxSolo" style="margin-top:14px;border-top:1px solid #333;padding-top:12px"><p style="font-size:13px;font-weight:bold;margin-bottom:8px">Elige tu foto de perfil:</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px" id="avatarOptionsSolo"></div><label>📸 O sube tu propia foto:</label><input type="file" accept="image/*" onchange="uploadAvatarSolo(event)" style="padding:8px"><label>📝 Tu nombre para mostrar:</label><input id="editDisplayNameSolo" placeholder="Ej: Naset"><label>✍️ Tu biografía:</label><input id="editBioSolo" placeholder="Ej: Gano dinero con NasetLink 🔥" maxlength="80"><button class="green" onclick="saveProfileSolo()">💾 GUARDAR MI PERFIL</button></div>`;
+}
+function getAvatarInner(user){ let p=getProfile(user); if(p.avatar) return '<img src="'+p.avatar+'">'; return user.charAt(0).toUpperCase(); }
+function buildAdminHTML(){
+  let moneyPart = isMod ? `<div style="text-align:center;background:#0a2a0a;border:2px solid #22c55e;border-radius:14px;padding:14px;margin-bottom:12px"><p style="font-size:18px;font-weight:900;color:#22c55e;margin-bottom:6px">🎉 ¡Felicidades!</p><p style="font-size:13px;color:#fff;line-height:1.5">Eres oficialmente <b>Moderador</b> de NASET LINK<br>Tienes acceso al <b>Panel Admin</b> 🛡️</p></div>` : `<label>💰 MI SUELDO REAL DE MONETAG</label><input id="adminRealBalanceSolo" type="number" step="0.01" placeholder="Ej: 1.34"><button class="green" onclick="saveRealBalanceSolo()">💰 GUARDAR MI SUELDO REAL</button>`;
+  let title = isMod ? '🛡️ PANEL MODERADOR - DANYXITERS' : '👑 PANEL ADMIN - Solo tú, dueño';
+  return `<h3 style="text-align:center">${title}</h3><p class="small">Tú eres el dueño, ves todo en la nube.</p>${moneyPart}<label>🏆 SUBIRLE RANGO A ALGUIEN</label><input id="adminRankUserSolo" placeholder="Usuario ej: pedro123"><select id="adminRankSelectSolo"><option value="">Elige rango...</option><option value="BRONCE">🥉 BRONCE</option><option value="PLATA">🥈 PLATA</option><option value="ORO">🥇 ORO</option><option value="DIAMANTE">💎 DIAMANTE</option><option value="ÉLITE">👑 ÉLITE</option><option value="LEYENDA">🔥 LEYENDA</option><option value="MÍTICO">🐉 MÍTICO</option><option value="MAESTRO">🌟 MAESTRO</option><option value="DIOS">👑 DIOS</option></select><button class="green" onclick="adminGiveRankSolo()">🏆 DARLE ESE RANGO</button><button class="sec" onclick="adminRemoveRankSolo()">↩️ QUITAR RANGO MANUAL</button><label>👥 MIEMBROS - DESDE LA NUBE</label><div id="allUsersSolo"></div><label>✅ DAR VERIFICADO AZUL / INFLUENCER</label><input id="verifyUserSolo" placeholder="Usuario ej: pedro123"><div class="flex"><button class="smallbtn" style="background:#1d9bf0" onclick="giveVerifiedSolo('verified')">✓ VERIFICADO</button><button class="smallbtn" style="background:linear-gradient(90deg,#f59e0b,#ef4444,#facc15)" onclick="giveVerifiedSolo('influencer')">⭐ INFLUENCER</button></div><label style="margin-top:12px">❌ QUITAR</label><div class="flex"><button class="sec smallbtn" onclick="removeVerifiedSolo('verified')">❌ QUITAR VERIFICADO</button><button class="sec smallbtn" onclick="removeVerifiedSolo('influencer')">❌ QUITAR INFLUENCER</button></div><div style="margin-top:8px"><button class="danger smallbtn" onclick="removeVerifiedSolo('all')">🧹 QUITAR TODO</button></div><label>🚫 BANEAR PERMANENTEMENTE</label><input id="banUserSolo" placeholder="Usuario a banear"><button class="danger" onclick="banUserSolo()">🚫 BANEAR PERMANENTEMENTE</button><button class="sec" onclick="unbanUserSolo()">✅ DESBANEAR</button>`;
+}
+function setMode(mode){ authMode = mode; let userInput = document.getElementById('user'); let passInput = document.getElementById('pass'); let mainBtn = document.getElementById('mainAuthBtn'); let tabLogin = document.getElementById('btnTabLogin'); let tabReg = document.getElementById('btnTabRegister'); if(mode === 'login'){ userInput.placeholder = 'Usuario:'; passInput.placeholder = 'Contraseña:'; mainBtn.innerText = 'ENTRAR'; mainBtn.className = ''; tabLogin.className = 'active'; tabReg.className = ''; } else { userInput.placeholder = 'Crea tu usuario:'; passInput.placeholder = 'Crea tu contraseña:'; mainBtn.innerText = 'REGISTRARME'; mainBtn.className = ''; tabLogin.className = ''; tabReg.className = 'active-green'; } userInput.value = ''; passInput.value = ''; }
+function submitAuth(){ if(authMode === 'login'){ login(); } else { register(); } }
+function saveRealBalanceSolo(){ if(isMod){ return; } let v = parseFloat(document.getElementById('adminRealBalanceSolo').value); if(isNaN(v)){ alert('Pon tu sueldo real'); return; } localStorage.setItem('naset_real_balance', v); render(); renderStats(); alert('✅ Guardado.'); }
+function getTag(user){ if(!user) return ''; try{ let stored = localStorage.getItem('naset_tag_'+user.toLowerCase()); if(stored === 'none' || stored === 'null' || stored === 'undefined') return ''; if(stored === 'verified' || stored === 'influencer') return stored; return ''; }catch(e){ return ''; } }
+function verifiedIcon(user){ let t = getTag(user); if(t==='verified') return '<span class="verified-badge">✓</span>'; return ''; }
+function getProfile(user){ try{ return JSON.parse(localStorage.getItem('naset_profile_'+user.toLowerCase())||'{}'); }catch(e){ return {}; } }
+function getAvatarHTML(user, cls){ let p = getProfile(user); let letter = user ? user.charAt(0).toUpperCase() : '?'; if(p.avatar){ return '<div class="'+cls+'"><img src="'+p.avatar+'"></div>'; } return '<div class="'+cls+'">'+letter+'</div>'; }
+function getDisplayName(user){ let p = getProfile(user); return p.displayName || user; }
+function renderAvatarOptionsSolo(current){ let html=''; PRESET_AVATARS.forEach(url=>{ html+='<img src="'+url+'" class="avatar-option '+(current===url?'selected':'')+'" onclick="selectAvatar(\''+url+'\', this)">'; }); let el=document.getElementById('avatarOptionsSolo'); if(el) el.innerHTML=html; }
+function selectAvatar(url, el){ selectedAvatar = url; document.querySelectorAll('.avatar-option').forEach(i=>i.classList.remove('selected')); if(el) el.classList.add('selected'); }
+function uploadAvatarSolo(e){ let file = e.target.files[0]; if(!file) return; let reader = new FileReader(); reader.onload = function(ev){ let img = new Image(); img.onload = function(){ let canvas = document.createElement('canvas'); let max = 200; let w = img.width, h = img.height; if(w > h){ if(w > max){ h = h * max / w; w = max; } } else { if(h > max){ w = w * max / h; h = max; } } canvas.width = w; canvas.height = h; canvas.getContext('2d').drawImage(img, 0, 0, w, h); selectedAvatar = canvas.toDataURL('image/jpeg', 0.6); let av=document.getElementById('myAvatarSolo'); if(av) av.innerHTML='<img src="'+selectedAvatar+'">'; }; img.src = ev.target.result; }; reader.readAsDataURL(file); }
+function saveProfileSolo(){ let displayName = document.getElementById('editDisplayNameSolo').value.trim(); let bio = document.getElementById('editBioSolo').value.trim(); let p = getProfile(currentUser); if(selectedAvatar) p.avatar = selectedAvatar; if(displayName) p.displayName = displayName; p.bio = bio; try{ localStorage.setItem('naset_profile_'+currentUser.toLowerCase(), JSON.stringify(p)); }catch(e){ alert('Foto muy pesada, elige una de las de arriba'); return; } selectedAvatar=''; updateProfileUI(); renderChat(); alert('✅ Perfil guardado'); closeView(); }
+function updateProfileUI(){
+  if(!currentUser) return;
+  let p = getProfile(currentUser);
+  let avatarEl = document.getElementById('myAvatar'); if(avatarEl){ if(p.avatar){ avatarEl.innerHTML='<img src="'+p.avatar+'">'; } else { avatarEl.innerHTML = currentUser.charAt(0).toUpperCase(); } }
+  let wn=document.getElementById('welcomeName'); if(wn) wn.innerHTML = (p.displayName||currentUser)+' '+verifiedIcon(currentUser);
+  let pb=document.getElementById('profileBioShow'); if(pb) pb.innerText = p.bio || '';
+  document.getElementById('topbar').style.display='flex';
+  document.getElementById('topUserName').innerText = p.displayName || 'Mi Perfil';
+  let topAv = document.getElementById('topAvatar'); if(p.avatar){ topAv.innerHTML='<img src="'+p.avatar+'">'; } else { topAv.innerHTML = currentUser.charAt(0).toUpperCase(); }
+  document.getElementById('topAdminBtn').style.display = isAdmin ? 'flex' : 'none';
+  document.getElementById('topModBtn').style.display = isMod ? 'flex' : 'none';
+  document.getElementById('topStatsBtn').style.display = (isAdmin || isMod) ? 'flex' : 'none';
+  let myClicks = parseInt(localStorage.getItem('naset_clicks_'+currentUser.toLowerCase())||'0');
+  let r = getRank(myClicks, currentUser);
+  let rb=document.getElementById('rankBadge'); if(rb){ if(isAdmin){ rb.className='badge admin'; rb.innerText='ADMIN • '+r.emoji+' '+r.name+(r.manual?' ⭐':''); } else if(isMod){ rb.className='badge mod'; rb.innerText='MODERADOR • '+r.emoji+' '+r.name+(r.manual?' ⭐':''); } else { rb.className='badge '+r.cls; rb.innerText=r.emoji+' '+r.name+(r.manual?' ⭐':''); } }
+  let rpt=document.getElementById('rankProgressText'); if(rpt){ if(r.manual){ rpt.innerText = r.emoji+' '+r.name+' • '+myClicks+' clics • Rango puesto por ti ⭐'; } else if(r.name==='DIOS'){ rpt.innerText = '👑 DIOS • '+myClicks+' clics • 100% - Máximo'; } else { rpt.innerText = r.emoji+' '+r.name+' • '+r.inRank+' / '+(r.max - r.min + 1)+' clics • '+Math.floor(r.progress)+'%'; } }
+  let rpb=document.getElementById('rankProgressBar'); if(rpb){ rpb.style.width = r.progress+'%'; }
+  let rps=document.getElementById('rankProgressSub'); if(rps){ rps.innerText = r.manual ? 'No sube solo porque tú lo pusiste a mano' : (r.next ? 'Te faltan '+(r.nextAt-myClicks)+' clics para '+r.nextEmoji+' '+r.next : 'Ya eres DIOS'); }
+  let rtEl=document.getElementById('rankTableLive'); if(rtEl){ let html=''; RANKS.forEach(rank=>{ let isMine = rank.name===r.name; let pct = 0, txt=''; if(isMine){ pct = Math.floor(r.progress); txt = r.inRank+' / '+(rank.max - rank.min + 1)+' clics • '+pct+'%'; } else if(myClicks > rank.max){ pct=100; txt='✅ Completado'; } else { pct=0; txt='0 / '+(rank.max - rank.min + 1)+' clics • 0%'; } let bg = isMine ? 'background:#1a2a1a;border:1px solid #22c55e;border-radius:12px;padding:10px;' : ''; html+='<div class="rank-row" style="'+bg+'"><div style="display:flex;justify-content:space-between"><b>'+rank.emoji+' '+rank.name+'</b><span style="font-size:11px;color:'+(isMine?'#22c55e':'#aaa')+'">'+txt+(isMine?' • 👈 Tú estás aquí':'')+'</span></div><div style="font-size:11px;color:#aaa">'+rank.min.toLocaleString()+' - '+(rank.name==='DIOS'?'10,001 para arriba':rank.max.toLocaleString()+' clics')+'</div><div class="rank-bar"><div style="width:'+pct+'%"></div></div></div>'; }); rtEl.innerHTML=html; }
+  let mv=document.getElementById('myVerifiedBadge'); if(mv){ let t=getTag(currentUser); if(t==='verified') mv.innerHTML=' <span class="badge verified">✓ VERIFICADO</span>'; else if(t==='influencer') mv.innerHTML=' <span class="badge influ">⭐ INFLUENCER</span>'; else mv.innerHTML=''; }
+}
+function adminGiveRankSolo(){ let name = document.getElementById('adminRankUserSolo').value.trim(); let rank = document.getElementById('adminRankSelectSolo').value; if(!name || !rank){ alert('Pon el usuario y elige el rango'); return; } localStorage.setItem('naset_rank_manual_'+name.toLowerCase(), rank); showAdminSolo(); renderStats(); updateProfileUI(); renderChat(); alert('🏆 '+name+' ahora es '+rank); }
+function adminRemoveRankSolo(){ let name = document.getElementById('adminRankUserSolo').value.trim(); if(!name){ alert('Pon el usuario'); return; } localStorage.setItem('naset_rank_manual_'+name.toLowerCase(), 'AUTO'); showAdminSolo(); renderStats(); updateProfileUI(); renderChat(); alert('↩️ '+name+' vuelve a subir solo por sus clics'); }
+function giveVerifiedSolo(type){ try{ let name = document.getElementById('verifyUserSolo').value.trim(); if(!name){ alert('Pon el usuario'); return; } let clean = name.toLowerCase(); localStorage.setItem('naset_tag_'+clean, type); showAdminSolo(); renderChat(); updateProfileUI(); renderStats(); alert(type==='verified' ? '✅ '+name+' ahora tiene VERIFICADO' : '⭐ '+name+' ahora es INFLUENCER'); }catch(e){ alert('Error, intenta de nuevo'); } }
+function removeVerifiedSolo(what){ try{ let name = document.getElementById('verifyUserSolo').value.trim(); if(!name){ alert('Pon el usuario'); return; } let clean = name.toLowerCase(); let current = localStorage.getItem('naset_tag_'+clean); if(what==='verified'){ if(current==='verified'){ localStorage.setItem('naset_tag_'+clean, 'none'); alert('❌ Se quitó VERIFICADO a '+name); } else { alert(name+' no tiene verificado'); return; } } if(what==='influencer'){ if(current==='influencer'){ localStorage.setItem('naset_tag_'+clean, 'none'); alert('❌ Se quitó INFLUENCER a '+name); } else { alert(name+' no tiene influencer'); return; } } if(what==='all'){ localStorage.setItem('naset_tag_'+clean, 'none'); alert('🧹 Se quitó TODO a '+name); } showAdminSolo(); renderChat(); updateProfileUI(); renderStats(); }catch(e){ alert('Error, intenta de nuevo'); } }
+function banUserSolo(){ let name = document.getElementById('banUserSolo').value.trim(); if(!name){ alert('Pon el usuario'); return; } if(name.toLowerCase()===ADMIN_USER.toLowerCase() || name.toLowerCase()===MOD_USER.toLowerCase()){ alert('No puedes banear al dueño ni al moderador'); return; } if(!confirm('¿Banear a '+name+' PERMANENTEMENTE?')) return; localStorage.setItem('naset_banned_'+name.toLowerCase(), '1'); let u = users.find(x=>x.user.toLowerCase()===name.toLowerCase()); if(u){ u.banned=true; localStorage.setItem('naset_all_users', JSON.stringify(users)); } showAdminSolo(); alert('🚫 '+name+' BANEADO'); }
+function unbanUserSolo(){ let name = document.getElementById('banUserSolo').value.trim(); if(!name){ alert('Pon el usuario'); return; } localStorage.removeItem('naset_banned_'+name.toLowerCase()); let u = users.find(x=>x.user.toLowerCase()===name.toLowerCase()); if(u){ delete u.banned; localStorage.setItem('naset_all_users', JSON.stringify(users)); } showAdminSolo(); alert('✅ '+name+' desbaneado'); }
+async function showAdminSolo(){ let el=document.getElementById('allUsersSolo'); if(!el) return; let dbUsers = await dbGetUsers(); users = dbUsers.map(u=>({ user: u.username||u.user, pass: u.pass||'', clicks: u.clicks||0, date: u.date||'Hoy', time: u.time||'', timestamp: u.timestamp||0, forcedAdLevel:0 })); if(users.length===0){ el.innerHTML='<p class="small">Aún no hay miembros en la nube. Pídeles que se registren de nuevo con este código nuevo.</p>'; return; } let html=''; users.forEach(u=>{ let lvl=u.forcedAdLevel>0?u.forcedAdLevel:2; let info=getAdInfo(lvl); let clicks = u.clicks||0; let er = isMod ? '' : '$'+((clicks/1000*info.price).toFixed(2)); let myLinksCount = links.filter(l=>l.user===u.user).length; let banned = localStorage.getItem('naset_banned_'+u.user.toLowerCase())==='1' || u.banned; let tag = getTag(u.user); let tagHtml = tag==='verified' ? ' <span class="verified-badge">✓</span>' : ''; if(tag==='influencer') tagHtml += ' <span style="color:#f59e0b;font-size:11px;font-weight:bold">⭐ INFLUENCER</span>'; let bannedHtml = banned ? ' <span style="color:#ff4444;font-weight:bold">🚫 BANEADO</span>' : ''; let p = getProfile(u.user); let bioHtml = p.bio ? '<div style="font-size:12px;color:#aaa">'+p.bio+'</div>' : ''; let cardClass = tag==='influencer' ? 'user-card influencer-card' : 'user-card'; let r = getRank(clicks, u.user); let fullDate = (u.date||'Hoy') + ' - ' + (u.time||''); let earnPart = isMod ? '' : ' • 💰 Ganado: <b style="color:#25D366">'+er+'</b>'; html+='<div class="'+cardClass+'"><div style="display:flex;gap:10px;align-items:center">'+getAvatarHTML(u.user,'avatar-small')+'<div><b>'+(p.displayName||u.user)+'</b> '+tagHtml+' <span style="color:#888;font-size:11px">(usuario real: '+u.user+')</span>'+bannedHtml+'<div style="margin-top:4px">'+rankBadgeHTML(clicks, u.user)+'</div><div style="font-size:11px;color:#FFD700">📅 Desde: '+fullDate+'</div></div></div>'+bioHtml+'<br><span style="font-size:12px;color:#aaa">👆 Clics: <b style="color:#fff">'+clicks+'</b>'+earnPart+' • 🔗 Links: <b style="color:#fff">'+myLinksCount+'</b> • Anuncios: Nivel '+lvl+'</span></div>'; }); el.innerHTML=html; }
+function getUserStats(u){ let lvl = u.forcedAdLevel>0 ? u.forcedAdLevel : 2; let info = getAdInfo(lvl); let clicks = u.clicks||0; let earn = clicks / 1000 * info.price; let myLinksCount = links.filter(l=>l.user===u.user).length; let p = getProfile(u.user); let timeFixed = u.time && u.time !== '' ? u.time : 'Sin hora'; return {user:u.user, displayName:p.displayName||u.user, avatar:p.avatar||'', clicks:clicks, earn:earn, level:lvl, price:info.price, linksCount:myLinksCount, tag:getTag(u.user), banned: localStorage.getItem('naset_banned_'+u.user.toLowerCase())==='1' || u.banned, rank:getRank(clicks, u.user), date: u.date||'Hoy', time: timeFixed, timestamp: u.timestamp||0}; }
+async function renderStats(){
+  if(!isAdmin && !isMod) return;
+  let listEl = document.getElementById('statsList'); if(!listEl) return;
+  let dbUsers = await dbGetUsers();
+  users = dbUsers.map(u=>({ user: u.username || u.user, pass: u.pass||'', clicks: u.clicks||0, date: u.date||'Hoy', time: u.time||'', timestamp: u.timestamp||0, forcedAdLevel:0 }));
+  links = JSON.parse(localStorage.getItem('naset_links')||'[]');
+  let search = (document.getElementById('statsSearch')?.value||'').toLowerCase().trim();
+  let all = users.map(getUserStats).sort((a,b)=> b.earn - a.earn);
+  let filtered = search ? all.filter(s=> s.displayName.toLowerCase().includes(search) || s.user.toLowerCase().includes(search)) : all;
+  let totalClicks = all.reduce((s,x)=> s+x.clicks, 0);
+  let totalPay = all.reduce((s,x)=> s+x.earn, 0);
+  let myReal = parseFloat(localStorage.getItem('naset_real_balance')||'0')||0;
+  let myProfit = myReal - totalPay;
+  let botsBlocked = parseInt(localStorage.getItem('naset_bots_blocked')||'0');
+  document.getElementById('statsTotalUsers').innerText = all.length;
+  document.getElementById('statsTotalClicks').innerText = totalClicks;
+  if(isMod){ document.getElementById('statsMoneyRow').style.display = 'none'; let payCard = document.getElementById('statsTotalPayCard'); if(payCard) payCard.style.display = 'none'; }
+  else { document.getElementById('statsMoneyRow').style.display = 'flex'; let payCard = document.getElementById('statsTotalPayCard'); if(payCard) payCard.style.display = 'block'; document.getElementById('statsTotalPay').innerText = '$'+totalPay.toFixed(2); document.getElementById('statsTotalPayLabel').innerText = 'TIENES QUE PAGAR'; document.getElementById('statsMyReal').innerText = '$'+myReal.toFixed(2); let profitEl = document.getElementById('statsMyProfit'); profitEl.innerText = '$'+myProfit.toFixed(2); profitEl.style.color = myProfit>=0 ? '#22c55e' : '#ff4444'; }
+  document.getElementById('statsBotsBlocked').innerText = botsBlocked;
+  document.getElementById('statsHumans').innerText = all.length;
+  document.getElementById('statsUpdated').innerText = 'Actualizado: '+new Date().toLocaleTimeString()+' • Desde la nube • Cada 5 seg';
+  if(filtered.length===0){ listEl.innerHTML='<p class="small">No hay usuarios todavía con este código nuevo. Los 5 que se registraron antes estaban en el código viejo, pídeles que se registren de nuevo 1 vez y ya te salen para siempre.</p>'; return; }
+  let html=''; filtered.forEach((s,i)=>{ let isTop = i===0 && s.earn>0; let tagHtml = s.tag==='verified' ? ' <span class="verified-badge">✓</span>' : (s.tag==='influencer' ? ' <span style="color:#f59e0b;font-size:11px;font-weight:bold">⭐ INFLUENCER</span>' : ''); let bannedHtml = s.banned ? ' <span style="color:#ff4444;font-weight:bold">🚫 BANEADO</span>' : ''; let medal = i===0 ? '🥇 ' : i===1 ? '🥈 ' : i===2 ? '🥉 ' : (i+1)+'. '; let pct = Math.floor(s.rank.progress); let earnBlock = isMod ? '' : '<div style="flex:1;background:#111;border-radius:10px;padding:10px;text-align:center"><b style="font-size:18px;color:#25D366">$'+s.earn.toFixed(2)+'</b><br><span style="font-size:11px;color:#aaa">LE DEBES PAGAR</span></div>'; let formulaShow = isMod ? '' : 'Fórmula: '+s.clicks+' / 1000 × $'+s.price.toFixed(2)+' = $'+s.earn.toFixed(2)+' • '; html+='<div class="stat-card '+(isTop?'top-earner':'')+'"><div style="display:flex;gap:10px;align-items:center">'+getAvatarHTML(s.user,'avatar-small')+'<div><b>'+medal+s.displayName+'</b>'+tagHtml+bannedHtml+'<div style="font-size:11px;color:#888">Usuario real: '+s.user+' • Anuncios Nivel '+s.level+' • $'+s.price.toFixed(2)+' x 1000</div><div style="font-size:11px;color:#FFD700">📅 Desde: '+s.date+' • ⏰ Hora: '+s.time+'</div><div style="margin-top:4px">'+rankBadgeHTML(s.clicks, s.user)+'</div></div></div><div style="margin-top:8px"><div style="display:flex;justify-content:space-between;font-size:12px"><b>Rango: '+s.rank.emoji+' '+s.rank.name+'</b><span>'+(s.rank.manual?'⭐ Puesto por ti': s.rank.name==='DIOS' ? '100% - Máximo' : s.rank.inRank+' / '+(s.rank.max - s.rank.min + 1)+' • '+pct+'%')+'</span></div><div class="rank-bar"><div style="width:'+pct+'%"></div></div></div><div style="display:flex;gap:8px;margin-top:10px"><div style="flex:1;background:#111;border-radius:10px;padding:10px;text-align:center"><b style="font-size:18px">'+s.clicks+'</b><br><span style="font-size:11px;color:#aaa">CLICS</span></div>'+earnBlock+'<div style="flex:1;background:#111;border-radius:10px;padding:10px;text-align:center"><b style="font-size:18px">'+s.linksCount+'</b><br><span style="font-size:11px;color:#aaa">LINKS</span></div></div><div style="font-size:11px;color:#aaa;margin-top:8px">'+formulaShow+'Rango: '+s.rank.emoji+' '+s.rank.name+'</div></div>'; }); listEl.innerHTML = html;
+}
+const ALL_ADS = [
+ {type:"💰 Dinero", bg:"#f59e0b", img:"https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=300&fit=crop", text:"🔥 ¡GANA $5 DIARIOS DESDE TU CELULAR! 👉 TOCA AQUÍ", link:MONETAG_LINK},
+ {type:"🎮 Juegos", bg:"#22c55e", img:"https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=600&h=300&fit=crop", text:"🎮 ¡JUEGA Y GANA DINERO REAL! 👉 TOCA AQUÍ", link:MONETAG_LINK},
+ {type:"📱 App", bg:"#3b82f6", img:"https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=300&fit=crop", text:"📱 APP QUE PAGA POR VER VIDEOS 👉 TOCA AQUÍ", link:MONETAG_LINK},
+ {type:"🛍️ Ofertas", bg:"#ec4899", img:"https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600&h=300&fit=crop", text:"🛍️ ¡50% DE DESCUENTO SOLO HOY! 👉 TOCA AQUÍ", link:MONETAG_LINK},
+ {type:"🎁 Premio", bg:"#a855f7", img:"https://images.unsplash.com/photo-1513151233558-d860c5398176?w=600&h=300&fit=crop", text:"🎁 ¡GANASTE UN PREMIO! RECLÁMALO 👉 TOCA AQUÍ", link:MONETAG_LINK},
+ {type:"💳 Tarjeta", bg:"#06b6d4", img:"https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=600&h=300&fit=crop", text:"💳 TARJETA CON $10 DE REGALO 👉 TOCA AQUÍ", link:MONETAG_LINK},
+ {type:"📺 Videos", bg:"#ef4444", img:"https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=300&fit=crop", text:"📺 GANA POR VER VIDEOS 5 MIN 👉 TOCA AQUÍ", link:MONETAG_LINK},
+ {type:"💸 Cripto", bg:"#facc15", img:"https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=600&h=300&fit=crop", text:"💸 GANA CRIPTO GRATIS CADA DÍA 👉 TOCA AQUÍ", link:MONETAG_LINK}
+];
+let AD_LEVELS = JSON.parse(localStorage.getItem('naset_ad_levels')||JSON.stringify([{level:2, ads:2, price:1},{level:4, ads:4, price:2.5},{level:6, ads:6, price:4},{level:8, ads:8, price:6},{level:10, ads:10, price:10}]));
+let currentUser = localStorage.getItem('naset_user');
+let links = JSON.parse(localStorage.getItem('naset_links')||'[]');
+let users = JSON.parse(localStorage.getItem('naset_all_users')||'[]');
+let isAdmin = localStorage.getItem('naset_is_admin') === '1';
+let isMod = localStorage.getItem('naset_is_mod') === '1';
+let myAdLevel = parseInt(localStorage.getItem('naset_my_adlevel')||'2');
+let tempAdLevel = myAdLevel;
+let adminAdLink = localStorage.getItem('naset_admin_adlink') || MONETAG_LINK;
+let targetUrl = ''; let totalAds = 2; let currentAd = 1; let timerInt = null;
+let shuffledAds = [];
+let adStartTime = 0;
+const params = new URLSearchParams(location.search);
+const go = params.get('go'); const owner = params.get('u') || ''; const isVisitor = !!go;
+function isAdBot(){ if(!humanInteracted) return true; if(Date.now() - pageLoadTime < 1500) return true; if(Date.now() - lastClickTime < 2000){ rapidClicks++; if(rapidClicks > 4) return true; } else { rapidClicks = 0; } return false; }
+function addClickToOwner(ownerName){
+  if(!ownerName) ownerName = 'NASETLINKOFC';
+  if(isAdBot()){ let b = parseInt(localStorage.getItem('naset_bots_blocked')||'0')+1; localStorage.setItem('naset_bots_blocked', b); return; }
+  lastClickTime = Date.now();
+  let total = parseInt(localStorage.getItem('naset_total_clicks')||'0')+1; localStorage.setItem('naset_total_clicks', total);
+  let key = 'naset_clicks_'+ownerName.toLowerCase(); let c = parseInt(localStorage.getItem(key)||'0')+1; localStorage.setItem(key, c);
+  let u = users.find(x=>x.user.toLowerCase()===ownerName.toLowerCase()); if(u){ u.clicks = c; localStorage.setItem('naset_all_users', JSON.stringify(users)); }
+  addClickToOwnerREAL(ownerName);
+  try{ localStorage.setItem('naset_last_click_at', String(Date.now())); }catch(e){}
+}
+if(isVisitor){ document.getElementById('authBox').style.display='none'; document.getElementById('panel').style.display='none'; document.getElementById('waiter').style.display='block'; try{ targetUrl=atob(go); }catch(e){ targetUrl=''; } totalAds = parseInt(params.get('ad')||'2'); shuffledAds = [...ALL_ADS].sort(()=>Math.random()-0.5).slice(0, totalAds); let info = AD_LEVELS.find(x=>x.level===totalAds) || AD_LEVELS[0]; document.getElementById('adLevelShow').innerText = 'Nivel '+info.level+' • '+info.ads+' variantes diferentes • Dale clic y espera 5 seg en cada una • 🛡️ Solo humanos reales'; renderDots(); updateWaitTitle(); }
+function renderDots(){ let h=''; for(let i=1;i<=Math.min(totalAds,8);i++){ let cls = i<currentAd ? 'dot done' : (i===currentAd ? 'dot current' : 'dot'); h+='<div class="'+cls+'">'+(i<currentAd?'✓':i)+'</div>'; } document.getElementById('dots').innerHTML=h; document.getElementById('barFill').style.width = ((currentAd-1)/Math.max(totalAds,1)*100)+'%'; }
+function getCurrentAd(){ return shuffledAds[currentAd-1] || ALL_ADS[0]; }
+function updateWaitTitle(){ document.getElementById('waitTitle').innerText='Anuncio '+currentAd+' • Infinito 🔥'; document.getElementById('adNum1').innerText=currentAd; let ad = getCurrentAd(); let letters = ['A','B','C','D','E','F','G','H','I','J']; document.getElementById('variantLabel').innerText = '🎲 Variante '+letters[(currentAd-1)%10]+' • Tipo: '+ad.type+' • No se repite'; document.getElementById('adImg').src = ad.img; document.getElementById('adText').innerText = ad.text; document.getElementById('adText').style.background = ad.bg; document.getElementById('waitAdName').innerText = 'Estás viendo: '+ad.type+' • Espera 5 seg y regresa'; }
+// NUEVO - EL <a> YA ABRIÓ EL ANUNCIO, AQUÍ SOLO EMPIEZA LA ESPERA
+function empezarEspera(){
+  adStartTime = Date.now();
+  document.getElementById('stateClick').style.display='none';
+  document.getElementById('stateWait').style.display='block';
+  let t=5; let c=document.getElementById('count'); c.innerText=t;
+  let btn=document.getElementById('returnBtn'); btn.disabled=true; btn.className=''; btn.innerText='🔒 ESPERA 5 SEGUNDOS...';
+  clearInterval(timerInt);
+  timerInt=setInterval(()=>{ t--; c.innerText=t>0?t:'¡Listo!'; if(t<=0){ clearInterval(timerInt); btn.disabled=false; btn.className='returnbtn'; btn.innerText='✅ YA VI EL ANUNCIO, VER OTRO'; } },1000);
+}
+function openAd(){ empezarEspera(); }
+function confirmReturn(){
+  if(Date.now() - adStartTime < 4000){ alert('🛡️ Espera los 5 segundos completos para que te cuente el clic.'); return; }
+  addClickToOwner(owner);
+  // INFINITO - NUNCA SE ACABA
+  currentAd++;
+  if(currentAd > shuffledAds.length){
+    shuffledAds = [...ALL_ADS].sort(()=>Math.random()-0.5);
+    currentAd = 1;
+  }
+  totalAds = 999;
+  document.getElementById('waitTitle').innerText = 'Anuncio ' + currentAd + ' • Sigue ganando 🔥';
+  renderDots(); updateWaitTitle();
+  document.getElementById('stateWait').style.display='none';
+  document.getElementById('stateClick').style.display='block';
+  document.getElementById('stateDone').style.display='block';
+}
+function goToLink(){ if(!targetUrl){ alert('Link no válido'); return; } location.href = targetUrl.startsWith('http')?targetUrl:'https://'+targetUrl; }
+function getAdInfo(level){ return AD_LEVELS.find(x=>x.level===level) || AD_LEVELS[0]; }
+function changeAdLevel(v){ tempAdLevel=v; updateAdUI(); }
+function updateAdUI(){ let info=getAdInfo(tempAdLevel); document.getElementById('adLevelInfo').innerText='Nivel '+info.level+' • '+info.ads+' variantes • '+info.ads*5+' seg • Ganas $'+info.price.toFixed(2)+' por 1000 clics'; document.querySelectorAll('.level-btn').forEach(b=>{ b.classList.toggle('active', parseInt(b.dataset.lv)===tempAdLevel); }); }
+function saveAdLevel(){ myAdLevel=tempAdLevel; localStorage.setItem('naset_my_adlevel', myAdLevel); render(); }
 async function login(){
-  let u = document.getElementById('user').value.trim();
-  let p = document.getElementById('pass').value.trim();
-  if(!u||!p){ alert('Pon usuario y contraseña we'); return; }
-  currentUser = u;
-  localStorage.setItem('naset_user', u);
-  await supabaseClient.from('naset_users').insert([{username:u, password:p}]);
-  entrar();
+  let u=document.getElementById('user').value.trim(); let p=document.getElementById('pass').value.trim();
+  if(!u||!p){ alert('Pon usuario y contraseña'); return; }
+  if(localStorage.getItem('naset_banned_'+u.toLowerCase())==='1'){ alert('🚫 Esta cuenta fue baneada permanentemente.'); return; }
+  if(u.toLowerCase()===ADMIN_USER.toLowerCase()){ if(p!==ADMIN_PASS){ alert('❌ Contraseña incorrecta'); return; } localStorage.setItem('naset_user',ADMIN_USER); localStorage.setItem('naset_is_admin','1'); localStorage.removeItem('naset_is_mod'); isAdmin=true; isMod=false; currentUser=ADMIN_USER; showPanel(); return; }
+  if(u.toLowerCase()===MOD_USER.toLowerCase()){ if(p!==MOD_PASS){ alert('❌ Contraseña incorrecta'); return; } localStorage.setItem('naset_user',MOD_USER); localStorage.setItem('naset_is_mod','1'); localStorage.removeItem('naset_is_admin'); isAdmin=false; isMod=true; currentUser=MOD_USER; showPanel(); return; }
+  let dbUsers = await dbGetUsers();
+  let exists = dbUsers.find(x=>(x.username||'').toLowerCase()===u.toLowerCase());
+  if(!exists){ let local = users.find(x=>x.user.toLowerCase()===u.toLowerCase()); if(local) exists = {username: local.user, pass: local.pass}; }
+  if(!exists){ alert('❌ Esa cuenta NO existe en la nube. Dale a REGISTRARME arriba y crea tu cuenta.'); setMode('register'); return; }
+  if(exists.banned){ alert('🚫 Esta cuenta fue baneada permanentemente.'); return; }
+  if(exists.pass && exists.pass!==p){ alert('❌ Contraseña incorrecta para '+u); return; }
+  localStorage.setItem('naset_user',exists.username); localStorage.removeItem('naset_is_admin'); localStorage.removeItem('naset_is_mod'); isAdmin=false; isMod=false; currentUser=exists.username; showPanel();
 }
-function entrar(){
-  document.getElementById('loginBox').style.display='none';
-  document.getElementById('app').style.display='block';
-  document.getElementById('hola').innerText = currentUser;
-  document.getElementById('total').innerText = localStorage.getItem('naset_mine_'+currentUser)||0;
-  if(currentUser.toLowerCase()==="admin" || currentUser.toLowerCase()==="naset") document.getElementById('adminBox').style.display='block';
-  document.getElementById('adminLink').value = adminAdLink;
-  cargarStats(); cargarChat(); activarRealtime();
+async function register(){
+  let u=document.getElementById('user').value.trim(); let p=document.getElementById('pass').value.trim();
+  if(!u||!p){ alert('Pon usuario y contraseña'); return; }
+  if(localStorage.getItem('naset_banned_'+u.toLowerCase())==='1'){ alert('🚫 Ese usuario está baneado.'); return; }
+  if(u.toLowerCase()===ADMIN_USER.toLowerCase() || u.toLowerCase()===MOD_USER.toLowerCase()){ alert('Ese usuario no se puede usar'); return; }
+  let dbUsers = await dbGetUsers();
+  if(dbUsers.find(x=>(x.username||'').toLowerCase()===u.toLowerCase())){ alert('Ese usuario ya existe en la nube. Dale a Iniciar Sesión arriba'); setMode('login'); return; }
+  await registerUser(u,p); localStorage.setItem('naset_user',u); localStorage.removeItem('naset_is_admin'); localStorage.removeItem('naset_is_mod'); isAdmin=false; isMod=false; currentUser=u; showPanel();
 }
-function salir(){ localStorage.removeItem('naset_user'); location.reload(); }
-if(currentUser){ document.getElementById('user').value=currentUser; entrar(); }
-function guardarAdmin(){
-  adminAdLink = document.getElementById('adminLink').value.trim() || MONETAG_DEFAULT;
-  localStorage.setItem('adminLink', adminAdLink);
-  alert('✅ Link guardado: '+adminAdLink);
+async function registerUser(u,pass){
+  let now = new Date(); let dateStr = now.toLocaleDateString(); let timeStr = now.toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false});
+  let newU = {user:u,pass:pass,email:u+'@nasetlink.app',date:dateStr,time:timeStr,timestamp:now.getTime(),clicks:0,earn:0,forcedAdLevel:0};
+  users.push(newU); localStorage.setItem('naset_all_users',JSON.stringify(users)); await dbSaveUser(newU);
 }
-function showTab(n){
-  document.getElementById('tab1').style.display = n===1?'block':'none';
-  document.getElementById('tab2').style.display = n===2?'block':'none';
-  document.getElementById('tab3').style.display = n===3?'block':'none';
-  document.getElementById('t1').className = n===1?'on':''; document.getElementById('t2').className = n===2?'on':''; document.getElementById('t3').className = n===3?'on':'';
+function logout(){ localStorage.removeItem('naset_user'); localStorage.removeItem('naset_is_admin'); localStorage.removeItem('naset_is_mod'); try{ localStorage.removeItem('naset_current_view'); }catch(e){} location.href='/'; }
+function showPanel(){
+  if(isVisitor) return;
+  document.getElementById('authBox').style.display='none'; document.getElementById('waiter').style.display='none'; document.getElementById('panel').style.display='block';
+  let table=''; AD_LEVELS.forEach(l=>{ table+='<tr><td>Nivel '+l.level+'</td><td>'+l.ads+' variantes</td><td>'+(l.ads*5)+' seg</td><td>$'+l.price.toFixed(2)+'</td></tr>'; });
+  document.getElementById('adTable').innerHTML=table;
+  tempAdLevel=myAdLevel; updateAdUI(); updateProfileUI();
+  if(isAdmin || isMod){ document.getElementById('profileBox').classList.add('gold'); }
+  render(); renderChat();
 }
-const titulos = ["🔥 OFERTA HOT","📱 GANA UN CELULAR","💰 DINERO EXTRA","🎮 JUEGA Y GANA","🛍️ DESCUENTO 90%","🎁 PREMIO SORPRESA","⚡ OFERTA FLASH","🏆 GANA HOY","💎 OFERTA VIP","🚀 GANA RÁPIDO"];
-const descripciones = ["La mejor oferta de hoy, solo por tiempo limitado","Participa ahora, es gratis","Descubre como ganar desde tu celular","El juego que todos están jugando","Descuentos increíbles solo hoy","No te lo pierdas, quedan pocos lugares","Dale clic y descúbrelo ahora mismo"];
-const imagenes = ["https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800","https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800","https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800","https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800","https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800","https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800","https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800","https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=800"];
-let numero = 1, total = parseInt(localStorage.getItem('naset_mine_'+currentUser)||0);
-function crearAnuncioInfinito(){
-  let t = titulos[Math.floor(Math.random()*titulos.length)];
-  let d = descripciones[Math.floor(Math.random()*descripciones.length)];
-  let img = imagenes[Math.floor(Math.random()*imagenes.length)];
-  let extra = Math.floor(Math.random()*999)+1;
-  return {titulo: t+" #"+extra, desc: d, img: img};
+function crear(){ let v=document.getElementById('longUrl').value.trim(); if(!v){ alert('Pega tu link'); return; } if(!v.startsWith('http')) v='https://'+v; let code=btoa(v); let short=location.origin+location.pathname+'?go='+code+'&u='+currentUser+'&ad='+myAdLevel; links.push({orig:v,short:short,clicks:0,user:currentUser,adLevel:myAdLevel}); localStorage.setItem('naset_links',JSON.stringify(links)); document.getElementById('longUrl').value=''; render(); }
+async function render(){
+  let myLinks=links.filter(l=>l.user===currentUser);
+  let myClicks = await dbGetMyClicks(currentUser);
+  localStorage.setItem('naset_clicks_'+currentUser.toLowerCase(), myClicks);
+  let globalClicks = myClicks; try{ let db = await dbGetUsers(); globalClicks = db.reduce((s,x)=> s+(x.clicks||0),0); }catch(e){}
+  let me=users.find(x=>x.user.toLowerCase()===currentUser.toLowerCase());
+  let adLvl=myAdLevel; if(me && me.forcedAdLevel>0) adLvl=me.forcedAdLevel; let info=getAdInfo(adLvl); let autoEarn = (myClicks/1000*info.price);
+  if(isAdmin){ let real = localStorage.getItem('naset_real_balance'); document.getElementById('earnLabel').innerText='MI GANADO • EN VIVO'; document.getElementById('totalEarn').innerText = (real!==null && real!=='' && !isNaN(parseFloat(real))) ? '$'+parseFloat(real).toFixed(2) : '$0.00'; document.getElementById('totalClicks').innerText=globalClicks; document.getElementById('myLevel').innerText='ADMIN'; }
+  else if(isMod){ document.getElementById('earnLabel').innerText='PANEL MODERADOR'; document.getElementById('totalEarn').innerText='🛡️'; document.getElementById('totalClicks').innerText=globalClicks; document.getElementById('myLevel').innerText='MOD'; }
+  else { document.getElementById('earnLabel').innerText='MI GANADO • EN VIVO'; document.getElementById('totalEarn').innerText='$'+autoEarn.toFixed(2); document.getElementById('totalClicks').innerText=myClicks; document.getElementById('myLevel').innerText='Nivel '+adLvl; }
+  let r = getRank(myClicks, currentUser);
+  document.getElementById('levelMsg').innerText='Estás en Nivel '+adLvl+' de anuncios. Tu rango general es '+r.emoji+' '+r.name+'.';
+  document.getElementById('rankMsg').innerText = r.manual ? 'Rango puesto por Admin ⭐' : (r.next ? 'Te faltan '+(r.nextAt-myClicks)+' clics para subir a '+r.nextEmoji+' '+r.next+' • Todo en vivo cada 5 seg' : 'Ya eres DIOS, el máximo 👑');
+  let html=''; myLinks.slice().reverse().forEach(l=>{ html+='<div class="link-item">📎 '+l.short+'<br>📢 Nivel: '+(l.adLevel||2)+' variantes<br><button class="sec" style="margin-top:8px;padding:8px" onclick="navigator.clipboard.writeText(\''+l.short+'\');alert(\'Copiado\')">📋 COPIAR</button></div>'; }); if(!html) html='<p class="small">Aún no tienes links. Crea uno arriba.</p>'; document.getElementById('myLinks').innerHTML=html;
 }
-let anuncioActual = crearAnuncioInfinito();
-function mostrar(){
-  document.getElementById('num').innerText = numero;
-  document.getElementById('adBox').innerHTML = `<h2 style="margin:5px">${anuncioActual.titulo}</h2><img src="${anuncioActual.img}"><p>${anuncioActual.desc}</p><p style="color:#16a34a;font-weight:bold">✅ Anuncio verificado • Dale clic para ganar</p>`;
-  document.getElementById('paso1').style.display='block';
-  document.getElementById('paso2').style.display='none';
-}
-function abrirAnuncio(){
-  if(!humano){ alert('Primero toca la pantalla 1 vez'); return; }
-  let url = adminAdLink || MONETAG_DEFAULT;
-  let a = document.createElement('a'); a.href=url; a.target='_blank'; document.body.appendChild(a); a.click(); a.remove();
-  document.getElementById('paso1').style.display='none';
-  document.getElementById('paso2').style.display='block';
-  let t=5; document.getElementById('count').innerText=t;
-  let btn=document.getElementById('volverBtn'); btn.disabled=true; btn.innerText='🔒 ESPERA 5 SEGUNDOS...';
-  let inter=setInterval(()=>{ t--; document.getElementById('count').innerText=t>0?t:'¡Listo!'; if(t<=0){clearInterval(inter); btn.disabled=false; btn.innerText='✅ YA VI EL ANUNCIO, DAME OTRO ♾️';}},1000);
-}
-async function siguiente(){
-  total++; numero++;
-  localStorage.setItem('naset_mine_'+currentUser, total);
-  document.getElementById('total').innerText=total;
-  document.getElementById('sMine').innerText=total;
-  await supabaseClient.from('naset_clicks').insert([{username:currentUser}]);
-  anuncioActual = crearAnuncioInfinito();
-  mostrar(); cargarStats();
-}
-async function cargarStats(){
-  let u = await supabaseClient.from('naset_users').select('*');
-  let c = await supabaseClient.from('naset_clicks').select('*');
-  document.getElementById('sUsers').innerText = u.data ? u.data.length : 1;
-  document.getElementById('sClicks').innerText = c.data ? c.data.length : total;
-  document.getElementById('sMine').innerText = total;
-  document.getElementById('sToday').innerText = c.data ? c.data.length : total;
-}
-setInterval(()=>{ if(currentUser) cargarStats(); }, 5000);
-async function cargarChat(){
-  let box = document.getElementById('chatBox');
-  let {data} = await supabaseClient.from('naset_chat').select('*').order('created_at',{ascending:true}).limit(50);
-  if(data) box.innerHTML = data.map(c=>`<div class="msg"><b>${c.username}:</b> ${c.message}</div>`).join('') || "<p><small>Aún no hay mensajes</small></p>";
-  box.scrollTop = box.scrollHeight;
-}
-async function enviarChat(){
-  let m = document.getElementById('chatMsg').value.trim();
-  if(!m) return;
-  await supabaseClient.from('naset_chat').insert([{username:currentUser, message:m}]);
-  document.getElementById('chatMsg').value='';
-  cargarChat();
-}
-let realtimeOn = false;
-function activarRealtime(){
-  if(realtimeOn) return;
-  realtimeOn = true;
-  supabaseClient.channel('chat-mundial')
-    .on('postgres_changes', {event:'INSERT', schema:'public', table:'naset_chat'}, (payload)=>{
-      let box = document.getElementById('chatBox');
-      let c = payload.new;
-      box.innerHTML += `<div class="msg"><b>${c.username}:</b> ${c.message}</div>`;
-      box.scrollTop = box.scrollHeight;
-    })
-    .on('postgres_changes', {event:'INSERT', schema:'public', table:'naset_clicks'}, ()=>{ cargarStats(); })
-    .subscribe();
-}
-mostrar();
+document.addEventListener('DOMContentLoaded', function(){ let ci = document.getElementById('chatInput'); if(ci){ ci.addEventListener('keypress', function(e){ if(e.key==='Enter'){ e.preventDefault(); sendChat(); } }); } });
+setInterval(()=>{ if(currentUser && !isVisitor){ links = JSON.parse(localStorage.getItem('naset_links')||'[]'); if(currentView==='home'){ render(); updateProfileUI(); } if(currentView==='admin') showAdminSolo(); if(currentView==='stats') renderStats(); renderChat(); } }, 5000);
+window.addEventListener('storage', (e)=>{ if(e.key && e.key.startsWith('naset_')){ if(currentUser){ render(); renderChat(); updateProfileUI(); if(currentView==='stats') renderStats(); } } });
+if(currentUser && !isVisitor){ showPanel(); let savedView = localStorage.getItem('naset_current_view'); if(savedView && (savedView==='stats' || savedView==='admin' || savedView==='chat' || savedView==='profile')){ setTimeout(()=>{ openView(savedView); }, 300); } }
 </script>
 </body>
 </html>
