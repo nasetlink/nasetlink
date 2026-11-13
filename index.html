@@ -34,12 +34,27 @@ button.adbtn{background:#f59e0b;color:#000;font-size:17px;padding:18px}button.re
 .grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0}
 .ad-preview{background:#000;border:1px dashed #f59e0b;border-radius:14px;padding:12px;text-align:center;margin:12px 0}
 .real-ad{width:100%;border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid #f59e0b;background:#fff;display:block;text-decoration:none}.real-ad img{width:100%;height:160px;object-fit:cover;display:block}.real-ad-text{padding:11px;font-weight:900;color:#000}
-.chat-box{background:#0a0a0a;border:1px solid #333;border-radius:16px;overflow:hidden}.chat-header{background:linear-gradient(90deg,#a855f7,#ec4899);padding:12px;text-align:center;font-weight:bold}.chat-messages{height:420px;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}.chat-messages.full{height:calc(100vh - 220px)}
-.msg{background:#1a1a1a;border-radius:14px;padding:9px 11px;max-width:88%;font-size:13px}.msg.mine{background:#a855f7;align-self:flex-end}
+/* --- CHAT ESTILO WHATSAPP --- */
+.chat-box{background:#0a0a0a;border:1px solid #333;border-radius:16px;overflow:hidden}
+.chat-header{background:linear-gradient(90deg,#a855f7,#ec4899);padding:12px;text-align:center;font-weight:bold;display:flex;align-items:center;justify-content:center;gap:8px}
+.chat-logo{width:36px;height:36px;border-radius:99px;background:#fff;color:#a855f7;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;animation:logoPulse 2s infinite}
+@keyframes logoPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.chat-messages{height:420px;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:#0b141a}
+.chat-messages.full{height:calc(100vh - 260px)}
+.msg{background:#1a1a1a;border-radius:14px;padding:9px 11px;max-width:88%;font-size:13px;animation:msgIn .3s ease;display:flex;gap:8px;align-items:flex-start}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+.msg.mine{background:#a855f7;align-self:flex-end;animation:msgInMine .3s ease}
+@keyframes msgInMine{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
 .chat-input-row{display:flex;gap:8px;padding:10px;background:#111}.chat-input-row input{margin-bottom:0}.chat-input-row button{width:60px;margin-bottom:0}
+.typing-box{display:none;align-items:center;gap:8px;padding:8px 12px;background:#111;font-size:12px;color:#25D366}
+.typing-box.show{display:flex;animation:msgIn .2s ease}
+.typing-dots{display:flex;gap:3px}
+.typing-dots span{width:6px;height:6px;border-radius:99px;background:#25D366;display:block;animation:dotBounce 1s infinite}
+.typing-dots span:nth-child(2){animation-delay:.15s}.typing-dots span:nth-child(3){animation-delay:.3s}
+@keyframes dotBounce{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(-5px);opacity:1}}
 .avatar{width:72px;height:72px;border-radius:99px;object-fit:cover;border:3px solid #a855f7;background:#222;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}
-.avatar-small{width:32px;height:32px;border-radius:99px;border:2px solid #a855f7;background:#222;display:flex;align-items:center;justify-content:center;font-weight:900;overflow:hidden}.avatar-small img{width:100%;height:100%;object-fit:cover}
-.avatar-option{width:56px;height:56px;border-radius:99px;cursor:pointer;border:3px solid transparent}.avatar-option.selected{border-color:#25D366}
+.avatar-small{width:32px;height:32px;border-radius:99px;border:2px solid #a855f7;background:#222;display:flex;align-items:center;justify-content:center;font-weight:900;overflow:hidden;flex-shrink:0}.avatar-small img{width:100%;height:100%;object-fit:cover}
+.avatar-option{width:56px;height:56px;border-radius:99px;cursor:pointer;border:3px solid transparent;object-fit:cover}.avatar-option.selected{border-color:#25D366}
 .close-btn{width:42px;height:42px;border-radius:99px;background:#222;border:1px solid #444;color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-bottom:12px}
 .view-title{font-size:20px;font-weight:900;margin-bottom:12px;text-align:center}.rank-bar{height:12px;background:#222;border-radius:99px;overflow:hidden;margin-top:6px}.rank-bar div{height:100%;background:linear-gradient(90deg,#22c55e,#4ade80)}
 .link-item{background:#000;border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:10px;font-size:12px;word-break:break-all}
@@ -58,7 +73,7 @@ table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;borde
 <p style="color:#aaa;text-align:center;font-size:13px;margin:5px 0 14px">📢 Dale clic al anuncio • Espera 5 seg • Regresa</p>
 
 <div id="viewProfile" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">✏️ Mi Perfil</p><div class="box" id="profileBoxSolo"></div></div>
-<div id="viewChat" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">💬 Chat Mundial - TODOS</p><div class="box" style="padding:0;overflow:hidden"><div class="chat-box"><div class="chat-header">💬 CHAT MUNDIAL • En vivo • <span id="chatCount">0</span> mensajes</div><div class="chat-messages full" id="chatMessages"></div><div class="chat-input-row"><input id="chatInput" placeholder="Escribe algo..." maxlength="200"><button onclick="sendChat()">➤</button></div></div></div></div>
+<div id="viewChat" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">💬 Chat Mundial - TODOS</p><div class="box" style="padding:0;overflow:hidden"><div class="chat-box"><div class="chat-header"><div class="chat-logo">N</div><div>CHAT MUNDIAL • <span id="chatCount">0</span> mensajes<br><span style="font-size:11px;opacity:.9">🟢 En línea ahora</span></div></div><div class="chat-messages full" id="chatMessages"></div><div class="typing-box" id="typingBox"><div class="avatar-small" id="typingAvatar">?</div><span id="typingText">Alguien está escribiendo</span><div class="typing-dots"><span></span><span></span><span></span></div></div><div class="chat-input-row"><input id="chatInput" placeholder="Escribe algo..." maxlength="200" oninput="onTyping()"><button onclick="sendChat()">➤</button></div></div></div></div>
 <div id="viewAdmin" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">👑 Solo Admin</p><div class="box gold" id="adminPanelSolo"></div></div>
 <div id="viewStats" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">📊 Estadísticas</p><div class="box"><div class="stats"><div class="stat"><b id="statsTotalUsers">0</b><span>USUARIOS</span></div><div class="stat"><b id="statsTotalClicks">0</b><span>CLICS</span></div><div class="stat"><b id="statsTotalPay" style="color:#25D366">$0.00</b><span>POR PAGAR</span></div></div><label>🔍 Buscar:</label><input id="statsSearch" placeholder="Nombre..." oninput="renderStats()"><div id="statsList"></div></div></div>
 
@@ -91,12 +106,32 @@ function cleanSlug(t){return t.toLowerCase().trim().replace(/\s+/g,'-').replace(
 function updateSlugPreview(){let v=cleanSlug(document.getElementById('linkName').value||'');document.getElementById('linkName').value=v;document.getElementById('slugPreview').innerText=!v?'Tu link será: .../?tu-nombre':'Tu link será: '+location.origin+location.pathname+'?'+v}
 function verPass(id){let i=document.getElementById(id);i.type=i.type==="password"?"text":"password"}
 let authMode='login';
-const PRESET_AVATARS=["https://i.pravatar.cc/150?img=12","https://i.pravatar.cc/150?img=32","https://i.pravatar.cc/150?img=5","https://i.pravatar.cc/150?img=47","https://i.pravatar.cc/150?img=68","https://i.pravatar.cc/150?img=15"];
-let selectedAvatar='',currentView='home',humanInteracted=false,pageLoadTime=Date.now(),lastClickTime=0,lastChatTime=0;
+// AVATARES PERMANENTES - URLs que nunca se borran, todos los ven
+const PRESET_AVATARS=["https://i.pravatar.cc/150?img=12","https://i.pravatar.cc/150?img=32","https://i.pravatar.cc/150?img=5","https://i.pravatar.cc/150?img=47","https://i.pravatar.cc/150?img=68","https://i.pravatar.cc/150?img=15","https://i.pravatar.cc/150?img=8","https://i.pravatar.cc/150?img=60"];
+let selectedAvatar='',currentView='home',humanInteracted=false,pageLoadTime=Date.now(),lastClickTime=0,lastChatTime=0,lastTypingSent=0,typingUsers={};
+let cloudProfiles={};
 document.addEventListener('mousemove',()=>humanInteracted=true,{passive:true});document.addEventListener('touchstart',()=>humanInteracted=true,{passive:true});document.addEventListener('keydown',()=>humanInteracted=true,{passive:true});
 const H={"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"};
 async function dbGetUsers(){try{let r=await fetch(SUPABASE_URL+"/rest/v1/naset_users?select=*&order=clicks.desc",{headers:H});let j=await r.json();return Array.isArray(j)?j:[]}catch(e){return[]}}
-async function dbSaveUser(u){try{await fetch(SUPABASE_URL+"/rest/v1/naset_users",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({username:u.user,pass:u.pass||"",clicks:u.clicks||0,date:u.date||"",time:u.time||"",timestamp:u.timestamp||Date.now()})})}catch(e){}}
+async function dbSaveUser(u){
+  // Guarda avatar, nombre y bio en la nube para que TODOS lo vean para siempre
+  let prof=getProfile(u.user||currentUser);
+  try{await fetch(SUPABASE_URL+"/rest/v1/naset_users",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({username:u.user,pass:u.pass||"",clicks:u.clicks||0,date:u.date||"",time:u.time||"",timestamp:u.timestamp||Date.now(),avatar:prof.avatar||"",display_name:prof.displayName||"",bio:prof.bio||""})})}catch(e){}
+  // También guarda en tabla de perfiles si existe
+  try{await fetch(SUPABASE_URL+"/rest/v1/naset_profiles",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({username:(u.user||currentUser).toLowerCase(),avatar:prof.avatar||"",display_name:prof.displayName||"",bio:prof.bio||""})})}catch(e){}
+}
+async function fetchCloudProfiles(){
+  try{
+    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_users?select=username,avatar,display_name,bio",{headers:H});
+    let j=await r.json();
+    if(Array.isArray(j)){j.forEach(x=>{if(x.username) cloudProfiles[x.username.toLowerCase()]={avatar:x.avatar||"",displayName:x.display_name||"",bio:x.bio||""}})}
+  }catch(e){}
+  try{
+    let r2=await fetch(SUPABASE_URL+"/rest/v1/naset_profiles?select=*",{headers:H});
+    let j2=await r2.json();
+    if(Array.isArray(j2)){j2.forEach(x=>{if(x.username) cloudProfiles[x.username.toLowerCase()]={avatar:x.avatar||cloudProfiles[x.username.toLowerCase()]?.avatar||"",displayName:x.display_name||"",bio:x.bio||""}})}
+  }catch(e){}
+}
 async function dbSaveLink(slug,target,owner,adLevel){try{await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({slug,target,owner_user:owner,ad_level:adLevel})})}catch(e){}}
 async function dbGetLink(slug){try{let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug)+"&select=*",{headers:H});let j=await r.json();if(Array.isArray(j)&&j[0])return{slug:j[0].slug,target:j[0].target,owner:j[0].owner_user,adLevel:j[0].ad_level||2}}catch(e){}return null}
 function getAllUsers(){try{return JSON.parse(localStorage.getItem('naset_all_users')||'[]')}catch(e){return[]}}
@@ -117,23 +152,30 @@ function getRank(clicks,user){
   return {...RANKS[0],manual:false,next:'PLATA',nextAt:1001,progress:0,nextEmoji:'🥈',inRank:0};
 }
 function rankBadgeHTML(clicks,user){let r=getRank(clicks,user);return '<span class="badge '+r.cls+'">'+r.emoji+' '+r.name+'</span>'}
-function getProfile(user){try{return JSON.parse(localStorage.getItem('naset_profile_'+(user||'').toLowerCase())||'{}')}catch(e){return{}}}
+function getProfile(user){
+  // Primero nube (para que todos vean el logo), luego local
+  let cloud=cloudProfiles[(user||'').toLowerCase()]||{};
+  try{
+    let local=JSON.parse(localStorage.getItem('naset_profile_'+(user||'').toLowerCase())||'{}');
+    return {avatar:cloud.avatar||local.avatar||"",displayName:cloud.displayName||local.displayName||"",bio:cloud.bio||local.bio||""};
+  }catch(e){return cloud}
+}
 function getDisplayName(user){let p=getProfile(user);return p.displayName||user}
 function getTag(user){try{let s=localStorage.getItem('naset_tag_'+(user||'').toLowerCase());if(s==='verified'||s==='influencer')return s} catch(e){} return ''}
 function verifiedIcon(user){return getTag(user)==='verified'?' <span style="background:#1d9bf0;color:#fff;border-radius:99px;padding:1px 5px;font-size:10px">✓</span>':''}
-function openView(view){currentView=view;document.getElementById('mainView').style.display='none';document.getElementById('viewProfile').style.display='none';document.getElementById('viewChat').style.display='none';document.getElementById('viewAdmin').style.display='none';document.getElementById('viewStats').style.display='none';if(view==='profile'){document.getElementById('viewProfile').style.display='block';document.getElementById('profileBoxSolo').innerHTML=buildProfileHTML();let p=getProfile(currentUser);renderAvatarOptionsSolo(p.avatar||'');document.getElementById('editDisplayNameSolo').value=p.displayName||'';document.getElementById('editBioSolo').value=p.bio||'';window.scrollTo(0,0)}if(view==='chat'){document.getElementById('viewChat').style.display='block';renderChat();window.scrollTo(0,0)}if(view==='admin'){if(!isAdmin&&!isMod)return;document.getElementById('viewAdmin').style.display='block';document.getElementById('adminPanelSolo').innerHTML=buildAdminHTML();showAdminSolo();window.scrollTo(0,0)}if(view==='stats'){if(!isAdmin&&!isMod)return;document.getElementById('viewStats').style.display='block';renderStats();window.scrollTo(0,0)}}
+function openView(view){currentView=view;document.getElementById('mainView').style.display='none';document.getElementById('viewProfile').style.display='none';document.getElementById('viewChat').style.display='none';document.getElementById('viewAdmin').style.display='none';document.getElementById('viewStats').style.display='none';if(view==='profile'){document.getElementById('viewProfile').style.display='block';document.getElementById('profileBoxSolo').innerHTML=buildProfileHTML();let p=getProfile(currentUser);renderAvatarOptionsSolo(p.avatar||'');document.getElementById('editDisplayNameSolo').value=p.displayName||'';document.getElementById('editBioSolo').value=p.bio||'';window.scrollTo(0,0)}if(view==='chat'){document.getElementById('viewChat').style.display='block';renderChat();fetchCloudProfiles().then(()=>renderChat());window.scrollTo(0,0)}if(view==='admin'){if(!isAdmin&&!isMod)return;document.getElementById('viewAdmin').style.display='block';document.getElementById('adminPanelSolo').innerHTML=buildAdminHTML();showAdminSolo();window.scrollTo(0,0)}if(view==='stats'){if(!isAdmin&&!isMod)return;document.getElementById('viewStats').style.display='block';renderStats();window.scrollTo(0,0)}}
 function closeView(){currentView='home';document.getElementById('viewProfile').style.display='none';document.getElementById('viewChat').style.display='none';document.getElementById('viewAdmin').style.display='none';document.getElementById('viewStats').style.display='none';document.getElementById('mainView').style.display='block';window.scrollTo(0,0);render();updateProfileUI()}
 function buildProfileHTML(){
   let myClicks=getClicksOf(currentUser);let r=getRank(myClicks,currentUser);
   return `<div style="display:flex;gap:14px;align-items:center"><div class="avatar">${getAvatarInner(currentUser)}</div><div><h3>${getDisplayName(currentUser)}${verifiedIcon(currentUser)}</h3><p style="color:#aaa;font-size:12px">Usuario: ${currentUser}</p><p style="color:#aaa;font-size:12px">${getProfile(currentUser).bio||''}</p><div style="margin-top:6px">${rankBadgeHTML(myClicks,currentUser)}</div><p style="font-size:11px;color:#aaa">${myClicks} clics ${r.next?'• Faltan '+(r.nextAt-myClicks)+' para '+r.nextEmoji+' '+r.next:''}</p></div></div>
-  <div style="margin-top:14px;border-top:1px solid #333;padding-top:12px"><p style="font-weight:bold">Elige tu foto:</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0" id="avatarOptionsSolo"></div><label>📸 O sube tu foto:</label><input type="file" accept="image/*" onchange="uploadAvatarSolo(event)"><label>📝 Nombre para mostrar:</label><input id="editDisplayNameSolo" placeholder="Ej: Naset"><label>✍️ Biografía:</label><input id="editBioSolo" placeholder="Ej: Gano dinero 🔥" maxlength="80"><button class="green" onclick="saveProfileSolo()">💾 GUARDAR MI PERFIL</button></div>
+  <div style="margin-top:14px;border-top:1px solid #333;padding-top:12px"><p style="font-weight:bold">Elige tu logo - Todos lo verán para siempre ✅</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0" id="avatarOptionsSolo"></div><label>📸 O sube tu foto (se comprime y se guarda en nube):</label><input type="file" accept="image/*" onchange="uploadAvatarSolo(event)"><label>📝 Nombre para mostrar:</label><input id="editDisplayNameSolo" placeholder="Ej: Naset"><label>✍️ Biografía:</label><input id="editBioSolo" placeholder="Ej: Gano dinero 🔥" maxlength="80"><button class="green" onclick="saveProfileSolo()">💾 GUARDAR MI PERFIL - TODOS LO VEN</button></div>
   <div style="margin-top:14px;border-top:1px solid #333;padding-top:12px"><p style="font-weight:bold">🔒 Cambiar Contraseña</p><label>Contraseña actual:</label><div class="flex"><input type="password" id="passActualSolo" placeholder="Contraseña actual" style="flex:1"><button style="width:50px" onclick="verPass('passActualSolo')">👁️</button></div><label>Nueva contraseña:</label><div class="flex"><input type="password" id="passNuevaSolo" placeholder="Nueva contraseña" style="flex:1"><button style="width:50px" onclick="verPass('passNuevaSolo')">👁️</button></div><button class="green" onclick="cambiarPassSolo()">🔐 ACTUALIZAR CONTRASEÑA</button></div>`;
 }
 function getAvatarInner(user){let p=getProfile(user);if(p.avatar)return '<img src="'+p.avatar+'">';return user.charAt(0).toUpperCase()}
 function renderAvatarOptionsSolo(cur){let h='';PRESET_AVATARS.forEach(u=>{h+='<img src="'+u+'" class="avatar-option '+(cur===u?'selected':'')+'" onclick="selectAvatar(\''+u+'\',this)">'});let el=document.getElementById('avatarOptionsSolo');if(el)el.innerHTML=h}
 function selectAvatar(url,el){selectedAvatar=url;document.querySelectorAll('.avatar-option').forEach(i=>i.classList.remove('selected'));if(el)el.classList.add('selected')}
 function uploadAvatarSolo(e){let f=e.target.files[0];if(!f)return;let rd=new FileReader();rd.onload=function(ev){let img=new Image();img.onload=function(){let c=document.createElement('canvas');let max=200,w=img.width,h=img.height;if(w>h){if(w>max){h=h*max/w;w=max}}else{if(h>max){w=w*max/h;h=max}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);selectedAvatar=c.toDataURL('image/jpeg',0.6)};img.src=ev.target.result};rd.readAsDataURL(f)}
-function saveProfileSolo(){let dn=document.getElementById('editDisplayNameSolo').value.trim();let bio=document.getElementById('editBioSolo').value.trim();let p=getProfile(currentUser);if(selectedAvatar)p.avatar=selectedAvatar;if(dn)p.displayName=dn;p.bio=bio;try{localStorage.setItem('naset_profile_'+currentUser.toLowerCase(),JSON.stringify(p))}catch(e){alert('Foto muy pesada');return}selectedAvatar='';updateProfileUI();renderChat();alert('✅ Perfil guardado');closeView()}
+async function saveProfileSolo(){let dn=document.getElementById('editDisplayNameSolo').value.trim();let bio=document.getElementById('editBioSolo').value.trim();let p=getProfile(currentUser);if(selectedAvatar)p.avatar=selectedAvatar;if(dn)p.displayName=dn;p.bio=bio;try{localStorage.setItem('naset_profile_'+currentUser.toLowerCase(),JSON.stringify(p))}catch(e){alert('Foto muy pesada, elige un logo de arriba');return}selectedAvatar='';cloudProfiles[currentUser.toLowerCase()]=p;await dbSaveUser({user:currentUser,pass:getAllUsers().find(x=>x.user.toLowerCase()===currentUser.toLowerCase())?.pass||""});updateProfileUI();renderChat();alert('✅ Perfil guardado - Todos lo ven para siempre');closeView()}
 function cambiarPassSolo(){
   let actual=document.getElementById('passActualSolo').value.trim();
   let nueva=document.getElementById('passNuevaSolo').value.trim();
@@ -155,7 +197,7 @@ async function showAdminSolo(){let el=document.getElementById('allUsersSolo');if
 function getUserStats(u){let lvl=2,info=getAdInfo(lvl),c=getClicksOf(u.user);return {user:u.user,displayName:getDisplayName(u.user),clicks:c,earn:c/1000*info.price,level:lvl,price:info.price,tag:getTag(u.user),banned:localStorage.getItem('naset_banned_'+u.user.toLowerCase())==='1',rank:getRank(c,u.user)}}
 async function renderStats(){if(!isAdmin&&!isMod)return;let all=getAllUsers().map(getUserStats).sort((a,b)=>b.earn-a.earn);let search=(document.getElementById('statsSearch')?.value||'').toLowerCase();let f=search?all.filter(s=>s.displayName.toLowerCase().includes(search)||s.user.toLowerCase().includes(search)):all;let totalC=all.reduce((s,x)=>s+x.clicks,0),totalP=all.reduce((s,x)=>s+x.earn,0);document.getElementById('statsTotalUsers').innerText=all.length;document.getElementById('statsTotalClicks').innerText=totalC;document.getElementById('statsTotalPay').innerText='$'+totalP.toFixed(2);let list=document.getElementById('statsList');if(f.length===0){list.innerHTML='<p class="small">Sin usuarios</p>';return}list.innerHTML=f.map((s,i)=>'<div style="background:#000;border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:10px"><b>'+(i+1)+'. '+s.displayName+'</b> <span style="color:#888">'+s.user+'</span><br>'+rankBadgeHTML(s.clicks,s.user)+'<br>👆 '+s.clicks+' clics • 💰 $'+s.earn.toFixed(2)+'</div>').join('')}
 
-// --- CHAT GLOBAL DE VERDAD - SUPABASE ---
+// --- CHAT GLOBAL + ESCRIBIENDO ESTILO WHATSAPP ---
 async function fetchChatCloud(){
   try{
     let r=await fetch(SUPABASE_URL+"/rest/v1/naset_chat?select=*&order=created_at.asc&limit=100",{headers:H});
@@ -164,8 +206,41 @@ async function fetchChatCloud(){
       return j.map(m=>({user:m.username||m.user||'?',text:String(m.text||'').slice(0,200),time:m.created_at?new Date(m.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):''}));
     }
   }catch(e){}
-  // Si no hay nube, usa local como respaldo
   try{return JSON.parse(localStorage.getItem('naset_chat')||'[]')}catch(e){return[]}
+}
+async function onTyping(){
+  if(!currentUser) return;
+  let now=Date.now(); if(now-lastTypingSent<1500) return; lastTypingSent=now;
+  // Avisar a todos que estás escribiendo - tabla naset_typing
+  try{await fetch(SUPABASE_URL+"/rest/v1/naset_typing",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({username:currentUser,updated_at:new Date().toISOString()})})}catch(e){}
+  // Respaldo local para que se vea aunque no haya tabla
+  localStorage.setItem('naset_typing_'+currentUser.toLowerCase(), String(Date.now()));
+}
+async function checkTyping(){
+  let box=document.getElementById('typingBox'); if(!box) return;
+  let found=null;
+  try{
+    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_typing?select=*&order=updated_at.desc&limit=10",{headers:H});
+    let j=await r.json();
+    if(Array.isArray(j)){
+      let now=Date.now();
+      for(let t of j){
+        let u=t.username||t.user; if(!u||u.toLowerCase()===currentUser?.toLowerCase()) continue;
+        let diff=now-new Date(t.updated_at).getTime();
+        if(diff<4000){found=u;break}
+      }
+    }
+  }catch(e){}
+  // Respaldo: revisar local de otros usuarios en este mismo navegador no aplica, pero si hay un solo usuario, no mostrar
+  if(found){
+    let p=getProfile(found);
+    let av=document.getElementById('typingAvatar');
+    if(av) av.innerHTML=p.avatar?'<img src="'+p.avatar+'">':getDisplayName(found).charAt(0).toUpperCase();
+    document.getElementById('typingText').innerText=getDisplayName(found)+' está escribiendo';
+    box.classList.add('show');
+  } else {
+    box.classList.remove('show');
+  }
 }
 async function sendChat(){
   let inp=document.getElementById('chatInput');
@@ -174,11 +249,8 @@ async function sendChat(){
   if(!currentUser){alert('Inicia sesión para chatear');return}
   let now=Date.now(); if(now-lastChatTime<1000) return; lastChatTime=now;
   inp.value='';
-  // 1. Guardar en nube para que TODOS lo vean
-  try{
-    await fetch(SUPABASE_URL+"/rest/v1/naset_chat",{method:"POST",headers:H,body:JSON.stringify({username:currentUser,text:txt})});
-  }catch(e){}
-  // 2. Respaldo local
+  document.getElementById('typingBox')?.classList.remove('show');
+  try{await fetch(SUPABASE_URL+"/rest/v1/naset_chat",{method:"POST",headers:H,body:JSON.stringify({username:currentUser,text:txt})})}catch(e){}
   let chat=JSON.parse(localStorage.getItem('naset_chat')||'[]');
   chat.push({user:currentUser,text:txt,time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
   localStorage.setItem('naset_chat',JSON.stringify(chat.slice(-100)));
@@ -186,6 +258,7 @@ async function sendChat(){
 }
 async function renderChat(){
   let box=document.getElementById('chatMessages'); if(!box) return;
+  await fetchCloudProfiles();
   let chat=await fetchChatCloud();
   let cc=document.getElementById('chatCount'); if(cc) cc.innerText=chat.length;
   if(chat.length===0){box.innerHTML='<p class="small">Sé el primero en hablar 👋</p>';return}
@@ -194,7 +267,7 @@ async function renderChat(){
     let c=getClicksOf(m.user); let r=getRank(c,m.user);
     let p=getProfile(m.user);
     let av=p.avatar?'<div class="avatar-small"><img src="'+p.avatar+'"></div>':'<div class="avatar-small">'+(getDisplayName(m.user).charAt(0).toUpperCase())+'</div>';
-    return '<div class="msg '+(isMine?'mine':'')+'">'+av+'<div><b>'+getDisplayName(m.user)+' '+r.emoji+' '+r.name+'</b><br>'+m.text+'<div style="font-size:10px;opacity:.7">'+(m.time||'')+'</div></div></div>';
+    return '<div class="msg '+(isMine?'mine':'')+'">'+av+'<div><b>'+getDisplayName(m.user)+' '+r.emoji+' '+r.name+'</b><br>'+m.text+'<div style="font-size:10px;opacity:.7">'+(m.time||'')+' ✓✓</div></div></div>';
   }).join('');
   box.scrollTop=box.scrollHeight;
 }
@@ -241,6 +314,10 @@ async function register(){
   if(db.find(x=>(x.username||'').toLowerCase()===u.toLowerCase())){alert('Ese usuario ya existe. Dale a Iniciar Sesión');setMode('login');return}
   let now=new Date();let newU={user:u,pass:p,date:now.toLocaleDateString(),time:now.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}),timestamp:now.getTime(),clicks:0,forcedAdLevel:0};
   all.push(newU);saveAllUsers(all);setClicksOf(u,0);
+  // Avatar por defecto permanente para que todos lo vean desde el inicio
+  let defAvatar=PRESET_AVATARS[Math.floor(Math.random()*PRESET_AVATARS.length)];
+  localStorage.setItem('naset_profile_'+u.toLowerCase(),JSON.stringify({avatar:defAvatar,displayName:u,bio:""}));
+  cloudProfiles[u.toLowerCase()]={avatar:defAvatar,displayName:u,bio:""};
   try{await dbSaveUser(newU)}catch(e){}
   localStorage.setItem('naset_user',u);localStorage.removeItem('naset_is_admin');localStorage.removeItem('naset_is_mod');isAdmin=false;isMod=false;currentUser=u;
   alert('✅ Registrado! Bienvenido '+u);showPanel();
@@ -354,7 +431,7 @@ function showPanel(){
     else{localStorage.removeItem('naset_user');currentUser=null}
   }
   setInterval(()=>{if(currentUser)render()},5000);
-  setInterval(()=>{if(currentView==='chat')renderChat()},3000);
+  setInterval(()=>{if(currentView==='chat'){renderChat();checkTyping()}},2000);
 })();
 </script>
 </body>
