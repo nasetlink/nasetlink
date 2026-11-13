@@ -79,6 +79,9 @@ table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;borde
 <div id="mainView">
 <div class="box" id="waiter" style="display:none"><p style="text-align:center;font-weight:bold;font-size:18px" id="waitTitle">Anuncio 1</p><div class="step-dots" id="dots"></div><div class="bar"><div id="barFill"></div></div><p class="small" id="adLevelShow"></p><div id="stateClick"><div class="ad-preview"><p>📢 ANUNCIO <span id="adNum1">1</span></p><a class="real-ad" href="https://uplcm.com/4/12244247" target="_blank" onclick="empezarEspera()"><img id="adImg" src="" alt="Anuncio"><div class="real-ad-text" id="adText">Cargando...</div></a></div><a href="https://uplcm.com/4/12244247" target="_blank" onclick="empezarEspera()" style="text-decoration:none"><button class="adbtn">👉 DARLE CLIC AL ANUNCIO</button></a></div><div id="stateWait" style="display:none"><p style="text-align:center">⏳ Viendo anuncio...</p><div id="count">5</div><button disabled id="returnBtn" onclick="confirmReturn()">🔒 ESPERA 5 SEGUNDOS...</button></div><div id="stateDone" style="display:none"><p style="text-align:center;font-size:22px">✅ ¡Completaste!</p><button class="green" onclick="goToLink()">🔗 IR AL LINK DIRECTO</button></div></div>
 
+<div id="loadingLink" style="display:none" class="box"><p style="text-align:center;font-weight:bold">⏳ Buscando tu anuncio...</p><p class="small" id="loadingLinkText">Espera un momento</p></div>
+<div id="linkNotFound" style="display:none" class="box"><h3 style="text-align:center">😕 No encontramos ese link</h3><p class="small" id="notFoundSlug"></p><p class="small">Puede que el dueño lo haya borrado o el link esté mal copiado. Intenta de nuevo.</p><button class="green" onclick="retryLink()">🔄 INTENTAR DE NUEVO</button><button class="sec" onclick="goHomeFromNotFound()">🏠 IR A NASET LINK</button></div>
+
 <div class="box" id="authBox"><h3 style="text-align:center;margin-bottom:14px">👋 Bienvenido a NasetLink</h3><div class="auth-tabs"><button id="btnTabLogin" class="active" onclick="setMode('login')">Iniciar Sesión</button><button id="btnTabRegister" onclick="setMode('register')">Registrarme</button></div><input id="user" placeholder="Usuario:"><input id="pass" type="password" placeholder="Contraseña:"><button id="mainAuthBtn" onclick="submitAuth()">ENTRAR</button><button class="sec" onclick="joinWhatsApp()" style="background:#25D366;color:#fff">💬 Unirse al Grupo de WhatsApp</button></div>
 
 <div id="panel" style="display:none">
@@ -130,8 +133,39 @@ async function fetchCloudProfiles(){
     if(Array.isArray(j2)){j2.forEach(x=>{if(x.username){cloudProfiles[x.username.toLowerCase()]={avatar:x.avatar||cloudProfiles[x.username.toLowerCase()]?.avatar||"",displayName:x.display_name||"",bio:x.bio||""}; if(x.is_verified) cloudVerified[x.username.toLowerCase()]=true;}})}
   }catch(e){}
 }
-async function dbSaveLink(slug,target,owner,adLevel){try{await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({slug,target,owner_user:owner,ad_level:adLevel,clicks:0})})}catch(e){}}
-async function dbGetLink(slug){try{let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug)+"&select=*",{headers:H});let j=await r.json();if(Array.isArray(j)&&j[0])return{slug:j[0].slug,target:j[0].target,owner:j[0].owner_user,adLevel:j[0].ad_level||2,clicks:j[0].clicks||0}}catch(e){}return null}
+async function dbSaveLink(slug,target,owner,adLevel){
+  slug=cleanSlug(slug);
+  try{await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({slug:slug,target:target,owner_user:owner,ad_level:adLevel,clicks:0})})}catch(e){}
+}
+// ARREGLO ANUNCIOS: BUSCA SIN IMPORTAR MAYÚSCULAS Y REINTENTA EN LA NUBE
+async function dbGetLink(slug){
+  slug=cleanSlug(decodeURIComponent(slug||''));
+  if(!slug) return null;
+  // 1) Intento exacto
+  try{
+    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug)+"&select=*",{headers:H});
+    let j=await r.json();
+    if(Array.isArray(j)&&j[0]) return {slug:j[0].slug,target:j[0].target,owner:j[0].owner_user,adLevel:j[0].ad_level||2,clicks:j[0].clicks||0};
+  }catch(e){}
+  // 2) Intento sin importar mayúsculas: trae todos y compara en minúscula
+  try{
+    let r2=await fetch(SUPABASE_URL+"/rest/v1/naset_links?select=*&limit=1000",{headers:H});
+    let j2=await r2.json();
+    if(Array.isArray(j2)){
+      let f=j2.find(x=>(x.slug||'').toLowerCase()===slug.toLowerCase());
+      if(f) return {slug:f.slug,target:f.target,owner:f.owner_user,adLevel:f.ad_level||2,clicks:f.clicks||0};
+    }
+  }catch(e){}
+  return null;
+}
+async function dbGetLinkWithRetry(slug){
+  for(let i=0;i<3;i++){
+    let found=await dbGetLink(slug);
+    if(found) return found;
+    await new Promise(res=>setTimeout(res,800));
+  }
+  return null;
+}
 function getLinkClicks(slug){return parseInt(localStorage.getItem('naset_link_clicks_'+slug.toLowerCase())||'0')}
 function setLinkClicks(slug,v){localStorage.setItem('naset_link_clicks_'+slug.toLowerCase(),String(v))}
 async function syncLinkClicksFromCloud(){
@@ -161,7 +195,7 @@ async function addClickToThisLink(slug,ownerName){
     let cur=await dbGetLink(slug);
     let cloudC=cur?parseInt(cur.clicks||0):0;
     let finalC=Math.max(c,cloudC+1);
-    await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({clicks:finalC})});
+    await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(cleanSlug(slug)),{method:"PATCH",headers:H,body:JSON.stringify({clicks:finalC})});
     setLinkClicks(slug,finalC);
     if(ll) ll.clicks=finalC;
   }catch(e){}
@@ -198,12 +232,10 @@ function getTag(user){
   try{let s=localStorage.getItem('naset_tag_'+(user||'').toLowerCase());if(s==='verified'||s==='influencer')return s} catch(e){} return ''
 }
 function verifiedIcon(user){return getTag(user)==='verified'?' <span style="background:#1d9bf0;color:#fff;border-radius:99px;padding:1px 5px;font-size:10px">✓</span>':''}
-// ARREGLO 1: LA FOTO YA NO TE MANDA A TU MISMO LUGAR, TE ABRE OTRA PESTAÑA DIFERENTE (Mi Perfil)
 function openProfileFromAvatar(e){
   if(e) e.stopPropagation();
   if(!currentUser){alert('Inicia sesión');return}
   prevView=currentView;
-  // Cierra el menú si está abierto y abre la vista de perfil como pestaña aparte
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('overlay').classList.remove('show');
   openView('profile');
@@ -231,7 +263,6 @@ function closeView(){
   document.getElementById('viewAdmin').style.display='none';
   document.getElementById('viewStats').style.display='none';
   document.getElementById('mainView').style.display='block';
-  // Si venías de estar viendo un anuncio (waiter), vuelve ahí, no a tu propio panel
   if(prevView==='waiter' || isVisitor){
     currentView='waiter';
     document.getElementById('authBox').style.display='none';
@@ -366,8 +397,34 @@ let AD_LEVELS=JSON.parse(localStorage.getItem('naset_ad_levels')||JSON.stringify
 let currentUser=localStorage.getItem('naset_user');let links=JSON.parse(localStorage.getItem('naset_links')||'[]');let users=getAllUsers();let isAdmin=localStorage.getItem('naset_is_admin')==='1';let isMod=localStorage.getItem('naset_is_mod')==='1';let myAdLevel=parseInt(localStorage.getItem('naset_my_adlevel')||'2');let tempAdLevel=myAdLevel;let targetUrl='';let totalAds=2,currentAd=1,timerInt=null,shuffledAds=[],adStartTime=0,originalTotalAds=2;
 const params=new URLSearchParams(location.search);const go=params.get('go');const ownerParam=params.get('u')||'';let slugParam='';for(let k of params.keys()){if(k!=='go'&&k!=='u'&&k!=='ad'){slugParam=k;break}}
 let slugData=null,isVisitor=false,owner='';
+function retryLink(){location.reload()}
+function goHomeFromNotFound(){location.href='/'}
 async function initSlug(){
-  if(slugParam){isVisitor=true;currentSlugForClicks=slugParam;let local=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');if(local[slugParam])slugData=local[slugParam];else slugData=await dbGetLink(slugParam);if(!slugData){document.body.innerHTML='<div style="padding:40px;text-align:center"><h2>😕 Link no encontrado</h2><p>'+slugParam+' no existe</p><p><a href="/" style="color:#a855f7">Ir a NASET LINK</a></p></div>';return false}targetUrl=slugData.target;owner=slugData.owner||'NASETLINKOFC';totalAds=parseInt(slugData.adLevel||2);originalTotalAds=totalAds;document.getElementById('authBox').style.display='none';document.getElementById('panel').style.display='none';document.getElementById('waiter').style.display='block';shuffledAds=[...ALL_ADS].sort(()=>Math.random()-0.5).slice(0,totalAds);let info=AD_LEVELS.find(x=>x.level===totalAds)||AD_LEVELS[0];document.getElementById('adLevelShow').innerText='Nivel '+info.level+' • '+info.ads+' anuncios • Espera 5 seg';renderDots();updateWaitTitle();return true}
+  if(slugParam){
+    isVisitor=true;currentSlugForClicks=cleanSlug(slugParam);
+    // Muestra cargando, no "no existe" de una
+    document.getElementById('authBox').style.display='none';
+    document.getElementById('panel').style.display='none';
+    document.getElementById('loadingLink').style.display='block';
+    document.getElementById('loadingLinkText').innerText='Buscando: '+currentSlugForClicks+'...';
+    let local=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
+    // Busca en local sin importar mayúsculas
+    let localKey=Object.keys(local).find(k=>k.toLowerCase()===currentSlugForClicks.toLowerCase());
+    if(localKey) slugData=local[localKey];
+    else slugData=await dbGetLinkWithRetry(currentSlugForClicks);
+    document.getElementById('loadingLink').style.display='none';
+    if(!slugData){
+      document.getElementById('linkNotFound').style.display='block';
+      document.getElementById('notFoundSlug').innerText='Link: ?'+currentSlugForClicks;
+      return false;
+    }
+    targetUrl=slugData.target;owner=slugData.owner||'NASETLINKOFC';totalAds=parseInt(slugData.adLevel||2);originalTotalAds=totalAds;
+    document.getElementById('waiter').style.display='block';
+    shuffledAds=[...ALL_ADS].sort(()=>Math.random()-0.5).slice(0,totalAds);
+    let info=AD_LEVELS.find(x=>x.level===totalAds)||AD_LEVELS[0];
+    document.getElementById('adLevelShow').innerText='Nivel '+info.level+' • '+info.ads+' anuncios • Espera 5 seg';
+    renderDots();updateWaitTitle();return true;
+  }
   if(go){isVisitor=true;owner=ownerParam;try{targetUrl=atob(go)}catch(e){targetUrl=''}totalAds=parseInt(params.get('ad')||'2');originalTotalAds=totalAds;document.getElementById('authBox').style.display='none';document.getElementById('panel').style.display='none';document.getElementById('waiter').style.display='block';shuffledAds=[...ALL_ADS].sort(()=>Math.random()-0.5).slice(0,totalAds);renderDots();updateWaitTitle();return true}
   return false;
 }
@@ -381,7 +438,6 @@ async function addClickToOwner(ownerName){
   if(currentSlugForClicks) await addClickToThisLink(currentSlugForClicks,ownerName);
   render();
 }
-// ARREGLO 2: YA NO SALEN 8 PUNTOS, SALEN EXACTOS LOS QUE PUSISTE (2 = 2, 4 = 4)
 function renderDots(){
   let h='';
   for(let i=1;i<=originalTotalAds;i++){
@@ -392,7 +448,6 @@ function renderDots(){
   document.getElementById('barFill').style.width=((currentAd-1)/Math.max(originalTotalAds,1)*100)+'%';
 }
 function getCurrentAd(){return shuffledAds[currentAd-1]||ALL_ADS[0]}
-// ARREGLO 3: YA NO DICE • INFINITO
 function updateWaitTitle(){
   document.getElementById('waitTitle').innerText='Anuncio '+currentAd+' de '+originalTotalAds;
   document.getElementById('adNum1').innerText=currentAd;
@@ -403,21 +458,17 @@ function empezarEspera(){
   adStartTime=Date.now();document.getElementById('stateClick').style.display='none';document.getElementById('stateWait').style.display='block';document.getElementById('stateDone').style.display='none';
   let t=5,c=document.getElementById('count');c.innerText=t;let btn=document.getElementById('returnBtn');btn.disabled=true;btn.className='';btn.innerText='🔒 ESPERA 5 SEGUNDOS...';clearInterval(timerInt);timerInt=setInterval(()=>{t--;c.innerText=t>0?t:'¡Listo!';if(t<=0){clearInterval(timerInt);btn.disabled=false;btn.className='returnbtn';btn.innerText=(currentAd>=originalTotalAds?'✅ YA VI EL ANUNCIO, IR AL LINK':'✅ YA VI EL ANUNCIO, VER SIGUIENTE')}},1000)
 }
-// ARREGLO 3: CUANDO ACABAS LOS 2, YA NO SALE "VER OTRO", SOLO "IR AL LINK DIRECTO"
 function confirmReturn(){
   if(Date.now()-adStartTime<4000){alert('🛡️ Espera los 5 seg completos');return}
   addClickToOwner(owner);
-  // Si ya era el último anuncio, TERMINA AQUÍ, no sigue en bucle
   if(currentAd>=originalTotalAds){
     document.getElementById('stateWait').style.display='none';
     document.getElementById('stateClick').style.display='none';
     document.getElementById('stateDone').style.display='block';
     document.getElementById('barFill').style.width='100%';
-    // Marca todos los puntos como hechos
     currentAd=originalTotalAds+1; renderDotsFinal();
     return;
   }
-  // Si aún falta, pasa al siguiente
   currentAd++;
   renderDots();updateWaitTitle();
   document.getElementById('stateWait').style.display='none';
@@ -485,10 +536,12 @@ async function crear(){
   let short=location.origin+location.pathname+'?'+slug;
   custom[slug]={target:v,owner:currentUser,adLevel:myAdLevel};localStorage.setItem('naset_custom_links',JSON.stringify(custom));
   await dbSaveLink(slug,v,currentUser,myAdLevel);
+  // Espera un poquito para que la nube lo guarde antes de decir que ya está
+  await new Promise(r=>setTimeout(r,600));
   setLinkClicks(slug,0);
   links.push({orig:v,short:short,slug:slug,clicks:0,user:currentUser,adLevel:myAdLevel,createdAt:Date.now()});localStorage.setItem('naset_links',JSON.stringify(links));
   document.getElementById('linkName').value='';document.getElementById('longUrl').value='';document.getElementById('slugPreview').innerText='Tu link será: .../?tu-nombre';
-  render();alert('✅ Link creado: '+short);
+  render();alert('✅ Link creado y guardado en la nube: '+short+'\nYa lo puedes compartir, no dice que no existe');
 }
 function showPanel(){
   if(isVisitor)return;
@@ -499,10 +552,11 @@ function showPanel(){
 (async()=>{
   let isLink=await initSlug();
   if(isLink){
-    // Si eres visitante y estás logueado, muestra tu foto arriba para que puedas ir a tu perfil en otra pestaña
     if(currentUser){document.getElementById('headerBar').style.display='flex';updateProfileUI();}
     return;
   }
+  // Si era un link pero no se encontró, NO borres la página, deja el botón de reintentar
+  if(slugParam){return;}
   if(currentUser){
     let all=getAllUsers();let me=all.find(x=>x.user.toLowerCase()===currentUser.toLowerCase());
     if(me){isAdmin=currentUser.toLowerCase()===ADMIN_USER.toLowerCase();isMod=currentUser.toLowerCase()===MOD_USER.toLowerCase();showPanel()}
