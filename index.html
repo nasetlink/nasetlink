@@ -58,7 +58,7 @@ table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;borde
 <p style="color:#aaa;text-align:center;font-size:13px;margin:5px 0 14px">📢 Dale clic al anuncio • Espera 5 seg • Regresa</p>
 
 <div id="viewProfile" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">✏️ Mi Perfil</p><div class="box" id="profileBoxSolo"></div></div>
-<div id="viewChat" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">💬 Chat Mundial - TODOS</p><div class="box" style="padding:0;overflow:hidden"><div class="chat-box"><div class="chat-header">💬 CHAT MUNDIAL • En vivo</div><div class="chat-messages full" id="chatMessages"></div><div class="chat-input-row"><input id="chatInput" placeholder="Escribe algo..." maxlength="200"><button onclick="sendChat()">➤</button></div></div></div></div>
+<div id="viewChat" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">💬 Chat Mundial - TODOS</p><div class="box" style="padding:0;overflow:hidden"><div class="chat-box"><div class="chat-header">💬 CHAT MUNDIAL • En vivo • <span id="chatCount">0</span> mensajes</div><div class="chat-messages full" id="chatMessages"></div><div class="chat-input-row"><input id="chatInput" placeholder="Escribe algo..." maxlength="200"><button onclick="sendChat()">➤</button></div></div></div></div>
 <div id="viewAdmin" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">👑 Solo Admin</p><div class="box gold" id="adminPanelSolo"></div></div>
 <div id="viewStats" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">📊 Estadísticas</p><div class="box"><div class="stats"><div class="stat"><b id="statsTotalUsers">0</b><span>USUARIOS</span></div><div class="stat"><b id="statsTotalClicks">0</b><span>CLICS</span></div><div class="stat"><b id="statsTotalPay" style="color:#25D366">$0.00</b><span>POR PAGAR</span></div></div><label>🔍 Buscar:</label><input id="statsSearch" placeholder="Nombre..." oninput="renderStats()"><div id="statsList"></div></div></div>
 
@@ -154,9 +154,50 @@ function unbanUserSolo(){let n=document.getElementById('banUserSolo').value.trim
 async function showAdminSolo(){let el=document.getElementById('allUsersSolo');if(!el)return;let all=getAllUsers();if(all.length===0){el.innerHTML='<p class="small">Sin miembros aún</p>';return}let h='';all.forEach(u=>{let c=getClicksOf(u.user);let info=getAdInfo(2);h+='<div style="background:#000;border:1px solid #333;border-radius:12px;padding:10px;margin-bottom:8px"><b>'+(getDisplayName(u.user))+'</b> <span style="color:#888;font-size:11px">('+u.user+')</span><br>'+rankBadgeHTML(c,u.user)+' • '+c+' clics • $'+(c/1000*info.price).toFixed(2)+'</div>'});el.innerHTML=h}
 function getUserStats(u){let lvl=2,info=getAdInfo(lvl),c=getClicksOf(u.user);return {user:u.user,displayName:getDisplayName(u.user),clicks:c,earn:c/1000*info.price,level:lvl,price:info.price,tag:getTag(u.user),banned:localStorage.getItem('naset_banned_'+u.user.toLowerCase())==='1',rank:getRank(c,u.user)}}
 async function renderStats(){if(!isAdmin&&!isMod)return;let all=getAllUsers().map(getUserStats).sort((a,b)=>b.earn-a.earn);let search=(document.getElementById('statsSearch')?.value||'').toLowerCase();let f=search?all.filter(s=>s.displayName.toLowerCase().includes(search)||s.user.toLowerCase().includes(search)):all;let totalC=all.reduce((s,x)=>s+x.clicks,0),totalP=all.reduce((s,x)=>s+x.earn,0);document.getElementById('statsTotalUsers').innerText=all.length;document.getElementById('statsTotalClicks').innerText=totalC;document.getElementById('statsTotalPay').innerText='$'+totalP.toFixed(2);let list=document.getElementById('statsList');if(f.length===0){list.innerHTML='<p class="small">Sin usuarios</p>';return}list.innerHTML=f.map((s,i)=>'<div style="background:#000;border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:10px"><b>'+(i+1)+'. '+s.displayName+'</b> <span style="color:#888">'+s.user+'</span><br>'+rankBadgeHTML(s.clicks,s.user)+'<br>👆 '+s.clicks+' clics • 💰 $'+s.earn.toFixed(2)+'</div>').join('')}
-function getChatLocal(){try{return JSON.parse(localStorage.getItem('naset_chat')||'[]')}catch(e){return[]}}
-async function sendChat(){let inp=document.getElementById('chatInput');let txt=inp.value.trim().slice(0,200);if(!txt)return;if(!currentUser){alert('Inicia sesión');return}let now=Date.now();if(now-lastChatTime<1000)return;lastChatTime=now;inp.value='';let chat=getChatLocal();chat.push({user:currentUser,text:txt,time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});localStorage.setItem('naset_chat',JSON.stringify(chat.slice(-100)));renderChat()}
-async function renderChat(){let box=document.getElementById('chatMessages');if(!box)return;let chat=getChatLocal();if(chat.length===0){box.innerHTML='<p class="small">Sé el primero 👋</p>';return}box.innerHTML=chat.map(m=>{let isMine=m.user===currentUser;let c=getClicksOf(m.user);let r=getRank(c,m.user);let p=getProfile(m.user);let av=p.avatar?'<div class="avatar-small"><img src="'+p.avatar+'"></div>':'<div class="avatar-small">'+(getDisplayName(m.user).charAt(0).toUpperCase())+'</div>';return '<div class="msg '+(isMine?'mine':'')+'">'+av+'<div><b>'+getDisplayName(m.user)+' '+r.emoji+' '+r.name+'</b><br>'+m.text+'<div style="font-size:10px;opacity:.7">'+(m.time||'')+'</div></div></div>'}).join('');box.scrollTop=box.scrollHeight}
+
+// --- CHAT GLOBAL DE VERDAD - SUPABASE ---
+async function fetchChatCloud(){
+  try{
+    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_chat?select=*&order=created_at.asc&limit=100",{headers:H});
+    let j=await r.json();
+    if(Array.isArray(j)&&j.length>0){
+      return j.map(m=>({user:m.username||m.user||'?',text:String(m.text||'').slice(0,200),time:m.created_at?new Date(m.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):''}));
+    }
+  }catch(e){}
+  // Si no hay nube, usa local como respaldo
+  try{return JSON.parse(localStorage.getItem('naset_chat')||'[]')}catch(e){return[]}
+}
+async function sendChat(){
+  let inp=document.getElementById('chatInput');
+  let txt=inp.value.trim().slice(0,200);
+  if(!txt) return;
+  if(!currentUser){alert('Inicia sesión para chatear');return}
+  let now=Date.now(); if(now-lastChatTime<1000) return; lastChatTime=now;
+  inp.value='';
+  // 1. Guardar en nube para que TODOS lo vean
+  try{
+    await fetch(SUPABASE_URL+"/rest/v1/naset_chat",{method:"POST",headers:H,body:JSON.stringify({username:currentUser,text:txt})});
+  }catch(e){}
+  // 2. Respaldo local
+  let chat=JSON.parse(localStorage.getItem('naset_chat')||'[]');
+  chat.push({user:currentUser,text:txt,time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
+  localStorage.setItem('naset_chat',JSON.stringify(chat.slice(-100)));
+  renderChat();
+}
+async function renderChat(){
+  let box=document.getElementById('chatMessages'); if(!box) return;
+  let chat=await fetchChatCloud();
+  let cc=document.getElementById('chatCount'); if(cc) cc.innerText=chat.length;
+  if(chat.length===0){box.innerHTML='<p class="small">Sé el primero en hablar 👋</p>';return}
+  box.innerHTML=chat.map(m=>{
+    let isMine=m.user===currentUser;
+    let c=getClicksOf(m.user); let r=getRank(c,m.user);
+    let p=getProfile(m.user);
+    let av=p.avatar?'<div class="avatar-small"><img src="'+p.avatar+'"></div>':'<div class="avatar-small">'+(getDisplayName(m.user).charAt(0).toUpperCase())+'</div>';
+    return '<div class="msg '+(isMine?'mine':'')+'">'+av+'<div><b>'+getDisplayName(m.user)+' '+r.emoji+' '+r.name+'</b><br>'+m.text+'<div style="font-size:10px;opacity:.7">'+(m.time||'')+'</div></div></div>';
+  }).join('');
+  box.scrollTop=box.scrollHeight;
+}
 function setMode(mode){
   authMode=mode;
   let userInput=document.getElementById('user');
@@ -313,7 +354,7 @@ function showPanel(){
     else{localStorage.removeItem('naset_user');currentUser=null}
   }
   setInterval(()=>{if(currentUser)render()},5000);
-  setInterval(()=>{if(currentView==='chat')renderChat()},5000);
+  setInterval(()=>{if(currentView==='chat')renderChat()},3000);
 })();
 </script>
 </body>
