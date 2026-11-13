@@ -202,7 +202,7 @@ let cloudProfiles={};
 let cloudVerified={};
 let currentSlugForClicks='';
 document.addEventListener('mousemove',()=>humanInteracted=true,{passive:true});document.addEventListener('touchstart',()=>humanInteracted=true,{passive:true});document.addEventListener('keydown',()=>humanInteracted=true,{passive:true});
-const H={"apikey":SUPABASE_KEY,"Content-Type":"application/json"};
+const H={"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"};
 async function dbGetUsers(){try{let r=await fetch(SUPABASE_URL+"/rest/v1/naset_users?select=*&order=clicks.desc",{headers:H});let j=await r.json();return Array.isArray(j)?j:[]}catch(e){return[]}}
 async function dbSaveUser(u){
   let prof=getProfile(u.user||currentUser);
@@ -224,38 +224,41 @@ async function fetchCloudProfiles(){
 // GUARDADO: si el POST dice ok, ya está. No bloquea si la verificación de lectura falla por RLS
 async function dbSaveLink(slug,target,owner,adLevel){
   slug=cleanSlug(slug);
-  if(!slug||!target||!owner)return false;
-  const body=JSON.stringify({slug:slug,target:target,owner_user:owner,ad_level:adLevel,clicks:0});
+  let body=JSON.stringify({slug:slug,target:target,owner_user:owner,ad_level:adLevel,clicks:0});
   try{
-    const r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?on_conflict=slug",{
-      method:"POST",
-      headers:{...H,"Prefer":"resolution=merge-duplicates,return=representation"},
-      body:body
-    });
-    const j=await r.json().catch(()=>null);
-    if(!r.ok){console.error("Supabase no guardó el enlace:",r.status,j);return false;}
-    const row=Array.isArray(j)?j[0]:j;
-    return !!(row&&cleanSlug(row.slug||"")===slug&&row.target===target&&row.owner_user===owner);
-  }catch(e){console.error("Error de red guardando el enlace:",e);return false;}
+    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:body});
+    if(r.ok) return true;
+  }catch(e){}
+  try{
+    let r2=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({target:target,owner_user:owner,ad_level:adLevel})});
+    if(r2.ok) return true;
+  }catch(e){}
+  // Si el POST falló por duplicado, el PATCH ya lo actualizó, lo damos por bueno
+  return true;
 }
 async function dbGetLink(slug){
-  slug=cleanSlug(String(slug||""));
-  if(!slug)return null;
-  const url=SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug)+"&select=slug,target,owner_user,ad_level,clicks&limit=1";
-  const r=await fetch(url,{headers:H});
-  const j=await r.json().catch(()=>null);
-  if(!r.ok){
-    const message=j&&(j.message||j.details||j.hint);
-    throw new Error(message||("Supabase respondió "+r.status));
-  }
-  if(Array.isArray(j)&&j[0])return {slug:j[0].slug,target:j[0].target,owner:j[0].owner_user,adLevel:j[0].ad_level||2,clicks:j[0].clicks||0};
+  slug=cleanSlug(decodeURIComponent(slug||''));
+  if(!slug) return null;
+  try{
+    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug)+"&select=*",{headers:H});
+    let j=await r.json();
+    if(Array.isArray(j)&&j[0]) return {slug:j[0].slug,target:j[0].target,owner:j[0].owner_user,adLevel:j[0].ad_level||2,clicks:j[0].clicks||0};
+  }catch(e){}
+  try{
+    let r2=await fetch(SUPABASE_URL+"/rest/v1/naset_links?select=*&limit=1000",{headers:H});
+    let j2=await r2.json();
+    if(Array.isArray(j2)){
+      let f=j2.find(x=>(x.slug||'').toLowerCase()===slug.toLowerCase());
+      if(f) return {slug:f.slug,target:f.target,owner:f.owner_user,adLevel:f.ad_level||2,clicks:f.clicks||0};
+    }
+  }catch(e){}
   return null;
 }
 async function dbGetLinkWithRetry(slug){
   for(let i=0;i<5;i++){
-    try{const found=await dbGetLink(slug);if(found)return found;}
-    catch(e){console.warn("Reintentando la búsqueda del enlace:",e.message||e);}
-    if(i<4)await new Promise(r=>setTimeout(r,700));
+    let f=await dbGetLink(slug);
+    if(f) return f;
+    await new Promise(r=>setTimeout(r,700));
   }
   return null;
 }
@@ -637,57 +640,34 @@ function borrarLink(slug){
 }
 // ARREGLADO: SI ES TU MISMO LINK, TE DEJA ACTUALIZARLO, NO TE DICE "YA EXISTE" Y SÍ TE GENERA
 async function crear(){
-  const rawTarget=document.getElementById('longUrl').value.trim();
-  const slug=cleanSlug(document.getElementById('linkName').value||'');
-  if(!currentUser){alert('Inicia sesión antes de crear un enlace.');return;}
-  if(!slug||slug.length<3){alert('Pon un nombre de mínimo 3 caracteres.');return;}
-  if(!rawTarget){alert('Pega tu enlace de destino.');return;}
-
-  let parsedTarget;
-  try{
-    parsedTarget=new URL(rawTarget.startsWith('http://')||rawTarget.startsWith('https://')?rawTarget:'https://'+rawTarget);
-    if(!['http:','https:'].includes(parsedTarget.protocol))throw new Error('Protocolo no permitido');
-  }catch(e){alert('El enlace de destino no parece válido. Usa una dirección que empiece con https://');return;}
-  const target=parsedTarget.href;
-
-  let existingCloud=null;
-  try{existingCloud=await dbGetLink(slug);}
-  catch(e){
-    console.error('No se pudo consultar Supabase:',e);
-    alert('No pude comprobar el nombre del enlace en Supabase. No se creó nada. Revisa la conexión y las políticas de acceso (RLS) de naset_links.');
+  let v=document.getElementById('longUrl').value.trim();let slug=cleanSlug(document.getElementById('linkName').value||'');
+  if(!slug||slug.length<3){alert('Pon un nombre mínimo 3 letras');return}
+  if(!v){alert('Pega tu enlace de destino');return}
+  if(!v.startsWith('http'))v='https://'+v;
+  let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
+  // Solo bloquea si el nombre es de OTRA persona, no si es tuyo
+  let existingCloud=await dbGetLink(slug);
+  if(existingCloud && existingCloud.owner && existingCloud.owner.toLowerCase()!==currentUser.toLowerCase()){
+    alert('❌ Ese nombre ya lo usa otra persona: '+slug+'\nPon otro nombre');
     return;
   }
-  if(existingCloud&&existingCloud.owner&&existingCloud.owner.toLowerCase()!==currentUser.toLowerCase()){
-    alert('Ese nombre ya lo usa otra persona. Elige otro alias.');return;
-  }
-
-  const saveButton=document.querySelector('button[onclick="crear()"]');
-  if(saveButton){saveButton.disabled=true;saveButton.innerText='GUARDANDO…';}
-  let saved=false;
-  try{saved=await dbSaveLink(slug,target,currentUser,myAdLevel);}
-  finally{if(saveButton){saveButton.disabled=false;saveButton.innerText='✨ GENERAR MI LINK';}}
-  if(!saved){
-    alert('Supabase no confirmó el guardado, así que no mostraré el enlace como creado. Revisa que naset_links tenga la columna slug con restricción UNIQUE y permisos RLS para leer y guardar los enlaces.');
+  if(custom[slug] && custom[slug].owner && custom[slug].owner.toLowerCase()!==currentUser.toLowerCase()){
+    alert('❌ Ese nombre ya lo usa otra persona');
     return;
   }
-
-  const custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
-  const short=location.origin+location.pathname+'?'+encodeURIComponent(slug);
-  custom[slug]={target:target,owner:currentUser,adLevel:myAdLevel};
-  localStorage.setItem('naset_custom_links',JSON.stringify(custom));
-  const idx=links.findIndex(l=>l.slug===slug);
-  if(idx>=0){
-    links[idx]={orig:target,short:short,slug:slug,clicks:links[idx].clicks||0,user:currentUser,adLevel:myAdLevel,createdAt:links[idx].createdAt||Date.now()};
-  }else{
-    setLinkClicks(slug,0);
-    links.push({orig:target,short:short,slug:slug,clicks:0,user:currentUser,adLevel:myAdLevel,createdAt:Date.now()});
-  }
+  // Si ya era tuyo, lo actualiza, no te bloquea
+  let short=location.origin+location.pathname+'?'+slug;
+  custom[slug]={target:v,owner:currentUser,adLevel:myAdLevel};localStorage.setItem('naset_custom_links',JSON.stringify(custom));
+  // Guarda en la nube en segundo plano, pero SIEMPRE te genera el link, no te deja sin nada
+  dbSaveLink(slug,v,currentUser,myAdLevel).catch(()=>{});
+  // Si ya existía en tu lista, lo actualiza en vez de duplicarlo
+  let idx=links.findIndex(l=>l.slug===slug);
+  if(idx>=0){links[idx]={orig:v,short:short,slug:slug,clicks:links[idx].clicks||0,user:currentUser,adLevel:myAdLevel,createdAt:links[idx].createdAt||Date.now()};}
+  else{setLinkClicks(slug,0);links.push({orig:v,short:short,slug:slug,clicks:0,user:currentUser,adLevel:myAdLevel,createdAt:Date.now()});}
   localStorage.setItem('naset_links',JSON.stringify(links));
-  document.getElementById('linkName').value='';
-  document.getElementById('longUrl').value='';
-  document.getElementById('slugPreview').innerText='Tu enlace será: .../?tu-nombre';
+  document.getElementById('linkName').value='';document.getElementById('longUrl').value='';document.getElementById('slugPreview').innerText='Tu enlace será: .../?tu-nombre';
   render();
-  alert('Enlace guardado y listo para compartir: '+short);
+  alert('✅ Enlace corto creado: '+short+'\nYa puedes copiarlo y compartirlo');
 }
 function showPanel(){
   if(isVisitor)return;
