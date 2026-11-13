@@ -111,7 +111,7 @@ button:not(:disabled):active{transform:scale(.98)}
 <div class="box" id="authBox"><h3 style="text-align:center;margin-bottom:14px">👋 Bienvenido a NasetLink</h3><div class="auth-tabs"><button id="btnTabLogin" class="active" onclick="setMode('login')">Iniciar Sesión</button><button id="btnTabRegister" onclick="setMode('register')">Registrarme</button></div><input id="user" placeholder="Usuario:"><input id="pass" type="password" placeholder="Contraseña:"><button id="mainAuthBtn" onclick="submitAuth()">ENTRAR</button><button class="sec" onclick="joinWhatsApp()" style="background:#25D366;color:#fff">💬 Unirme a la comunidad</button></div>
 <div id="panel" style="display:none">
 <div class="box" id="profileBox"><div style="display:flex;gap:14px;align-items:center"><div class="avatar" id="myAvatar" onclick="openView('profile')" style="cursor:pointer">?</div><div><h3 id="welcomeName">Hola 👋</h3><p id="profileUserShow" style="color:#aaa;font-size:12px"></p><p id="profileBioShow" style="color:#aaa;font-size:12px"></p><div style="margin-top:6px"><span id="rankBadge" class="badge bronce">🥉 BRONCE</span></div><p id="rankProgressText" style="font-size:12px;margin-top:8px;font-weight:bold"></p><div class="rank-bar"><div id="rankProgressBar" style="width:0%"></div></div><p id="rankProgressSub" style="font-size:11px;color:#aaa;margin-top:4px"></p></div></div></div>
-<div class="stats"><div class="stat"><b id="totalClicks">0</b><span>MIS CLICS TOTALES</span></div><div class="stat"><b id="totalEarn">$0.00</b><span>MI GANADO</span></div><div class="stat"><b id="myLevel">Nivel 2</b><span>ANUNCIOS</span></div></div>
+<div class="stats"><div class="stat"><b id="totalClicks">0</b><span>MIS CLICS TOTALES</span></div><div class="stat"><b id="totalEarn">$0.00</b><span>MIS GANANCIAS</span></div><div class="stat"><b id="myLevel">Nivel 2</b><span>ANUNCIOS</span></div></div>
 <div class="box"><h3>🏆 Mis Rangos - Suben solos</h3><div id="rankTableLive"></div><p class="small" id="rankMsg"></p></div>
 <div class="box"><h3>📢 Tu Nivel de Anuncios - En tiempo real</h3><p class="small" style="text-align:left;margin:0 0 8px">Toca un número y se guarda en la nube al instante para Safari, Chrome, Google, iOS y Android:</p><div class="grid5"><button class="level-btn" data-lv="2" onclick="changeAdLevel(2)">2</button><button class="level-btn" data-lv="4" onclick="changeAdLevel(4)">4</button><button class="level-btn" data-lv="6" onclick="changeAdLevel(6)">6</button><button class="level-btn" data-lv="8" onclick="changeAdLevel(8)">8</button><button class="level-btn" data-lv="10" onclick="changeAdLevel(10)">10</button></div><p class="small" id="adLevelInfo"></p><button class="green" onclick="saveAdLevel()">💾 GUARDAR MI NIVEL EN LA NUBE</button></div>
 <div class="box"><h3>✨ Crea un enlace personalizado</h3><label>📝 Nombre:</label><input id="linkName" placeholder="Ej: aimbot-head" oninput="updateSlugPreview()"><div class="slug-preview" id="slugPreview">Tu enlace será: .../?tu-nombre</div><label>🔗 Enlace de destino:</label><input id="longUrl" placeholder="Pega tu enlace de destino aquí..."><button onclick="crear()">✨ GENERAR MI LINK</button><div id="myLinks"></div></div>
@@ -143,10 +143,22 @@ function decodeDest(code){try{code=String(code||'').replace(/-/g,'+').replace(/_
 async function dbGetUsers(){try{let r=await fetch(SUPABASE_URL+"/rest/v1/naset_users?select=*&order=clicks.desc",{headers:H});let j=await r.json();return Array.isArray(j)?j:[]}catch(e){return[]}}
 async function dbSaveUser(u){let prof=getProfile(u.user||currentUser);try{await fetch(SUPABASE_URL+"/rest/v1/naset_users",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({username:u.user,pass:u.pass||"",clicks:u.clicks||0,date:u.date||"",time:u.time||"",timestamp:u.timestamp||Date.now(),avatar:prof.avatar||"",display_name:prof.displayName||"",bio:prof.bio||"",is_verified:getTag(u.user||currentUser)==='verified'?true:false})})}catch(e){}try{await fetch(SUPABASE_URL+"/rest/v1/naset_profiles",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({username:(u.user||currentUser).toLowerCase(),avatar:prof.avatar||"",display_name:prof.displayName||"",bio:prof.bio||"",is_verified:getTag(u.user||currentUser)==='verified'?true:false})})}catch(e){}}
 function ownerConfigSlug(owner){return 'config-'+String(owner||'').toLowerCase().replace(/[^a-z0-9]/g,'')}
-async function dbSaveOwnerLevel(owner,level){level=parseInt(level);if(!owner)return;let slug=ownerConfigSlug(owner);try{await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({slug:slug,target:"https://nasetlink.vercel.app/",owner_user:owner,ad_level:level,clicks:0})})}catch(e){}try{await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({ad_level:level,owner_user:owner})})}catch(e){}}
+async function dbSaveOwnerLevel(owner,level){level=parseInt(level);if(!owner)return;let slug=ownerConfigSlug(owner);
+  try{await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({slug:slug,target:"https://nasetlink.vercel.app/",owner_user:owner,ad_level:level,clicks:0})})}catch(e){}
+  try{await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({ad_level:level,owner_user:owner})})}catch(e){}
+  try{
+    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?owner_user=eq."+encodeURIComponent(owner)+"&select=slug",{headers:H});
+    let j=await r.json();
+    if(Array.isArray(j)){ for(let row of j){ if(row.slug && !row.slug.startsWith('config-')){ await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(row.slug),{method:"PATCH",headers:H,body:JSON.stringify({ad_level:level})}); } } }
+  }catch(e){}
+  try{localStorage.setItem('naset_my_adlevel',String(level)); localStorage.setItem('naset_owner_level_'+owner.toLowerCase(),String(level));}catch(e){}
+}
 async function dbGetOwnerLevel(owner){if(!owner)return null;let slug=ownerConfigSlug(owner);try{let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug)+"&select=ad_level",{headers:H});let j=await r.json();if(Array.isArray(j)&&j[0]&&j[0].ad_level)return parseInt(j[0].ad_level)}catch(e){}return null}
 async function dbSaveLinkVerified(slug,target,owner,adLevel){
   slug=cleanSlug(slug);adLevel=parseInt(adLevel||2);
+  let ownerLvl=await dbGetOwnerLevel(owner);
+  if(ownerLvl) adLevel=ownerLvl;
+  else await dbSaveOwnerLevel(owner,adLevel);
   try{await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"DELETE",headers:H})}catch(e){}
   await new Promise(r=>setTimeout(r,300));
   for(let intento=0;intento<3;intento++){
@@ -154,7 +166,7 @@ async function dbSaveLinkVerified(slug,target,owner,adLevel){
     try{await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({target:target,owner_user:owner,ad_level:adLevel})})}catch(e){}
     await new Promise(r=>setTimeout(r,700));
     let check=await dbGetLinkFast(slug);
-    if(check&&check.target===target&&parseInt(check.adLevel)===adLevel)return true;
+    if(check&&check.target===target&&parseInt(check.adLevel)===adLevel) return true;
   }
   return true;
 }
@@ -214,29 +226,32 @@ let slugData=null,isVisitor=false,owner='';
 function decodeLegacyGo(){try{let go=params.get('go');if(!go)return null;let decoded=atob(go.replace(/-/g,'+').replace(/_/g,'/'));decoded=decodeURIComponent(escape(decoded));let u=params.get('u')||'NASETLINKOFC';let ad=parseInt(params.get('ad')||'2');if(!decoded.startsWith('http'))decoded='https://'+decoded;return{target:decoded,owner:u,adLevel:ad}}catch(e){return null}}
 function showWaiterFor(ownerName,level){isVisitor=true;owner=ownerName||'NASETLINKOFC';totalAds=parseInt(level||2);originalTotalAds=totalAds;currentAd=1;document.getElementById('authBox').style.display='none';document.getElementById('panel').style.display='none';document.getElementById('waiter').style.display='block';document.getElementById('stateClick').style.display='block';document.getElementById('stateWait').style.display='none';document.getElementById('stateDone').style.display='none';shuffledAds=[...ALL_ADS].sort(()=>Math.random()-0.5).slice(0,totalAds);let info=AD_LEVELS.find(x=>x.level===totalAds)||AD_LEVELS[0];document.getElementById('adLevelShow').innerText='Nivel '+info.level+' • '+info.ads+' anuncios';renderDots();updateWaitTitle()}
 function renderDots(){let h='';for(let i=1;i<=originalTotalAds;i++){let cls=i<currentAd?'dot done':(i===currentAd?'dot current':'dot');h+='<div class="'+cls+'">'+(i<currentAd?'✓':i)+'</div>'}document.getElementById('dots').innerHTML=h;document.getElementById('barFill').style.width=((currentAd-1)/Math.max(originalTotalAds,1)*100)+'%'}
-function applyCloudLevelToWaiter(newLevel){newLevel=parseInt(newLevel);if(!newLevel||newLevel===totalAds)return;if(currentAd!==1){totalAds=newLevel;originalTotalAds=newLevel;return}totalAds=newLevel;originalTotalAds=newLevel;shuffledAds=[...ALL_ADS].sort(()=>Math.random()-0.5).slice(0,totalAds);let info=AD_LEVELS.find(x=>x.level===totalAds)||AD_LEVELS[0];document.getElementById('adLevelShow').innerText='Nivel '+info.level+' • '+info.ads+' anuncios';renderDots();updateWaitTitle()}
+function applyCloudLevelToWaiter(newLevel){newLevel=parseInt(newLevel);if(!newLevel||newLevel===totalAds)return;totalAds=newLevel;originalTotalAds=newLevel;shuffledAds=[...ALL_ADS].sort(()=>Math.random()-0.5).slice(0,totalAds);let info=AD_LEVELS.find(x=>x.level===totalAds)||AD_LEVELS[0];document.getElementById('adLevelShow').innerText='Nivel '+info.level+' • '+info.ads+' anuncios';renderDots();updateWaitTitle()}
 function initSlug(){
   if(params.has('go')){let legacy=decodeLegacyGo();if(legacy){isVisitor=true;currentSlugForClicks='legacy-'+Date.now();targetUrl=legacy.target;owner=legacy.owner;totalAds=parseInt(legacy.adLevel||2);showWaiterFor(owner,totalAds);return true}}
   if(!slugParam)return false;
   isVisitor=true;currentSlugForClicks=cleanSlug(slugParam);
   document.getElementById('authBox').style.display='none';document.getElementById('panel').style.display='none';
-  let urlDest=decodeDest(params.get('d')||'');let urlAd=parseInt(params.get('ad')||'');
-  let local=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
-  let localKey=Object.keys(local).find(k=>k.toLowerCase()===currentSlugForClicks.toLowerCase());
-  let cachedLevel=!isNaN(urlAd)?urlAd:parseInt(localStorage.getItem('naset_my_adlevel')||'2');
-  let cachedTarget=urlDest||'';let cachedOwner='NASETLINKOFC';
-  if(localKey){slugData=local[localKey];if(!cachedTarget)cachedTarget=slugData.target;cachedOwner=slugData.owner||cachedOwner;if(isNaN(urlAd))cachedLevel=parseInt(slugData.adLevel||cachedLevel)}
-  targetUrl=cachedTarget;owner=cachedOwner;totalAds=cachedLevel;
-  showWaiterFor(owner,totalAds);
+  document.getElementById('adLevelShow').innerText='⏳ Conectando con la nube...';
+  showWaiterFor('NASETLINKOFC',2);
+  document.getElementById('adLevelShow').innerText='⏳ Conectando con la nube...';
   (async()=>{
-    let found=await dbGetLinkWithRetry(currentSlugForClicks);
-    let finalOwner=owner;let finalTarget=targetUrl;let finalLevel=totalAds;
-    if(found){finalOwner=found.owner||finalOwner;if(found.target)finalTarget=found.target;finalLevel=parseInt(found.adLevel||finalLevel)}
+    let found=null;
+    for(let i=0;i<6;i++){ found=await dbGetLinkFast(currentSlugForClicks); if(found&&found.target) break; await new Promise(r=>setTimeout(r,800)); }
+    if(!found||!found.target){
+      document.getElementById('waitTitle').innerText='Link no encontrado';
+      document.getElementById('adLevelShow').innerText='Ese nombre no existe en la nube. Crea uno nuevo después de apagar el RLS.';
+      targetUrl=''; return;
+    }
+    let finalOwner=found.owner||'NASETLINKOFC';
+    let finalTarget=found.target;
+    let finalLevel=parseInt(found.adLevel||2);
     let ownerLevel=await dbGetOwnerLevel(finalOwner);
-    if(ownerLevel)finalLevel=ownerLevel;
-    if(finalTarget)targetUrl=finalTarget;
-    owner=finalOwner;
+    if(ownerLevel) finalLevel=ownerLevel;
+    targetUrl=finalTarget; owner=finalOwner;
+    if(parseInt(found.adLevel)!==finalLevel){ dbUpdateLinkLevel(currentSlugForClicks,finalLevel); }
     applyCloudLevelToWaiter(finalLevel);
+    if(currentAd===1){ showWaiterFor(finalOwner,finalLevel); }
   })();
   return true;
 }
@@ -257,9 +272,9 @@ async function goToLink(){
 }
 function getAdInfo(level){return AD_LEVELS.find(x=>x.level===level)||AD_LEVELS[0]}
 function applyLevelToAllMyLinks(level){level=parseInt(level);if(!currentUser)return;let changed=false;links.forEach(l=>{if(l.user===currentUser&&parseInt(l.adLevel)!==level){l.adLevel=level;changed=true}});if(changed)localStorage.setItem('naset_links',JSON.stringify(links));try{let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');let cChanged=false;Object.keys(custom).forEach(k=>{if(custom[k].owner===currentUser&&parseInt(custom[k].adLevel)!==level){custom[k].adLevel=level;cChanged=true}});if(cChanged)localStorage.setItem('naset_custom_links',JSON.stringify(custom))}catch(e){}links.forEach(l=>{if(l.user===currentUser&&l.slug&&l.slug!=='undefined'){dbUpdateLinkLevel(l.slug,level)}})}
-function changeAdLevel(v){v=parseInt(v);tempAdLevel=v;myAdLevel=v;localStorage.setItem('naset_my_adlevel',String(v));applyLevelToAllMyLinks(v);if(currentUser)dbSaveOwnerLevel(currentUser,v);updateAdUI();let ml=document.getElementById('myLevel');if(ml)ml.innerText='Nivel '+v;render()}
+async function changeAdLevel(v){v=parseInt(v);tempAdLevel=v;myAdLevel=v;localStorage.setItem('naset_my_adlevel',String(v));applyLevelToAllMyLinks(v);if(currentUser)await dbSaveOwnerLevel(currentUser,v);updateAdUI();let ml=document.getElementById('myLevel');if(ml)ml.innerText='Nivel '+v;render()}
 function updateAdUI(){let info=getAdInfo(tempAdLevel);document.getElementById('adLevelInfo').innerText='Nivel '+info.level+' • '+info.ads+' anuncios • Ganas $'+info.price.toFixed(2)+' por 1000 clics • ✅ Guardado en tiempo real en la nube';document.querySelectorAll('.level-btn').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.lv)===tempAdLevel))}
-function saveAdLevel(){myAdLevel=tempAdLevel;localStorage.setItem('naset_my_adlevel',myAdLevel);applyLevelToAllMyLinks(myAdLevel);if(currentUser)dbSaveOwnerLevel(currentUser,myAdLevel);render();alert('✅ Nivel '+myAdLevel+' guardado en tiempo real - Ahora jala en Safari, Chrome, Google, iOS y Android')}
+async function saveAdLevel(){myAdLevel=tempAdLevel;localStorage.setItem('naset_my_adlevel',myAdLevel);applyLevelToAllMyLinks(myAdLevel);if(currentUser)await dbSaveOwnerLevel(currentUser,myAdLevel);render();alert('✅ Nivel '+myAdLevel+' guardado en tiempo real - Ahora jala en Safari, Chrome, Google, iOS y Android')}
 function updateProfileUI(){if(!currentUser)return;let p=getProfile(currentUser);let av=document.getElementById('myAvatar');if(av){av.innerHTML=p.avatar?'<img src="'+p.avatar+'">':currentUser.charAt(0).toUpperCase()}let wn=document.getElementById('welcomeName');if(wn)wn.innerHTML=(p.displayName||currentUser)+verifiedIcon(currentUser);let pb=document.getElementById('profileBioShow');if(pb)pb.innerText=p.bio||'';let pus=document.getElementById('profileUserShow');if(pus)pus.innerText='@'+currentUser;document.getElementById('headerBar').style.display='flex';document.getElementById('logoBig').style.display='none';let topAv=document.getElementById('topAvatar');topAv.innerHTML=p.avatar?'<img src="'+p.avatar+'">':currentUser.charAt(0).toUpperCase();let sideAv=document.getElementById('sideAvatar');if(sideAv)sideAv.innerHTML=p.avatar?'<img src="'+p.avatar+'">':currentUser.charAt(0).toUpperCase();document.getElementById('sideName').innerText=p.displayName||currentUser;document.getElementById('sideUser').innerText='@'+currentUser;document.getElementById('menuAdmin').style.display=isAdmin?'flex':'none';document.getElementById('menuStats').style.display=(isAdmin||isMod)?'flex':'none';let myClicks=getClicksOf(currentUser);let r=getRank(myClicks,currentUser);let rb=document.getElementById('rankBadge');if(rb){rb.className='badge '+r.cls;rb.innerText=r.emoji+' '+r.name}let sb=document.getElementById('sideBadge');if(sb)sb.innerHTML=rb?rb.outerHTML:'';let rpt=document.getElementById('rankProgressText');if(rpt)rpt.innerText=r.manual?r.emoji+' '+r.name+' • '+myClicks+' clics • Puesto a mano':(r.name==='DIOS'?('👑 DIOS • '+myClicks+' clics • Máximo'):(r.emoji+' '+r.name+' • '+r.inRank+' / '+(r.max-r.min+1)+' • '+Math.floor(r.progress)+'%'));let rpb=document.getElementById('rankProgressBar');if(rpb)rpb.style.width=r.progress+'%';let rps=document.getElementById('rankProgressSub');if(rps)rps.innerText=r.manual?'Ya pasaste, sube solo al pasar los clics':(r.next?'Te faltan '+(r.nextAt-myClicks)+' para '+r.nextEmoji+' '+r.next:'Ya eres DIOS');let rt=document.getElementById('rankTableLive');if(rt){let html='';RANKS.forEach(rank=>{let isMine=rank.name===r.name;let pct=isMine?Math.floor(r.progress):(myClicks>rank.max?100:0);let txt=isMine?(r.inRank+' / '+(rank.max-rank.min+1)+' • '+pct+'%'):(myClicks>rank.max?'✅ Completado':'0 / '+(rank.max-rank.min+1)+' • 0%');html+='<div style="padding:10px 0;border-bottom:1px solid #222;'+(isMine?'background:#1a2a1a;border-radius:12px;padding:10px;':'')+'"><div style="display:flex;justify-content:space-between"><b>'+rank.emoji+' '+rank.name+'</b><span style="font-size:11px">'+txt+(isMine?' • 👈 Tú':'')+'</span></div><div style="font-size:11px;color:#aaa">'+rank.min+' - '+(rank.name==='DIOS'?'10,001+':rank.max+' clics')+'</div><div class="rank-bar"><div style="width:'+pct+'%"></div></div></div>'});rt.innerHTML=html}}
 function getLinkDisplayName(l){if(l.slug&&l.slug!=='undefined'&&!String(l.slug).startsWith('config-'))return l.slug;if(l.short&&l.short.includes('?go='))return 'link-viejo';return l.slug||'link-viejo'}
 function renderLinkHTML(l,idx){if(l.slug&&String(l.slug).startsWith('config-'))return'';let display=getLinkDisplayName(l);let safeShort=(l.short||'').replace(/'/g,"");return '<div class="link-item"><b>🔗 '+display+'</b><p style="margin:6px 0;word-break:break-all">'+(l.short||'')+'</p><p style="font-size:11px;color:#aaa">Nivel '+(l.adLevel||2)+' • $'+getAdInfo(l.adLevel||2).price.toFixed(2)+' por 1000 • '+(l.adLevel||2)+' anuncios • ✅ Destino oculto, sí abre si o si</p><div class="flex" style="margin-top:8px"><button class="smallbtn" onclick="navigator.clipboard.writeText(\''+safeShort+'\');alert(\'Copiado ✅\')">📋 COPIAR</button><button class="smallbtn" style="background:#dc2626" onclick="borrarLinkPorIndice('+idx+')">🗑️ BORRAR</button></div></div>'}
@@ -268,7 +283,7 @@ async function borrarLinkPorIndice(idx){idx=parseInt(idx);if(isNaN(idx)||!links[
 async function borrarLink(slug){slug=String(slug||'');let idx=links.findIndex(l=>String(l.slug||'')===slug||String(l.short||'')===slug);if(idx===-1&&slug==='undefined')idx=links.findIndex(l=>!l.slug||l.slug==='undefined');if(idx===-1){alert('Ese link ya no existe');return}return borrarLinkPorIndice(idx)}
 async function crear(){
   let nivelUsar=parseInt(tempAdLevel||myAdLevel||2);myAdLevel=nivelUsar;localStorage.setItem('naset_my_adlevel',String(nivelUsar));
-  if(currentUser)dbSaveOwnerLevel(currentUser,nivelUsar);
+  if(currentUser)await dbSaveOwnerLevel(currentUser,nivelUsar);
   let v=document.getElementById('longUrl').value.trim();let slug=cleanSlug(document.getElementById('linkName').value||'');
   if(!slug||slug.length<3){alert('Pon un nombre mínimo 3 letras');return}if(!v){alert('Pega tu enlace de destino');return}if(!v.startsWith('http'))v='https://'+v;
   if(slug.startsWith('config-')){alert('Ese nombre no se puede usar');return}
