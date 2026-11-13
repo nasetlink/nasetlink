@@ -147,7 +147,6 @@ async function dbSaveOwnerLevel(owner,level){level=parseInt(level);if(!owner)ret
 async function dbGetOwnerLevel(owner){if(!owner)return null;let slug=ownerConfigSlug(owner);try{let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug)+"&select=ad_level",{headers:H});let j=await r.json();if(Array.isArray(j)&&j[0]&&j[0].ad_level)return parseInt(j[0].ad_level)}catch(e){}return null}
 async function dbSaveLinkVerified(slug,target,owner,adLevel){
   slug=cleanSlug(slug);adLevel=parseInt(adLevel||2);
-  // PASO CLAVE: borrar el viejo con ese mismo nombre para que no quede un muerto con 2
   try{await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"DELETE",headers:H})}catch(e){}
   await new Promise(r=>setTimeout(r,300));
   for(let intento=0;intento<3;intento++){
