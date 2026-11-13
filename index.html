@@ -210,13 +210,17 @@ async function fetchCloudProfiles(){
 }
 async function dbSaveLink(slug,target,owner,adLevel){
   slug=cleanSlug(slug);
-  let body=JSON.stringify({slug:slug,target:target,owner_user:owner,ad_level:adLevel,clicks:0});
+  // ARREGLO: guardamos adLevel correcto, no 2 fijo, y no reseteamos clics si ya existe
+  let existing=null;
+  try{existing=await dbGetLink(slug)}catch(e){}
+  let clicksToSave=existing?parseInt(existing.clicks||0):0;
+  let body=JSON.stringify({slug:slug,target:target,owner_user:owner,ad_level:parseInt(adLevel||2),clicks:clicksToSave});
   try{
     let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:body});
     if(r.ok) return true;
   }catch(e){}
   try{
-    let r2=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({target:target,owner_user:owner,ad_level:adLevel})});
+    let r2=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({target:target,owner_user:owner,ad_level:parseInt(adLevel||2)})});
     if(r2.ok) return true;
   }catch(e){}
   return true;
@@ -459,6 +463,19 @@ let AD_LEVELS=JSON.parse(localStorage.getItem('naset_ad_levels')||JSON.stringify
 let currentUser=localStorage.getItem('naset_user');let links=JSON.parse(localStorage.getItem('naset_links')||'[]');let users=getAllUsers();let isAdmin=localStorage.getItem('naset_is_admin')==='1';let isMod=localStorage.getItem('naset_is_mod')==='1';let myAdLevel=parseInt(localStorage.getItem('naset_my_adlevel')||'2');let tempAdLevel=myAdLevel;let targetUrl='';let totalAds=2,currentAd=1,timerInt=null,shuffledAds=[],adStartTime=0,originalTotalAds=2;
 const params=new URLSearchParams(location.search);let slugParam='';for(let k of params.keys()){slugParam=k;break}
 let slugData=null,isVisitor=false,owner='';
+function decodeLegacyGo(){
+  try{
+    let go=params.get('go');
+    if(!go) return null;
+    let decoded=atob(go.replace(/-/g,'+').replace(/_/g,'/'));
+    // a veces viene con caracteres raros, limpiamos
+    decoded=decodeURIComponent(escape(decoded));
+    let u=params.get('u')||'NASETLINKOFC';
+    let ad=parseInt(params.get('ad')||'2');
+    if(!decoded.startsWith('http')) decoded='https://'+decoded;
+    return {target:decoded,owner:u,adLevel:ad};
+  }catch(e){return null}
+}
 function showWaiterFor(ownerName,level){
   isVisitor=true;owner=ownerName||'NASETLINKOFC';totalAds=parseInt(level||2);originalTotalAds=totalAds;currentAd=1;
   document.getElementById('authBox').style.display='none';
@@ -473,6 +490,16 @@ function showWaiterFor(ownerName,level){
   renderDots();updateWaitTitle();
 }
 async function initSlug(){
+  // 1. Links viejos ?go=... - ARREGLO: sí los leemos, no decimos que no sirven
+  if(params.has('go')){
+    let legacy=decodeLegacyGo();
+    if(legacy){
+      isVisitor=true;currentSlugForClicks='legacy-'+Date.now();
+      targetUrl=legacy.target;owner=legacy.owner;totalAds=parseInt(legacy.adLevel||2);
+      showWaiterFor(owner,totalAds);
+      return true;
+    }
+  }
   if(!slugParam) return false;
   isVisitor=true;currentSlugForClicks=cleanSlug(slugParam);
   document.getElementById('authBox').style.display='none';
@@ -493,7 +520,7 @@ async function initSlug(){
         document.getElementById('adLevelShow').innerText='Nivel '+totalAds+' • '+totalAds+' anuncios';
         document.getElementById('doneMsg').innerText='';
       } else {
-        document.getElementById('doneMsg').innerText='El anuncio sí contó, si el link no abre pídele al dueño que lo cree de nuevo.';
+        document.getElementById('doneMsg').innerText='';
       }
     });
   }
@@ -506,7 +533,7 @@ async function addClickToOwner(ownerName){
   let c=getClicksOf(ownerName)+1;setClicksOf(ownerName,c);
   let all=getAllUsers();let u=all.find(x=>x.user.toLowerCase()===ownerName.toLowerCase());if(u){u.clicks=c;saveAllUsers(all);try{await dbSaveUser({...u,clicks:c})}catch(e){}}
   else{let nu={user:ownerName,pass:'',clicks:c,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString()};all.push(nu);saveAllUsers(all)}
-  if(currentSlugForClicks) await addClickToThisLink(currentSlugForClicks,ownerName);
+  if(currentSlugForClicks && !String(currentSlugForClicks).startsWith('legacy-')) await addClickToThisLink(currentSlugForClicks,ownerName);
   render();
 }
 function renderDots(){
@@ -553,17 +580,31 @@ function renderDotsFinal(){
   document.getElementById('waitTitle').innerText='¡Completaste!';
 }
 async function goToLink(){
-  if(!targetUrl && currentSlugForClicks){
+  // ARREGLO: si es link viejo ?go=, targetUrl ya viene decodificado, sí debe abrir
+  if(!targetUrl && params.has('go')){
+    let legacy=decodeLegacyGo();
+    if(legacy) targetUrl=legacy.target;
+  }
+  if(!targetUrl && currentSlugForClicks && !String(currentSlugForClicks).startsWith('legacy-')){
     let f=await dbGetLinkWithRetry(currentSlugForClicks);
     if(f) targetUrl=f.target;
   }
-  if(!targetUrl){alert('Este link viejo no se guardó bien. Borralo y crealo de nuevo con este código nuevo, ya queda cortito y sí vale.');return}
+  if(!targetUrl){alert('No se pudo abrir el destino, vuelve a intentarlo');return}
   location.href=targetUrl.startsWith('http')?targetUrl:'https://'+targetUrl
 }
 function getAdInfo(level){return AD_LEVELS.find(x=>x.level===level)||AD_LEVELS[0]}
-function changeAdLevel(v){tempAdLevel=v;updateAdUI()}
-function updateAdUI(){let info=getAdInfo(tempAdLevel);document.getElementById('adLevelInfo').innerText='Nivel '+info.level+' • '+info.ads+' anuncios • Ganas $'+info.price.toFixed(2)+' por 1000 clics';document.querySelectorAll('.level-btn').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.lv)===tempAdLevel))}
-function saveAdLevel(){myAdLevel=tempAdLevel;localStorage.setItem('naset_my_adlevel',myAdLevel);render()}
+// ARREGLO PRINCIPAL: al tocar 6, se guarda de una, no hay que darle a GUARDAR
+function changeAdLevel(v){
+  v=parseInt(v);
+  tempAdLevel=v;
+  myAdLevel=v;
+  localStorage.setItem('naset_my_adlevel',String(v));
+  updateAdUI();
+  // Actualiza también el contador de arriba
+  let ml=document.getElementById('myLevel'); if(ml) ml.innerText='Nivel '+v;
+}
+function updateAdUI(){let info=getAdInfo(tempAdLevel);document.getElementById('adLevelInfo').innerText='Nivel '+info.level+' • '+info.ads+' anuncios • Ganas $'+info.price.toFixed(2)+' por 1000 clics • ✅ Guardado';document.querySelectorAll('.level-btn').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.lv)===tempAdLevel))}
+function saveAdLevel(){myAdLevel=tempAdLevel;localStorage.setItem('naset_my_adlevel',myAdLevel);render();alert('✅ Nivel '+myAdLevel+' guardado - Tus próximos links saldrán con '+myAdLevel+' anuncios')}
 function updateProfileUI(){
   if(!currentUser)return;let p=getProfile(currentUser);let av=document.getElementById('myAvatar');if(av){av.innerHTML=p.avatar?'<img src="'+p.avatar+'">':currentUser.charAt(0).toUpperCase()}
   let wn=document.getElementById('welcomeName');if(wn)wn.innerHTML=(p.displayName||currentUser)+verifiedIcon(currentUser);
@@ -590,7 +631,7 @@ function getLinkDisplayName(l){
 function renderLinkHTML(l, idx){
   let display=getLinkDisplayName(l);
   let safeShort=(l.short||'').replace(/'/g,"");
-  return '<div class="link-item"><b>🔗 '+display+'</b><p style="margin:6px 0">'+(l.short||'')+'</p><p style="font-size:11px;color:#aaa">Nivel '+(l.adLevel||2)+' • $'+getAdInfo(l.adLevel||2).price.toFixed(2)+' por 1000</p><div class="flex" style="margin-top:8px"><button class="smallbtn" onclick="navigator.clipboard.writeText(\''+safeShort+'\');alert(\'Copiado ✅\')">📋 COPIAR</button><button class="smallbtn" style="background:#dc2626" onclick="borrarLinkPorIndice('+idx+')">🗑️ BORRAR</button></div></div>';
+  return '<div class="link-item"><b>🔗 '+display+'</b><p style="margin:6px 0">'+(l.short||'')+'</p><p style="font-size:11px;color:#aaa">Nivel '+(l.adLevel||2)+' • $'+getAdInfo(l.adLevel||2).price.toFixed(2)+' por 1000 • '+ (l.adLevel||2) +' anuncios</p><div class="flex" style="margin-top:8px"><button class="smallbtn" onclick="navigator.clipboard.writeText(\''+safeShort+'\');alert(\'Copiado ✅\')">📋 COPIAR</button><button class="smallbtn" style="background:#dc2626" onclick="borrarLinkPorIndice('+idx+')">🗑️ BORRAR</button></div></div>';
 }
 async function render(){
   if(!currentUser)return;
@@ -600,7 +641,6 @@ async function render(){
   document.getElementById('totalEarn').innerText='$'+(myClicks/1000*info.price).toFixed(2);
   document.getElementById('myLevel').innerText='Nivel '+myAdLevel;
   updateProfileUI();
-  // links con índice real en el array global, para borrar el exacto aunque sea undefined
   let myIdx=[];
   links.forEach((l,i)=>{ if(l.user===currentUser) myIdx.push(i); });
   let html='';
@@ -608,7 +648,6 @@ async function render(){
   else html=myIdx.map(i=>renderLinkHTML(links[i],i)).join('');
   document.getElementById('myLinks').innerHTML=html;
 }
-// ARREGLO DEFINITIVO: borra por POSICIÓN, no por nombre. Así sí borra los undefined.
 async function borrarLinkPorIndice(idx){
   idx=parseInt(idx);
   if(isNaN(idx) || !links[idx]){alert('Ese link ya no existe');return}
@@ -616,10 +655,8 @@ async function borrarLinkPorIndice(idx){
   let nombre=getLinkDisplayName(target);
   if(!confirm('¿Borrar '+nombre+'? Tus clics y dinero NO se pierden.'))return;
   let slugToDelete=target.slug;
-  // Borra exactamente ese elemento por posición
   links.splice(idx,1);
   localStorage.setItem('naset_links',JSON.stringify(links));
-  // Limpia custom si coincide
   try{
     let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
     if(slugToDelete && custom[slugToDelete]) delete custom[slugToDelete];
@@ -630,7 +667,6 @@ async function borrarLinkPorIndice(idx){
   await render();
   alert('Borrado ✅ Ya no va a volver a aparecer');
 }
-// Compatibilidad: si algún botón viejo llama borrarLink('xxx'), lo mandamos por índice
 async function borrarLink(slug){
   slug=String(slug||'');
   let idx=links.findIndex(l=>String(l.slug||'')===slug || String(l.short||'')===slug);
@@ -639,6 +675,9 @@ async function borrarLink(slug){
   return borrarLinkPorIndice(idx);
 }
 async function crear(){
+  // ARREGLO: usa el nivel que tienes seleccionado AHORA MISMO, no el viejo
+  let nivelUsar=parseInt(tempAdLevel||myAdLevel||2);
+  myAdLevel=nivelUsar; localStorage.setItem('naset_my_adlevel',String(nivelUsar));
   let v=document.getElementById('longUrl').value.trim();let slug=cleanSlug(document.getElementById('linkName').value||'');
   if(!slug||slug.length<3){alert('Pon un nombre mínimo 3 letras');return}
   if(!v){alert('Pega tu enlace de destino');return}
@@ -654,15 +693,15 @@ async function crear(){
     return;
   }
   let short=location.origin+location.pathname+'?'+slug;
-  custom[slug]={target:v,owner:currentUser,adLevel:myAdLevel};localStorage.setItem('naset_custom_links',JSON.stringify(custom));
-  dbSaveLink(slug,v,currentUser,myAdLevel).catch(()=>{});
+  custom[slug]={target:v,owner:currentUser,adLevel:nivelUsar};localStorage.setItem('naset_custom_links',JSON.stringify(custom));
+  dbSaveLink(slug,v,currentUser,nivelUsar).catch(()=>{});
   let idx=links.findIndex(l=>l.slug===slug);
-  if(idx>=0){links[idx]={orig:v,short:short,slug:slug,clicks:links[idx].clicks||0,user:currentUser,adLevel:myAdLevel,createdAt:links[idx].createdAt||Date.now()};}
-  else{setLinkClicks(slug,0);links.push({orig:v,short:short,slug:slug,clicks:0,user:currentUser,adLevel:myAdLevel,createdAt:Date.now()});}
+  if(idx>=0){links[idx]={orig:v,short:short,slug:slug,clicks:links[idx].clicks||0,user:currentUser,adLevel:nivelUsar,createdAt:links[idx].createdAt||Date.now()};}
+  else{setLinkClicks(slug,0);links.push({orig:v,short:short,slug:slug,clicks:0,user:currentUser,adLevel:nivelUsar,createdAt:Date.now()});}
   localStorage.setItem('naset_links',JSON.stringify(links));
   document.getElementById('linkName').value='';document.getElementById('longUrl').value='';document.getElementById('slugPreview').innerText='Tu enlace será: .../?tu-nombre';
   render();
-  alert('✅ Enlace corto creado: '+short+'\nYa puedes copiarlo y compartirlo');
+  alert('✅ Enlace corto creado: '+short+'\nCon '+nivelUsar+' anuncios - Ya puedes copiarlo');
 }
 function showPanel(){
   if(isVisitor)return;
