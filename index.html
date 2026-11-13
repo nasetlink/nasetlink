@@ -221,11 +221,10 @@ async function dbSaveLink(slug,target,owner,adLevel){
   }catch(e){}
   return true;
 }
-// NUEVO: borrar de verdad en la nube, para que no vuelva a aparecer
 async function dbDeleteLink(slug){
-  slug=cleanSlug(slug);
+  slug=cleanSlug(slug||'');
+  if(!slug || slug==='undefined') return;
   try{await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"DELETE",headers:H})}catch(e){}
-  try{await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug.toLowerCase()),{method:"DELETE",headers:H})}catch(e){}
 }
 async function dbGetLink(slug){
   slug=cleanSlug(decodeURIComponent(slug||''));
@@ -265,7 +264,7 @@ async function syncLinkClicksFromCloud(){
           let cloudClicks=parseInt(row.clicks||0);
           let localClicks=getLinkClicks(row.slug);
           if(cloudClicks>localClicks) setLinkClicks(row.slug,cloudClicks);
-          let ll=links.find(x=>x.slug===row.slug);
+          let ll=links.find(x=>(x.slug||'')===row.slug);
           if(ll) ll.clicks=Math.max(cloudClicks,localClicks);
         }
       });
@@ -583,6 +582,16 @@ function updateProfileUI(){
   let rps=document.getElementById('rankProgressSub');if(rps)rps.innerText=r.manual?'Ya pasaste, sube solo al pasar los clics':(r.next?'Te faltan '+(r.nextAt-myClicks)+' para '+r.nextEmoji+' '+r.next:'Ya eres DIOS');
   let rt=document.getElementById('rankTableLive');if(rt){let html='';RANKS.forEach(rank=>{let isMine=rank.name===r.name;let pct=isMine?Math.floor(r.progress):(myClicks>rank.max?100:0);let txt=isMine?(r.inRank+' / '+(rank.max-rank.min+1)+' • '+pct+'%'):(myClicks>rank.max?'✅ Completado':'0 / '+(rank.max-rank.min+1)+' • 0%');html+='<div style="padding:10px 0;border-bottom:1px solid #222;'+(isMine?'background:#1a2a1a;border-radius:12px;padding:10px;':'')+'"><div style="display:flex;justify-content:space-between"><b>'+rank.emoji+' '+rank.name+'</b><span style="font-size:11px">'+txt+(isMine?' • 👈 Tú':'')+'</span></div><div style="font-size:11px;color:#aaa">'+rank.min+' - '+(rank.name==='DIOS'?'10,001+':rank.max+' clics')+'</div><div class="rank-bar"><div style="width:'+pct+'%"></div></div></div>'});rt.innerHTML=html}
 }
+function getLinkDisplayName(l){
+  if(l.slug && l.slug!=='undefined') return l.slug;
+  if(l.short && l.short.includes('?go=')) return 'link-viejo';
+  return l.slug||'link-viejo';
+}
+function renderLinkHTML(l, idx){
+  let display=getLinkDisplayName(l);
+  let safeShort=(l.short||'').replace(/'/g,"");
+  return '<div class="link-item"><b>🔗 '+display+'</b><p style="margin:6px 0">'+(l.short||'')+'</p><p style="font-size:11px;color:#aaa">Nivel '+(l.adLevel||2)+' • $'+getAdInfo(l.adLevel||2).price.toFixed(2)+' por 1000</p><div class="flex" style="margin-top:8px"><button class="smallbtn" onclick="navigator.clipboard.writeText(\''+safeShort+'\');alert(\'Copiado ✅\')">📋 COPIAR</button><button class="smallbtn" style="background:#dc2626" onclick="borrarLinkPorIndice('+idx+')">🗑️ BORRAR</button></div></div>';
+}
 async function render(){
   if(!currentUser)return;
   await syncLinkClicksFromCloud();
@@ -591,39 +600,43 @@ async function render(){
   document.getElementById('totalEarn').innerText='$'+(myClicks/1000*info.price).toFixed(2);
   document.getElementById('myLevel').innerText='Nivel '+myAdLevel;
   updateProfileUI();
-  let myLinks=links.filter(l=>l.user===currentUser);
+  // links con índice real en el array global, para borrar el exacto aunque sea undefined
+  let myIdx=[];
+  links.forEach((l,i)=>{ if(l.user===currentUser) myIdx.push(i); });
   let html='';
-  if(myLinks.length===0) html='<p class="small">Aún no tienes enlaces. Crea uno arriba.</p>';
-  else myLinks.forEach(l=>{
-    html+='<div class="link-item"><b>🔗 '+l.slug+'</b><p style="margin:6px 0">'+l.short+'</p><p style="font-size:11px;color:#aaa">Nivel '+l.adLevel+' • $'+getAdInfo(l.adLevel).price.toFixed(2)+' por 1000</p><div class="flex" style="margin-top:8px"><button class="smallbtn" onclick="navigator.clipboard.writeText(\''+l.short+'\');alert(\'Copiado ✅\')">📋 COPIAR</button><button class="smallbtn" style="background:#dc2626" onclick="borrarLink(\''+l.slug+'\')">🗑️ BORRAR</button></div></div>';
-  });
+  if(myIdx.length===0) html='<p class="small">Aún no tienes enlaces. Crea uno arriba.</p>';
+  else html=myIdx.map(i=>renderLinkHTML(links[i],i)).join('');
   document.getElementById('myLinks').innerHTML=html;
 }
-async function borrarLink(slug){
-  slug=cleanSlug(slug||'');
-  if(!slug) return;
-  if(!confirm('¿Borrar '+slug+'? Tus clics y dinero NO se pierden.'))return;
-  // 1. Borra de tu lista en memoria - sin importar mayúsculas y duplicados
-  links=links.filter(l=>(l.slug||'').toLowerCase()!==slug.toLowerCase());
+// ARREGLO DEFINITIVO: borra por POSICIÓN, no por nombre. Así sí borra los undefined.
+async function borrarLinkPorIndice(idx){
+  idx=parseInt(idx);
+  if(isNaN(idx) || !links[idx]){alert('Ese link ya no existe');return}
+  let target=links[idx];
+  let nombre=getLinkDisplayName(target);
+  if(!confirm('¿Borrar '+nombre+'? Tus clics y dinero NO se pierden.'))return;
+  let slugToDelete=target.slug;
+  // Borra exactamente ese elemento por posición
+  links.splice(idx,1);
   localStorage.setItem('naset_links',JSON.stringify(links));
-  // 2. Borra de naset_custom_links - todas las claves que coincidan
+  // Limpia custom si coincide
   try{
     let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
-    Object.keys(custom).forEach(k=>{ if(k.toLowerCase()===slug.toLowerCase()) delete custom[k]; });
+    if(slugToDelete && custom[slugToDelete]) delete custom[slugToDelete];
+    Object.keys(custom).forEach(k=>{ if(custom[k] && custom[k].target===target.orig) delete custom[k]; });
     localStorage.setItem('naset_custom_links',JSON.stringify(custom));
   }catch(e){}
-  // 3. Borra el contador de ese link
-  try{localStorage.removeItem('naset_link_clicks_'+slug.toLowerCase())}catch(e){}
-  // 4. Borra de la NUBE para que no vuelva a aparecer al recargar
-  await dbDeleteLink(slug);
-  // 5. Actualiza pantalla de una, sin esperar
-  let el=document.getElementById('myLinks');
-  if(el){
-    let myLinksNow=links.filter(l=>l.user===currentUser);
-    if(myLinksNow.length===0) el.innerHTML='<p class="small">Aún no tienes enlaces. Crea uno arriba.</p>';
-    else el.innerHTML=myLinksNow.map(l=>'<div class="link-item"><b>🔗 '+l.slug+'</b><p style="margin:6px 0">'+l.short+'</p><p style="font-size:11px;color:#aaa">Nivel '+l.adLevel+' • $'+getAdInfo(l.adLevel).price.toFixed(2)+' por 1000</p><div class="flex" style="margin-top:8px"><button class="smallbtn" onclick="navigator.clipboard.writeText(\''+l.short+'\');alert(\'Copiado ✅\')">📋 COPIAR</button><button class="smallbtn" style="background:#dc2626" onclick="borrarLink(\''+l.slug+'\')">🗑️ BORRAR</button></div></div>').join('');
-  }
+  if(slugToDelete) { try{localStorage.removeItem('naset_link_clicks_'+String(slugToDelete).toLowerCase())}catch(e){} await dbDeleteLink(String(slugToDelete)); }
+  await render();
   alert('Borrado ✅ Ya no va a volver a aparecer');
+}
+// Compatibilidad: si algún botón viejo llama borrarLink('xxx'), lo mandamos por índice
+async function borrarLink(slug){
+  slug=String(slug||'');
+  let idx=links.findIndex(l=>String(l.slug||'')===slug || String(l.short||'')===slug);
+  if(idx===-1 && slug==='undefined') idx=links.findIndex(l=>!l.slug || l.slug==='undefined');
+  if(idx===-1){alert('Ese link ya no existe');return}
+  return borrarLinkPorIndice(idx);
 }
 async function crear(){
   let v=document.getElementById('longUrl').value.trim();let slug=cleanSlug(document.getElementById('linkName').value||'');
