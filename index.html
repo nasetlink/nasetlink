@@ -52,52 +52,24 @@ button.adbtn{background:#f59e0b;color:#000;font-size:17px;padding:18px}button.re
 .step-dots{display:flex;gap:6px;justify-content:center;margin:10px 0;flex-wrap:wrap}.dot{width:30px;height:30px;border-radius:99px;background:#222;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0}.dot.done{background:#16a34a}.dot.current{background:#f59e0b;color:#000}
 table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid #222}
 .top-sub{color:#aaa;text-align:center;font-size:13px;margin:5px 0 14px;white-space:normal;word-break:break-word;padding:0 4px}
-:root{
-  --bg:#090a12;--surface:#121421;--surface-2:#191b2b;--line:#292c40;
-  --brand:#a855f7;--brand-light:#c084fc;--text-muted:#a4a7bd;
-}
-body{
-  min-height:100vh;
-  background:radial-gradient(ellipse at 50% -15%,rgba(168,85,247,.18),transparent 55%),var(--bg);
-  color:#f7f7fb;
-  font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
-}
+:root{--bg:#090a12;--surface:#121421;--surface-2:#191b2b;--line:#292c40;--brand:#a855f7;--brand-light:#c084fc;--text-muted:#a4a7bd}
+body{min-height:100vh;background:radial-gradient(ellipse at 50% -15%,rgba(168,85,247,.18),transparent 55%),var(--bg);color:#f7f7fb;font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
 .card{max-width:500px}
-.header{
-  padding:12px 4px;background:rgba(9,10,18,.88);
-  border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(14px);
-}
+.header{padding:12px 4px;background:rgba(9,10,18,.88);border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(14px)}
 .logo{letter-spacing:-1px}.logo span{color:var(--brand-light)}
-.hamburger{
-  border:1px solid rgba(255,255,255,.14);
-  background:linear-gradient(135deg,#8b5cf6,#c026d3);
-  box-shadow:0 6px 22px rgba(168,85,247,.25);
-}
+.hamburger{border:1px solid rgba(255,255,255,.14);background:linear-gradient(135deg,#8b5cf6,#c026d3);box-shadow:0 6px 22px rgba(168,85,247,.25)}
 .header-avatar{background:var(--surface-2);border-color:var(--brand)}
-.sidebar{
-  width:min(310px,88vw);height:100dvh;padding:22px 16px;background:#10111b;
-  border-right:1px solid var(--line);box-shadow:18px 0 50px rgba(0,0,0,.35);
-}
+.sidebar{width:min(310px,88vw);height:100dvh;padding:22px 16px;background:#10111b;border-right:1px solid var(--line);box-shadow:18px 0 50px rgba(0,0,0,.35)}
 .sidebar-brand{display:flex;align-items:center;gap:11px;padding:4px 42px 18px 4px}
-.sidebar-mark{
-  width:42px;height:42px;display:grid;place-items:center;border-radius:14px;
-  background:linear-gradient(135deg,#8b5cf6,#c026d3);font-weight:900;
-}
+.sidebar-mark{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(135deg,#8b5cf6,#c026d3);font-weight:900}
 .sidebar-brand small,.sidebar-profile small{display:block;margin-top:3px;color:var(--text-muted);font-size:12px}
 .sidebar-profile{display:flex;align-items:center;gap:12px;padding:14px 8px;margin-bottom:14px;border-bottom:1px solid var(--line)}
 .sidebar nav{display:flex;flex-direction:column}
-.menu-item{
-  width:100%;align-items:center;min-height:48px;padding:12px;margin-bottom:7px;
-  color:#e9e9f2;background:transparent;border:1px solid transparent;border-radius:13px;
-  text-align:left;transition:background .18s ease,border-color .18s ease,transform .18s ease;
-}
+.menu-item{width:100%;align-items:center;min-height:48px;padding:12px;margin-bottom:7px;color:#e9e9f2;background:transparent;border:1px solid transparent;border-radius:13px;text-align:left;transition:background .18s ease,border-color .18s ease,transform .18s ease}
 .menu-item:hover{background:var(--surface-2);border-color:var(--line);transform:translateX(2px)}
 .menu-item.active{color:#fff;background:rgba(168,85,247,.16);border-color:rgba(168,85,247,.35)}
 .menu-icon{width:24px;text-align:center}
-.menu-item.logout{
-  min-height:46px;margin-top:auto;color:#ff8b98;background:rgba(220,38,38,.09);
-  border-color:rgba(220,38,38,.2);
-}
+.menu-item.logout{min-height:46px;margin-top:auto;color:#ff8b98;background:rgba(220,38,38,.09);border-color:rgba(220,38,38,.2)}
 .close-menu{background:var(--surface-2);border-color:var(--line)}
 .box{background:rgba(18,20,33,.94);border-color:var(--line);box-shadow:0 10px 28px rgba(0,0,0,.16)}
 .stat{background:var(--surface-2);border-color:var(--line)}
@@ -105,35 +77,22 @@ input,select{background:#0b0c14;border-color:var(--line)}
 input:focus,select:focus{outline:2px solid rgba(168,85,247,.55);border-color:var(--brand)}
 button:not(.menu-item):not(.close-menu):not(.hamburger){transition:filter .18s ease,transform .18s ease}
 button:not(:disabled):active{transform:scale(.98)}
-@media(max-width:380px){
-  .stats{gap:6px}.stat{padding:10px 6px}.stat b{font-size:17px}
-  .logo{font-size:22px}
-}
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}
-}
+@media(max-width:380px){.stats{gap:6px}.stat{padding:10px 6px}.stat b{font-size:17px}.logo{font-size:22px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
 <div class="card">
 <div class="header" id="headerBar" style="display:none">
-  <button class="hamburger" type="button" aria-label="Abrir menú" onclick="toggleMenu()">
-    <span class="bars"><span></span><span></span><span></span></span>
-  </button>
+  <button class="hamburger" type="button" aria-label="Abrir menú" onclick="toggleMenu()"><span class="bars"><span></span><span></span><span></span></span></button>
   <div class="logo" onclick="closeView()">NASET<span>LINK</span></div>
   <div class="header-avatar" id="topAvatar" onclick="openProfileFromAvatar(event)">?</div>
 </div>
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 <div class="sidebar" id="sidebar">
   <button class="close-menu" type="button" aria-label="Cerrar menú" onclick="toggleMenu()">✕</button>
-  <div class="sidebar-brand">
-    <div class="sidebar-mark">NL</div>
-    <div><b>NasetLink</b><small>Tu espacio de enlaces</small></div>
-  </div>
-  <div class="sidebar-profile">
-    <div class="avatar-small" id="sideAvatar" style="width:52px;height:52px;font-size:20px">?</div>
-    <div><b id="sideName">Mi perfil</b><small id="sideUser"></small><span id="sideBadge"></span></div>
-  </div>
+  <div class="sidebar-brand"><div class="sidebar-mark">NL</div><div><b>NasetLink</b><small>Tu espacio de enlaces</small></div></div>
+  <div class="sidebar-profile"><div class="avatar-small" id="sideAvatar" style="width:52px;height:52px;font-size:20px">?</div><div><b id="sideName">Mi perfil</b><small id="sideUser"></small><span id="sideBadge"></span></div></div>
   <nav aria-label="Menú principal">
     <div class="menu-item" id="menuAdmin" style="display:none" onclick="toggleMenu();openView('admin')"><span class="menu-icon">👑</span><span>Administración</span></div>
     <div class="menu-item" id="menuStats" style="display:none" onclick="toggleMenu();openView('stats')"><span class="menu-icon">📊</span><span>Estadísticas</span></div>
@@ -142,24 +101,19 @@ button:not(:disabled):active{transform:scale(.98)}
   </nav>
   <div class="menu-item logout" onclick="logout()"><span class="menu-icon">↪</span><span>Cerrar sesión</span></div>
 </div>
-
 <div id="logoBig" style="text-align:center;padding:18px 0 4px"><div class="logo" style="font-size:34px">NASET<span>LINK</span></div></div>
 <p class="top-sub">📢 Sigue las instrucciones para continuar a tu enlace</p>
-
 <div id="viewProfile" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">✏️ Mi Perfil</p><div class="box" id="profileBoxSolo"></div></div>
 <div id="viewAdmin" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">👑 Solo Admin</p><div class="box gold" id="adminPanelSolo"></div></div>
 <div id="viewStats" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">📊 Estadísticas</p><div class="box"><div class="stats"><div class="stat"><b id="statsTotalUsers">0</b><span>USUARIOS</span></div><div class="stat"><b id="statsTotalClicks">0</b><span>CLICS</span></div><div class="stat"><b id="statsTotalPay" style="color:#25D366">$0.00</b><span>POR PAGAR</span></div></div><label>🔍 Buscar:</label><input id="statsSearch" placeholder="Nombre..." oninput="renderStats()"><div id="statsList"></div></div></div>
-
 <div id="mainView">
 <div class="box" id="waiter" style="display:none"><p id="waitTitle">Anuncio 1</p><div class="step-dots" id="dots"></div><div class="bar"><div id="barFill"></div></div><p class="small" id="adLevelShow"></p><div id="stateClick"><div class="ad-preview"><p>📢 ANUNCIO <span id="adNum1">1</span></p><a class="real-ad" href="https://uplcm.com/4/12244247" target="_blank" onclick="empezarEspera()"><img id="adImg" src="" alt="Anuncio"><div class="real-ad-text" id="adText">Cargando...</div></a></div><a href="https://uplcm.com/4/12244247" target="_blank" onclick="empezarEspera()" style="text-decoration:none"><button class="adbtn">👉 DARLE CLIC AL ANUNCIO</button></a></div><div id="stateWait" style="display:none"><p style="text-align:center">⏳ Viendo anuncio...</p><div id="count">5</div><button disabled id="returnBtn" onclick="confirmReturn()">🔒 ESPERA 5 SEGUNDOS...</button></div><div id="stateDone" style="display:none"><p style="text-align:center;font-size:22px">✅ ¡Completaste!</p><button class="green" onclick="goToLink()">🔗 IR AL LINK DIRECTO</button><p class="small" id="doneMsg"></p></div></div>
-
 <div class="box" id="authBox"><h3 style="text-align:center;margin-bottom:14px">👋 Bienvenido a NasetLink</h3><div class="auth-tabs"><button id="btnTabLogin" class="active" onclick="setMode('login')">Iniciar Sesión</button><button id="btnTabRegister" onclick="setMode('register')">Registrarme</button></div><input id="user" placeholder="Usuario:"><input id="pass" type="password" placeholder="Contraseña:"><button id="mainAuthBtn" onclick="submitAuth()">ENTRAR</button><button class="sec" onclick="joinWhatsApp()" style="background:#25D366;color:#fff">💬 Unirme a la comunidad</button></div>
-
 <div id="panel" style="display:none">
 <div class="box" id="profileBox"><div style="display:flex;gap:14px;align-items:center"><div class="avatar" id="myAvatar" onclick="openView('profile')" style="cursor:pointer">?</div><div><h3 id="welcomeName">Hola 👋</h3><p id="profileUserShow" style="color:#aaa;font-size:12px"></p><p id="profileBioShow" style="color:#aaa;font-size:12px"></p><div style="margin-top:6px"><span id="rankBadge" class="badge bronce">🥉 BRONCE</span></div><p id="rankProgressText" style="font-size:12px;margin-top:8px;font-weight:bold"></p><div class="rank-bar"><div id="rankProgressBar" style="width:0%"></div></div><p id="rankProgressSub" style="font-size:11px;color:#aaa;margin-top:4px"></p></div></div></div>
 <div class="stats"><div class="stat"><b id="totalClicks">0</b><span>MIS CLICS TOTALES</span></div><div class="stat"><b id="totalEarn">$0.00</b><span>MI GANADO</span></div><div class="stat"><b id="myLevel">Nivel 2</b><span>ANUNCIOS</span></div></div>
 <div class="box"><h3>🏆 Mis Rangos - Suben solos</h3><div id="rankTableLive"></div><p class="small" id="rankMsg"></p></div>
-<div class="box"><h3>📢 Tu Nivel de Anuncios - En tiempo real, para todos los navegadores</h3><p class="small" style="text-align:left;margin:0 0 8px">Toca un número y se guarda en la nube al instante. Así jala en Safari, Chrome, Google, iOS y Android:</p><div class="grid5"><button class="level-btn" data-lv="2" onclick="changeAdLevel(2)">2</button><button class="level-btn" data-lv="4" onclick="changeAdLevel(4)">4</button><button class="level-btn" data-lv="6" onclick="changeAdLevel(6)">6</button><button class="level-btn" data-lv="8" onclick="changeAdLevel(8)">8</button><button class="level-btn" data-lv="10" onclick="changeAdLevel(10)">10</button></div><p class="small" id="adLevelInfo"></p><button class="green" onclick="saveAdLevel()">💾 GUARDAR MI NIVEL EN LA NUBE</button></div>
+<div class="box"><h3>📢 Tu Nivel de Anuncios - En tiempo real</h3><p class="small" style="text-align:left;margin:0 0 8px">Toca un número y se guarda en la nube al instante para Safari, Chrome, Google, iOS y Android:</p><div class="grid5"><button class="level-btn" data-lv="2" onclick="changeAdLevel(2)">2</button><button class="level-btn" data-lv="4" onclick="changeAdLevel(4)">4</button><button class="level-btn" data-lv="6" onclick="changeAdLevel(6)">6</button><button class="level-btn" data-lv="8" onclick="changeAdLevel(8)">8</button><button class="level-btn" data-lv="10" onclick="changeAdLevel(10)">10</button></div><p class="small" id="adLevelInfo"></p><button class="green" onclick="saveAdLevel()">💾 GUARDAR MI NIVEL EN LA NUBE</button></div>
 <div class="box"><h3>✨ Crea un enlace personalizado</h3><label>📝 Nombre:</label><input id="linkName" placeholder="Ej: aimbot-head" oninput="updateSlugPreview()"><div class="slug-preview" id="slugPreview">Tu enlace será: .../?tu-nombre</div><label>🔗 Enlace de destino:</label><input id="longUrl" placeholder="Pega tu enlace de destino aquí..."><button onclick="crear()">✨ GENERAR MI LINK</button><div id="myLinks"></div></div>
 <div class="box"><h3>💰 Pagos por 1000 clics</h3><table><tr><th>Nivel</th><th>Variantes</th><th>Tiempo</th><th>Pago</th></tr><tbody id="adTable"></tbody></table></div>
 <button class="sec" onclick="logout()">Cerrar Sesión</button>
@@ -176,414 +130,165 @@ const WHATSAPP_GROUP="https://chat.whatsapp.com/JAqf2gVEFlz59saw6MVveK?s=cl&p=i&
 function joinWhatsApp(){window.open(WHATSAPP_GROUP,'_blank')}
 function toggleMenu(){let s=document.getElementById('sidebar'),o=document.getElementById('overlay');let open=s.classList.contains('open');if(open){s.classList.remove('open');o.classList.remove('show')}else{s.classList.add('open');o.classList.add('show')}}
 function cleanSlug(t){return t.toLowerCase().trim().replace(/\s+/g,'-').replace(/[^a-z0-9\-_]/g,'').replace(/\-+/g,'-').slice(0,40)}
-function updateSlugPreview(){
-  let v=cleanSlug(document.getElementById('linkName').value||'');
-  document.getElementById('linkName').value=v;
-  document.getElementById('slugPreview').innerText=!v?'Tu enlace será: .../?tu-nombre':'Tu enlace será: '+location.origin+location.pathname+'?'+v;
-}
+function updateSlugPreview(){let v=cleanSlug(document.getElementById('linkName').value||'');document.getElementById('linkName').value=v;document.getElementById('slugPreview').innerText=!v?'Tu enlace será: .../?tu-nombre':'Tu enlace será: '+location.origin+location.pathname+'?'+v}
 function verPass(id){let i=document.getElementById(id);i.type=i.type==="password"?"text":"password"}
 let authMode='login';
 const PRESET_AVATARS=["https://i.pravatar.cc/150?img=12","https://i.pravatar.cc/150?img=32","https://i.pravatar.cc/150?img=5","https://i.pravatar.cc/150?img=47","https://i.pravatar.cc/150?img=68","https://i.pravatar.cc/150?img=15","https://i.pravatar.cc/150?img=8","https://i.pravatar.cc/150?img=60"];
 let selectedAvatar='',currentView='home',prevView='home',humanInteracted=false,pageLoadTime=Date.now(),lastClickTime=0;
-let cloudProfiles={};
-let cloudVerified={};
-let currentSlugForClicks='';
+let cloudProfiles={};let cloudVerified={};let currentSlugForClicks='';
 document.addEventListener('mousemove',()=>humanInteracted=true,{passive:true});document.addEventListener('touchstart',()=>humanInteracted=true,{passive:true});document.addEventListener('keydown',()=>humanInteracted=true,{passive:true});
 const H={"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"};
-function encodeDest(url){ try{ return btoa(unescape(encodeURIComponent(url))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }catch(e){ return ''; } }
-function decodeDest(code){ try{ code=String(code||'').replace(/-/g,'+').replace(/_/g,'/'); while(code.length%4!==0) code+='='; return decodeURIComponent(escape(atob(code))); }catch(e){ return ''; } }
+function encodeDest(url){try{return btoa(unescape(encodeURIComponent(url))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}catch(e){return''}}
+function decodeDest(code){try{code=String(code||'').replace(/-/g,'+').replace(/_/g,'/');while(code.length%4!==0)code+='=';return decodeURIComponent(escape(atob(code)))}catch(e){return''}}
 async function dbGetUsers(){try{let r=await fetch(SUPABASE_URL+"/rest/v1/naset_users?select=*&order=clicks.desc",{headers:H});let j=await r.json();return Array.isArray(j)?j:[]}catch(e){return[]}}
-async function dbSaveUser(u){
-  let prof=getProfile(u.user||currentUser);
-  try{await fetch(SUPABASE_URL+"/rest/v1/naset_users",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({username:u.user,pass:u.pass||"",clicks:u.clicks||0,date:u.date||"",time:u.time||"",timestamp:u.timestamp||Date.now(),avatar:prof.avatar||"",display_name:prof.displayName||"",bio:prof.bio||"",is_verified:getTag(u.user||currentUser)==='verified'?true:false})})}catch(e){}
-  try{await fetch(SUPABASE_URL+"/rest/v1/naset_profiles",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({username:(u.user||currentUser).toLowerCase(),avatar:prof.avatar||"",display_name:prof.displayName||"",bio:prof.bio||"",is_verified:getTag(u.user||currentUser)==='verified'?true:false})})}catch(e){}
-}
-function ownerConfigSlug(owner){ return 'config-'+String(owner||'').toLowerCase().replace(/[^a-z0-9]/g,''); }
-async function dbSaveOwnerLevel(owner, level){
-  level=parseInt(level); if(!owner) return;
-  let slug=ownerConfigSlug(owner);
-  try{ await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({slug:slug,target:"https://nasetlink.vercel.app/",owner_user:owner,ad_level:level,clicks:0})}); }catch(e){}
-  try{ await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({ad_level:level,owner_user:owner})}); }catch(e){}
-}
-async function dbGetOwnerLevel(owner){
-  if(!owner) return null;
-  let slug=ownerConfigSlug(owner);
-  try{
-    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug)+"&select=ad_level",{headers:H});
-    let j=await r.json();
-    if(Array.isArray(j)&&j[0]&&j[0].ad_level) return parseInt(j[0].ad_level);
-  }catch(e){}
-  return null;
-}
-// GUARDAR EN LA NUBE Y VERIFICAR - para que el link corto sí tenga destino oculto
+async function dbSaveUser(u){let prof=getProfile(u.user||currentUser);try{await fetch(SUPABASE_URL+"/rest/v1/naset_users",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({username:u.user,pass:u.pass||"",clicks:u.clicks||0,date:u.date||"",time:u.time||"",timestamp:u.timestamp||Date.now(),avatar:prof.avatar||"",display_name:prof.displayName||"",bio:prof.bio||"",is_verified:getTag(u.user||currentUser)==='verified'?true:false})})}catch(e){}try{await fetch(SUPABASE_URL+"/rest/v1/naset_profiles",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({username:(u.user||currentUser).toLowerCase(),avatar:prof.avatar||"",display_name:prof.displayName||"",bio:prof.bio||"",is_verified:getTag(u.user||currentUser)==='verified'?true:false})})}catch(e){}}
+function ownerConfigSlug(owner){return 'config-'+String(owner||'').toLowerCase().replace(/[^a-z0-9]/g,'')}
+async function dbSaveOwnerLevel(owner,level){level=parseInt(level);if(!owner)return;let slug=ownerConfigSlug(owner);try{await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({slug:slug,target:"https://nasetlink.vercel.app/",owner_user:owner,ad_level:level,clicks:0})})}catch(e){}try{await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({ad_level:level,owner_user:owner})})}catch(e){}}
+async function dbGetOwnerLevel(owner){if(!owner)return null;let slug=ownerConfigSlug(owner);try{let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug)+"&select=ad_level",{headers:H});let j=await r.json();if(Array.isArray(j)&&j[0]&&j[0].ad_level)return parseInt(j[0].ad_level)}catch(e){}return null}
 async function dbSaveLinkVerified(slug,target,owner,adLevel){
-  slug=cleanSlug(slug); adLevel=parseInt(adLevel||2);
-  for(let intento=0; intento<3; intento++){
-    try{
-      await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({slug:slug,target:target,owner_user:owner,ad_level:adLevel,clicks:0})});
-    }catch(e){}
-    try{
-      await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({target:target,owner_user:owner,ad_level:adLevel})});
-    }catch(e){}
-    await new Promise(r=>setTimeout(r,600));
+  slug=cleanSlug(slug);adLevel=parseInt(adLevel||2);
+  // PASO CLAVE: borrar el viejo con ese mismo nombre para que no quede un muerto con 2
+  try{await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"DELETE",headers:H})}catch(e){}
+  await new Promise(r=>setTimeout(r,300));
+  for(let intento=0;intento<3;intento++){
+    try{await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({slug:slug,target:target,owner_user:owner,ad_level:adLevel,clicks:0})})}catch(e){}
+    try{await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({target:target,owner_user:owner,ad_level:adLevel})})}catch(e){}
+    await new Promise(r=>setTimeout(r,700));
     let check=await dbGetLinkFast(slug);
-    if(check && check.target && check.target===target) return true;
+    if(check&&check.target===target&&parseInt(check.adLevel)===adLevel)return true;
   }
   return true;
 }
-async function dbSaveLink(slug,target,owner,adLevel){ return dbSaveLinkVerified(slug,target,owner,adLevel); }
-async function dbUpdateLinkLevel(slug,adLevel){
-  slug=cleanSlug(slug||''); if(!slug||slug==='undefined') return;
-  try{await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({ad_level:parseInt(adLevel)})})}catch(e){}
-}
-async function dbDeleteLink(slug){
-  slug=cleanSlug(slug||''); if(!slug || slug==='undefined') return;
-  try{await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"DELETE",headers:H})}catch(e){}
-}
-async function dbGetLinkFast(slug){
-  slug=cleanSlug(decodeURIComponent(slug||'')); if(!slug) return null;
-  try{
-    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug)+"&select=*",{headers:H});
-    let j=await r.json();
-    if(Array.isArray(j)&&j[0]) return {slug:j[0].slug,target:j[0].target,owner:j[0].owner_user,adLevel:parseInt(j[0].ad_level||2),clicks:j[0].clicks||0};
-  }catch(e){}
-  return null;
-}
-async function dbGetLinkWithRetry(slug){
-  for(let i=0;i<4;i++){
-    let f=await dbGetLinkFast(slug);
-    if(f && f.target) return f;
-    await new Promise(r=>setTimeout(r,800));
-  }
-  return await dbGetLinkFast(slug);
-}
-async function dbGetLink(slug){ return dbGetLinkFast(slug); }
+async function dbSaveLink(slug,target,owner,adLevel){return dbSaveLinkVerified(slug,target,owner,adLevel)}
+async function dbUpdateLinkLevel(slug,adLevel){slug=cleanSlug(slug||'');if(!slug||slug==='undefined')return;try{await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({ad_level:parseInt(adLevel)})})}catch(e){}}
+async function dbDeleteLink(slug){slug=cleanSlug(slug||'');if(!slug||slug==='undefined')return;try{await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"DELETE",headers:H})}catch(e){}}
+async function dbGetLinkFast(slug){slug=cleanSlug(decodeURIComponent(slug||''));if(!slug)return null;try{let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug)+"&select=*",{headers:H});let j=await r.json();if(Array.isArray(j)&&j[0])return{slug:j[0].slug,target:j[0].target,owner:j[0].owner_user,adLevel:parseInt(j[0].ad_level||2),clicks:j[0].clicks||0}}catch(e){}return null}
+async function dbGetLinkWithRetry(slug){for(let i=0;i<5;i++){let f=await dbGetLinkFast(slug);if(f&&f.target)return f;await new Promise(r=>setTimeout(r,800))}return await dbGetLinkFast(slug)}
+async function dbGetLink(slug){return dbGetLinkFast(slug)}
 function getLinkClicks(slug){return parseInt(localStorage.getItem('naset_link_clicks_'+slug.toLowerCase())||'0')}
 function setLinkClicks(slug,v){localStorage.setItem('naset_link_clicks_'+slug.toLowerCase(),String(v))}
-async function syncLinkClicksFromCloud(){
-  try{
-    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?select=slug,clicks,owner_user,ad_level",{headers:H});
-    let j=await r.json();
-    if(Array.isArray(j)){ j.forEach(row=>{ if(row.slug && !row.slug.startsWith('config-')){ let cc=parseInt(row.clicks||0); let lc=getLinkClicks(row.slug); if(cc>lc) setLinkClicks(row.slug,cc); let ll=links.find(x=>(x.slug||'')===row.slug); if(ll) ll.clicks=Math.max(cc,lc); } }); }
-  }catch(e){}
-}
-async function addClickToThisLink(slug,ownerName){
-  if(!slug) return;
-  let c=getLinkClicks(slug)+1; setLinkClicks(slug,c);
-  let ll=links.find(x=>x.slug===slug); if(ll) ll.clicks=c;
-  try{
-    let cur=await dbGetLinkFast(slug); let cloudC=cur?parseInt(cur.clicks||0):0; let finalC=Math.max(c,cloudC+1);
-    await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(cleanSlug(slug)),{method:"PATCH",headers:H,body:JSON.stringify({clicks:finalC})});
-    setLinkClicks(slug,finalC); if(ll) ll.clicks=finalC;
-  }catch(e){}
-  try{await fetch(SUPABASE_URL+"/rest/v1/naset_clicks",{method:"POST",headers:H,body:JSON.stringify({owner_user:ownerName,slug:slug})})}catch(e){}
-}
+async function syncLinkClicksFromCloud(){try{let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?select=slug,clicks,owner_user,ad_level",{headers:H});let j=await r.json();if(Array.isArray(j)){j.forEach(row=>{if(row.slug&&!row.slug.startsWith('config-')){let cc=parseInt(row.clicks||0);let lc=getLinkClicks(row.slug);if(cc>lc)setLinkClicks(row.slug,cc);let ll=links.find(x=>(x.slug||'')===row.slug);if(ll)ll.clicks=Math.max(cc,lc)}})}}catch(e){}}
+async function addClickToThisLink(slug,ownerName){if(!slug)return;let c=getLinkClicks(slug)+1;setLinkClicks(slug,c);let ll=links.find(x=>x.slug===slug);if(ll)ll.clicks=c;try{let cur=await dbGetLinkFast(slug);let cloudC=cur?parseInt(cur.clicks||0):0;let finalC=Math.max(c,cloudC+1);await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(cleanSlug(slug)),{method:"PATCH",headers:H,body:JSON.stringify({clicks:finalC})});setLinkClicks(slug,finalC);if(ll)ll.clicks=finalC}catch(e){}try{await fetch(SUPABASE_URL+"/rest/v1/naset_clicks",{method:"POST",headers:H,body:JSON.stringify({owner_user:ownerName,slug:slug})})}catch(e){}}
 function getAllUsers(){try{return JSON.parse(localStorage.getItem('naset_all_users')||'[]')}catch(e){return[]}}
 function saveAllUsers(arr){localStorage.setItem('naset_all_users',JSON.stringify(arr));users=arr}
 function getClicksOf(user){return parseInt(localStorage.getItem('naset_clicks_'+user.toLowerCase())||'0')}
 function setClicksOf(user,v){localStorage.setItem('naset_clicks_'+user.toLowerCase(),String(v))}
-function isOwnerOrMod(u){return (u||'').toLowerCase()===ADMIN_USER.toLowerCase() || (u||'').toLowerCase()===MOD_USER.toLowerCase()}
-function ensureOwnerModInList(u,pass){
-  let all=getAllUsers(); let ex=all.find(x=>x.user.toLowerCase()===u.toLowerCase());
-  if(!ex){all.push({user:u,pass:pass||'',date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString(),timestamp:Date.now(),clicks:getClicksOf(u)});saveAllUsers(all)} return all;
-}
+function isOwnerOrMod(u){return (u||'').toLowerCase()===ADMIN_USER.toLowerCase()||(u||'').toLowerCase()===MOD_USER.toLowerCase()}
+function ensureOwnerModInList(u,pass){let all=getAllUsers();let ex=all.find(x=>x.user.toLowerCase()===u.toLowerCase());if(!ex){all.push({user:u,pass:pass||'',date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString(),timestamp:Date.now(),clicks:getClicksOf(u)});saveAllUsers(all)}return all}
 const RANKS=[{name:'BRONCE',emoji:'🥉',cls:'bronce',min:0,max:1000},{name:'PLATA',emoji:'🥈',cls:'plata',min:1001,max:2000},{name:'ORO',emoji:'🥇',cls:'oro',min:2001,max:3000},{name:'DIAMANTE',emoji:'💎',cls:'diamante',min:3001,max:4000},{name:'ÉLITE',emoji:'👑',cls:'elite',min:4001,max:5000},{name:'LEYENDA',emoji:'🔥',cls:'leyenda',min:5001,max:6000},{name:'MÍTICO',emoji:'🐉',cls:'mitico',min:6001,max:7000},{name:'MAESTRO',emoji:'🌟',cls:'maestro',min:7001,max:10000},{name:'DIOS',emoji:'👑',cls:'dios',min:10001,max:999999999}];
-function getRank(clicks,user){
-  clicks=parseInt(clicks||0);
-  if(user){ let manual=null;try{manual=localStorage.getItem('naset_rank_manual_'+user.toLowerCase())}catch(e){} if(manual&&manual!=='AUTO'){ let rm=RANKS.find(r=>r.name===manual)||RANKS[0]; if(clicks<=rm.max) return {...rm,manual:true,progress:100,next:null,nextAt:null,nextEmoji:'',inRank:clicks}; } }
-  for(let i=0;i<RANKS.length;i++){let r=RANKS[i];if(clicks>=r.min&&clicks<=r.max){let next=RANKS[i+1]||null;let range=r.max-r.min+1;let prog=next?Math.min(100,((clicks-r.min+1)/range*100)):100;return {...r,manual:false,next:next?next.name:null,nextAt:next?next.min:null,progress:prog,nextEmoji:next?next.emoji:'',inRank:clicks-r.min+1,totalInRank:range}}}
-  return {...RANKS[0],manual:false,next:'PLATA',nextAt:1001,progress:0,nextEmoji:'🥈',inRank:0};
-}
+function getRank(clicks,user){clicks=parseInt(clicks||0);if(user){let manual=null;try{manual=localStorage.getItem('naset_rank_manual_'+user.toLowerCase())}catch(e){}if(manual&&manual!=='AUTO'){let rm=RANKS.find(r=>r.name===manual)||RANKS[0];if(clicks<=rm.max)return{...rm,manual:true,progress:100,next:null,nextAt:null,nextEmoji:'',inRank:clicks}}}for(let i=0;i<RANKS.length;i++){let r=RANKS[i];if(clicks>=r.min&&clicks<=r.max){let next=RANKS[i+1]||null;let range=r.max-r.min+1;let prog=next?Math.min(100,((clicks-r.min+1)/range*100)):100;return{...r,manual:false,next:next?next.name:null,nextAt:next?next.min:null,progress:prog,nextEmoji:next?next.emoji:'',inRank:clicks-r.min+1,totalInRank:range}}}return{...RANKS[0],manual:false,next:'PLATA',nextAt:1001,progress:0,nextEmoji:'🥈',inRank:0}}
 function rankBadgeHTML(clicks,user){let r=getRank(clicks,user);return '<span class="badge '+r.cls+'">'+r.emoji+' '+r.name+'</span>'}
-function getProfile(user){
-  let cloud=cloudProfiles[(user||'').toLowerCase()]||{};
-  try{ let local=JSON.parse(localStorage.getItem('naset_profile_'+(user||'').toLowerCase())||'{}'); return {avatar:cloud.avatar||local.avatar||"",displayName:cloud.displayName||local.displayName||"",bio:cloud.bio||local.bio||""}; }catch(e){return cloud}
-}
+function getProfile(user){let cloud=cloudProfiles[(user||'').toLowerCase()]||{};try{let local=JSON.parse(localStorage.getItem('naset_profile_'+(user||'').toLowerCase())||'{}');return{avatar:cloud.avatar||local.avatar||"",displayName:cloud.displayName||local.displayName||"",bio:cloud.bio||local.bio||""}}catch(e){return cloud}}
 function getDisplayName(user){let p=getProfile(user);return p.displayName||user}
-function getTag(user){
-  if(cloudVerified[(user||'').toLowerCase()]) return 'verified';
-  try{let s=localStorage.getItem('naset_tag_'+(user||'').toLowerCase());if(s==='verified'||s==='influencer')return s} catch(e){} return ''
-}
+function getTag(user){if(cloudVerified[(user||'').toLowerCase()])return 'verified';try{let s=localStorage.getItem('naset_tag_'+(user||'').toLowerCase());if(s==='verified'||s==='influencer')return s}catch(e){}return''}
 function verifiedIcon(user){return getTag(user)==='verified'?' <span style="background:#1d9bf0;color:#fff;border-radius:99px;padding:1px 5px;font-size:10px">✓</span>':''}
-function openProfileFromAvatar(e){ if(e) e.stopPropagation(); if(!currentUser){alert('Inicia sesión');return} prevView=currentView; document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); openView('profile'); }
-function openView(view){
-  if(currentView!=='profile' && currentView!=='admin' && currentView!=='stats'){ prevView = isVisitor ? 'waiter' : 'home'; } else if(view!==currentView){ prevView=currentView; }
-  currentView=view;
-  document.getElementById('mainView').style.display='none'; document.getElementById('viewProfile').style.display='none'; document.getElementById('viewAdmin').style.display='none'; document.getElementById('viewStats').style.display='none';
-  if(view==='profile'){document.getElementById('viewProfile').style.display='block';document.getElementById('profileBoxSolo').innerHTML=buildProfileHTML();let p=getProfile(currentUser);renderAvatarOptionsSolo(p.avatar||'');document.getElementById('editDisplayNameSolo').value=p.displayName||'';document.getElementById('editBioSolo').value=p.bio||'';window.scrollTo(0,0)}
-  if(view==='admin'){if(!isAdmin&&!isMod)return;document.getElementById('viewAdmin').style.display='block';document.getElementById('adminPanelSolo').innerHTML=buildAdminHTML();showAdminSolo();window.scrollTo(0,0)}
-  if(view==='stats'){if(!isAdmin&&!isMod)return;document.getElementById('viewStats').style.display='block';renderStats();window.scrollTo(0,0)}
-}
-function closeView(){
-  document.getElementById('viewProfile').style.display='none'; document.getElementById('viewAdmin').style.display='none'; document.getElementById('viewStats').style.display='none'; document.getElementById('mainView').style.display='block';
-  if(prevView==='waiter' || isVisitor){ currentView='waiter'; document.getElementById('authBox').style.display='none'; document.getElementById('panel').style.display='none'; document.getElementById('waiter').style.display='block'; } else { currentView='home'; if(currentUser) showPanel(); }
-  window.scrollTo(0,0);render();updateProfileUI();
-}
-function buildProfileHTML(){
-  let myClicks=getClicksOf(currentUser);let r=getRank(myClicks,currentUser);
-  return `<div style="display:flex;gap:14px;align-items:center"><div class="avatar">${getAvatarInner(currentUser)}</div><div><h3>${getDisplayName(currentUser)}${verifiedIcon(currentUser)}</h3><p style="color:#aaa;font-size:12px">Usuario: ${currentUser}</p><p style="color:#aaa;font-size:12px">${getProfile(currentUser).bio||''}</p><div style="margin-top:6px">${rankBadgeHTML(myClicks,currentUser)}</div><p style="font-size:11px;color:#aaa">${myClicks} clics ${r.next?'• Faltan '+(r.nextAt-myClicks)+' para '+r.nextEmoji+' '+r.next:''}</p></div></div>
-  <div style="margin-top:14px;border-top:1px solid #333;padding-top:12px"><p style="font-weight:bold">Elige tu foto - Todos la verán ✅</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0" id="avatarOptionsSolo"></div><label>📸 O sube tu foto:</label><input type="file" accept="image/*" onchange="uploadAvatarSolo(event)"><label>📝 Nombre para mostrar:</label><input id="editDisplayNameSolo" placeholder="Ej: Naset"><label>✍️ Biografía:</label><input id="editBioSolo" placeholder="Ej: Gano dinero 🔥" maxlength="80"><button class="green" onclick="saveProfileSolo()">💾 GUARDAR MI PERFIL - TODOS LO VEN</button></div>
-  <div style="margin-top:14px;border-top:1px solid #333;padding-top:12px"><p style="font-weight:bold">🔒 Cambiar Contraseña</p><label>Contraseña actual:</label><div class="flex"><input type="password" id="passActualSolo" placeholder="Contraseña actual" style="flex:1"><button style="width:50px" onclick="verPass('passActualSolo')">👁️</button></div><label>Nueva contraseña:</label><div class="flex"><input type="password" id="passNuevaSolo" placeholder="Nueva contraseña" style="flex:1"><button style="width:50px" onclick="verPass('passNuevaSolo')">👁️</button></div><button class="green" onclick="cambiarPassSolo()">🔐 ACTUALIZAR CONTRASEÑA</button></div>`;
-}
+function openProfileFromAvatar(e){if(e)e.stopPropagation();if(!currentUser){alert('Inicia sesión');return}prevView=currentView;document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');openView('profile')}
+function openView(view){if(currentView!=='profile'&&currentView!=='admin'&&currentView!=='stats'){prevView=isVisitor?'waiter':'home'}else if(view!==currentView){prevView=currentView}currentView=view;document.getElementById('mainView').style.display='none';document.getElementById('viewProfile').style.display='none';document.getElementById('viewAdmin').style.display='none';document.getElementById('viewStats').style.display='none';if(view==='profile'){document.getElementById('viewProfile').style.display='block';document.getElementById('profileBoxSolo').innerHTML=buildProfileHTML();let p=getProfile(currentUser);renderAvatarOptionsSolo(p.avatar||'');document.getElementById('editDisplayNameSolo').value=p.displayName||'';document.getElementById('editBioSolo').value=p.bio||'';window.scrollTo(0,0)}if(view==='admin'){if(!isAdmin&&!isMod)return;document.getElementById('viewAdmin').style.display='block';document.getElementById('adminPanelSolo').innerHTML=buildAdminHTML();showAdminSolo();window.scrollTo(0,0)}if(view==='stats'){if(!isAdmin&&!isMod)return;document.getElementById('viewStats').style.display='block';renderStats();window.scrollTo(0,0)}}
+function closeView(){document.getElementById('viewProfile').style.display='none';document.getElementById('viewAdmin').style.display='none';document.getElementById('viewStats').style.display='none';document.getElementById('mainView').style.display='block';if(prevView==='waiter'||isVisitor){currentView='waiter';document.getElementById('authBox').style.display='none';document.getElementById('panel').style.display='none';document.getElementById('waiter').style.display='block'}else{currentView='home';if(currentUser)showPanel()}window.scrollTo(0,0);render();updateProfileUI()}
+function buildProfileHTML(){let myClicks=getClicksOf(currentUser);let r=getRank(myClicks,currentUser);return `<div style="display:flex;gap:14px;align-items:center"><div class="avatar">${getAvatarInner(currentUser)}</div><div><h3>${getDisplayName(currentUser)}${verifiedIcon(currentUser)}</h3><p style="color:#aaa;font-size:12px">Usuario: ${currentUser}</p><p style="color:#aaa;font-size:12px">${getProfile(currentUser).bio||''}</p><div style="margin-top:6px">${rankBadgeHTML(myClicks,currentUser)}</div><p style="font-size:11px;color:#aaa">${myClicks} clics ${r.next?'• Faltan '+(r.nextAt-myClicks)+' para '+r.nextEmoji+' '+r.next:''}</p></div></div><div style="margin-top:14px;border-top:1px solid #333;padding-top:12px"><p style="font-weight:bold">Elige tu foto - Todos la verán ✅</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0" id="avatarOptionsSolo"></div><label>📸 O sube tu foto:</label><input type="file" accept="image/*" onchange="uploadAvatarSolo(event)"><label>📝 Nombre para mostrar:</label><input id="editDisplayNameSolo" placeholder="Ej: Naset"><label>✍️ Biografía:</label><input id="editBioSolo" placeholder="Ej: Gano dinero 🔥" maxlength="80"><button class="green" onclick="saveProfileSolo()">💾 GUARDAR MI PERFIL - TODOS LO VEN</button></div><div style="margin-top:14px;border-top:1px solid #333;padding-top:12px"><p style="font-weight:bold">🔒 Cambiar Contraseña</p><label>Contraseña actual:</label><div class="flex"><input type="password" id="passActualSolo" placeholder="Contraseña actual" style="flex:1"><button style="width:50px" onclick="verPass('passActualSolo')">👁️</button></div><label>Nueva contraseña:</label><div class="flex"><input type="password" id="passNuevaSolo" placeholder="Nueva contraseña" style="flex:1"><button style="width:50px" onclick="verPass('passNuevaSolo')">👁️</button></div><button class="green" onclick="cambiarPassSolo()">🔐 ACTUALIZAR CONTRASEÑA</button></div>`}
 function getAvatarInner(user){let p=getProfile(user);if(p.avatar)return '<img src="'+p.avatar+'">';return user.charAt(0).toUpperCase()}
 function renderAvatarOptionsSolo(cur){let h='';PRESET_AVATARS.forEach(u=>{h+='<img src="'+u+'" class="avatar-option '+(cur===u?'selected':'')+'" onclick="selectAvatar(\''+u+'\',this)">'});let el=document.getElementById('avatarOptionsSolo');if(el)el.innerHTML=h}
 function selectAvatar(url,el){selectedAvatar=url;document.querySelectorAll('.avatar-option').forEach(i=>i.classList.remove('selected'));if(el)el.classList.add('selected')}
 function uploadAvatarSolo(e){let f=e.target.files[0];if(!f)return;let rd=new FileReader();rd.onload=function(ev){let img=new Image();img.onload=function(){let c=document.createElement('canvas');let max=200,w=img.width,h=img.height;if(w>h){if(w>max){h=h*max/w;w=max}}else{if(h>max){w=w*max/h;h=max}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);selectedAvatar=c.toDataURL('image/jpeg',0.6)};img.src=ev.target.result};rd.readAsDataURL(f)}
 async function saveProfileSolo(){let dn=document.getElementById('editDisplayNameSolo').value.trim();let bio=document.getElementById('editBioSolo').value.trim();let p=getProfile(currentUser);if(selectedAvatar)p.avatar=selectedAvatar;if(dn)p.displayName=dn;p.bio=bio;try{localStorage.setItem('naset_profile_'+currentUser.toLowerCase(),JSON.stringify(p))}catch(e){alert('Foto muy pesada, elige un logo de arriba');return}selectedAvatar='';cloudProfiles[currentUser.toLowerCase()]=p;await dbSaveUser({user:currentUser,pass:getAllUsers().find(x=>x.user.toLowerCase()===currentUser.toLowerCase())?.pass||""});updateProfileUI();alert('✅ Foto guardada - Todos la ven');closeView()}
-function cambiarPassSolo(){
-  let actual=document.getElementById('passActualSolo').value.trim(); let nueva=document.getElementById('passNuevaSolo').value.trim();
-  if(!actual||!nueva){alert('Llena las 2 contraseñas');return}
-  let all=getAllUsers();let u=all.find(x=>x.user.toLowerCase()===currentUser.toLowerCase());
-  if(u&&u.pass&&u.pass!==actual){alert('❌ Contraseña actual incorrecta');return}
-  if(u){u.pass=nueva;saveAllUsers(all)} if(u) dbSaveUser(u); alert('✅ Contraseña actualizada');closeView();
-}
+function cambiarPassSolo(){let actual=document.getElementById('passActualSolo').value.trim();let nueva=document.getElementById('passNuevaSolo').value.trim();if(!actual||!nueva){alert('Llena las 2 contraseñas');return}let all=getAllUsers();let u=all.find(x=>x.user.toLowerCase()===currentUser.toLowerCase());if(u&&u.pass&&u.pass!==actual){alert('❌ Contraseña actual incorrecta');return}if(u){u.pass=nueva;saveAllUsers(all)}if(u)dbSaveUser(u);alert('✅ Contraseña actualizada');closeView()}
 function buildAdminHTML(){return `<h3 style="text-align:center">👑 PANEL ADMIN</h3><label>🏆 Dar rango a alguien</label><input id="adminRankUserSolo" placeholder="Usuario"><select id="adminRankSelectSolo"><option value="">Elige rango...</option><option>BRONCE</option><option>PLATA</option><option>ORO</option><option>DIAMANTE</option><option>ÉLITE</option><option>LEYENDA</option><option>MÍTICO</option><option>MAESTRO</option><option>DIOS</option></select><button class="green" onclick="adminGiveRankSolo()">🏆 DAR RANGO</button><button class="sec" onclick="adminRemoveRankSolo()">↩️ QUITAR MANUAL (vuelve a subir solo)</button><label>✅ Verificado - Solo dueño</label><input id="verifyUserSolo" placeholder="Usuario"><div class="flex"><button class="smallbtn" style="background:#1d9bf0" onclick="giveVerifiedSolo('verified')">✓ DAR VERIFICADO</button></div><button class="sec" onclick="removeVerifiedSolo()">❌ QUITAR VERIFICADO</button><label>🚫 Banear</label><input id="banUserSolo" placeholder="Usuario a banear"><button class="danger" onclick="banUserSolo()">🚫 BANEAR</button><button class="sec" onclick="unbanUserSolo()">✅ DESBANEAR</button><label>👥 Miembros</label><div id="allUsersSolo"></div>`}
 function adminGiveRankSolo(){let n=document.getElementById('adminRankUserSolo').value.trim();let r=document.getElementById('adminRankSelectSolo').value;if(!n||!r){alert('Pon usuario y rango');return}localStorage.setItem('naset_rank_manual_'+n.toLowerCase(),r);showAdminSolo();renderStats();updateProfileUI();alert('🏆 '+n+' ahora es '+r)}
 function adminRemoveRankSolo(){let n=document.getElementById('adminRankUserSolo').value.trim();if(!n){alert('Pon usuario');return}localStorage.setItem('naset_rank_manual_'+n.toLowerCase(),'AUTO');showAdminSolo();updateProfileUI();alert('↩️ '+n+' vuelve a subir solo')}
-async function giveVerifiedSolo(t){let n=document.getElementById('verifyUserSolo').value.trim();if(!n){alert('Pon usuario');return}if(!isAdmin){alert('Solo el dueño puede dar verificado');return}localStorage.setItem('naset_tag_'+n.toLowerCase(),t);cloudVerified[n.toLowerCase()]=true;let u=getAllUsers().find(x=>x.user.toLowerCase()===n.toLowerCase());if(u) await dbSaveUser(u);else await dbSaveUser({user:n,pass:""});showAdminSolo();updateProfileUI();alert('✅ '+n+' ahora tiene verificado ✓')}
-async function removeVerifiedSolo(){let n=document.getElementById('verifyUserSolo').value.trim();if(!n){alert('Pon usuario');return}if(!isAdmin){alert('Solo el dueño puede quitar verificado');return}localStorage.setItem('naset_tag_'+n.toLowerCase(),'none');delete cloudVerified[n.toLowerCase()];let u=getAllUsers().find(x=>x.user.toLowerCase()===n.toLowerCase());if(u) await dbSaveUser(u);showAdminSolo();alert('❌ Quitado')}
+async function giveVerifiedSolo(t){let n=document.getElementById('verifyUserSolo').value.trim();if(!n){alert('Pon usuario');return}if(!isAdmin){alert('Solo el dueño puede dar verificado');return}localStorage.setItem('naset_tag_'+n.toLowerCase(),t);cloudVerified[n.toLowerCase()]=true;let u=getAllUsers().find(x=>x.user.toLowerCase()===n.toLowerCase());if(u)await dbSaveUser(u);else await dbSaveUser({user:n,pass:""});showAdminSolo();updateProfileUI();alert('✅ '+n+' ahora tiene verificado ✓')}
+async function removeVerifiedSolo(){let n=document.getElementById('verifyUserSolo').value.trim();if(!n){alert('Pon usuario');return}if(!isAdmin){alert('Solo el dueño puede quitar verificado');return}localStorage.setItem('naset_tag_'+n.toLowerCase(),'none');delete cloudVerified[n.toLowerCase()];let u=getAllUsers().find(x=>x.user.toLowerCase()===n.toLowerCase());if(u)await dbSaveUser(u);showAdminSolo();alert('❌ Quitado')}
 function banUserSolo(){let n=document.getElementById('banUserSolo').value.trim();if(!n)return;if(n.toLowerCase()===ADMIN_USER.toLowerCase()){alert('No puedes banear al dueño');return}if(!confirm('¿Banear a '+n+'?'))return;localStorage.setItem('naset_banned_'+n.toLowerCase(),'1');showAdminSolo();alert('🚫 Baneado')}
 function unbanUserSolo(){let n=document.getElementById('banUserSolo').value.trim();if(!n)return;localStorage.removeItem('naset_banned_'+n.toLowerCase());showAdminSolo();alert('✅ Desbaneado')}
 async function showAdminSolo(){let el=document.getElementById('allUsersSolo');if(!el)return;let all=getAllUsers();if(all.length===0){el.innerHTML='<p class="small">Sin miembros aún</p>';return}let h='';all.forEach(u=>{let c=getClicksOf(u.user);let info=getAdInfo(2);h+='<div style="background:#000;border:1px solid #333;border-radius:12px;padding:10px;margin-bottom:8px"><b>'+(getDisplayName(u.user))+'</b> <span style="color:#888;font-size:11px">('+u.user+')</span><br>'+rankBadgeHTML(c,u.user)+' • '+c+' clics • $'+(c/1000*info.price).toFixed(2)+'</div>'});el.innerHTML=h}
-function getUserStats(u){let lvl=2,info=getAdInfo(lvl),c=getClicksOf(u.user);return {user:u.user,displayName:getDisplayName(u.user),clicks:c,earn:c/1000*info.price,level:lvl,price:info.price,tag:getTag(u.user),banned:localStorage.getItem('naset_banned_'+u.user.toLowerCase())==='1',rank:getRank(c,u.user)}}
+function getUserStats(u){let lvl=2,info=getAdInfo(lvl),c=getClicksOf(u.user);return{user:u.user,displayName:getDisplayName(u.user),clicks:c,earn:c/1000*info.price,level:lvl,price:info.price,tag:getTag(u.user),banned:localStorage.getItem('naset_banned_'+u.user.toLowerCase())==='1',rank:getRank(c,u.user)}}
 async function renderStats(){if(!isAdmin&&!isMod)return;let all=getAllUsers().map(getUserStats).sort((a,b)=>b.earn-a.earn);let search=(document.getElementById('statsSearch')?.value||'').toLowerCase();let f=search?all.filter(s=>s.displayName.toLowerCase().includes(search)||s.user.toLowerCase().includes(search)):all;let totalC=all.reduce((s,x)=>s+x.clicks,0),totalP=all.reduce((s,x)=>s+x.earn,0);document.getElementById('statsTotalUsers').innerText=all.length;document.getElementById('statsTotalClicks').innerText=totalC;document.getElementById('statsTotalPay').innerText='$'+totalP.toFixed(2);let list=document.getElementById('statsList');if(f.length===0){list.innerHTML='<p class="small">Sin usuarios</p>';return}list.innerHTML=f.map((s,i)=>'<div style="background:#000;border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:10px"><b>'+(i+1)+'. '+s.displayName+'</b> <span style="color:#888">'+s.user+'</span><br>'+rankBadgeHTML(s.clicks,s.user)+'<br>👆 '+s.clicks+' clics • 💰 $'+s.earn.toFixed(2)+'</div>').join('')}
-function setMode(mode){
-  authMode=mode; let userInput=document.getElementById('user'); let passInput=document.getElementById('pass'); let mainBtn=document.getElementById('mainAuthBtn');
-  document.getElementById('btnTabLogin').className=mode==='login'?'active':''; document.getElementById('btnTabRegister').className=mode==='register'?'active':'';
-  if(mode==='login'){ userInput.placeholder='Usuario:'; passInput.placeholder='Contraseña:'; mainBtn.innerText='ENTRAR'; } else { userInput.placeholder='Crear usuario:'; passInput.placeholder='Crear contraseña:'; mainBtn.innerText='REGISTRARME'; }
-  userInput.value=''; passInput.value='';
-}
+function setMode(mode){authMode=mode;let userInput=document.getElementById('user');let passInput=document.getElementById('pass');let mainBtn=document.getElementById('mainAuthBtn');document.getElementById('btnTabLogin').className=mode==='login'?'active':'';document.getElementById('btnTabRegister').className=mode==='register'?'active':'';if(mode==='login'){userInput.placeholder='Usuario:';passInput.placeholder='Contraseña:';mainBtn.innerText='ENTRAR'}else{userInput.placeholder='Crear usuario:';passInput.placeholder='Crear contraseña:';mainBtn.innerText='REGISTRARME'}userInput.value='';passInput.value=''}
 function submitAuth(){if(authMode==='login')login();else register()}
-async function login(){
-  let u=document.getElementById('user').value.trim();let p=document.getElementById('pass').value.trim();
-  if(!u||!p){alert('Pon usuario y contraseña');return}
-  if(localStorage.getItem('naset_banned_'+u.toLowerCase())==='1'){alert('🚫 Baneado');return}
-  if(u.toLowerCase()===ADMIN_USER.toLowerCase()){ if(p!==ADMIN_PASS){alert('❌ Contraseña incorrecta - Dueño');return} ensureOwnerModInList(ADMIN_USER,ADMIN_PASS); localStorage.setItem('naset_user',ADMIN_USER);localStorage.setItem('naset_is_admin','1');localStorage.removeItem('naset_is_mod');isAdmin=true;isMod=false;currentUser=ADMIN_USER;showPanel();return }
-  if(u.toLowerCase()===MOD_USER.toLowerCase()){ if(p!==MOD_PASS){alert('❌ Contraseña incorrecta - Admin');return} ensureOwnerModInList(MOD_USER,MOD_PASS); localStorage.setItem('naset_user',MOD_USER);localStorage.setItem('naset_is_mod','1');localStorage.removeItem('naset_is_admin');isAdmin=false;isMod=true;currentUser=MOD_USER;showPanel();return }
-  let all=getAllUsers();let found=all.find(x=>x.user.toLowerCase()===u.toLowerCase());
-  if(!found){let db=await dbGetUsers();let fdb=db.find(x=>(x.username||'').toLowerCase()===u.toLowerCase());if(fdb){found={user:fdb.username,pass:fdb.pass||'',clicks:fdb.clicks||0,date:fdb.date||'Hoy',time:fdb.time||''};all.push(found);saveAllUsers(all);setClicksOf(found.user,found.clicks)}}
-  if(!found){alert('❌ Esa cuenta NO existe. Dale a REGISTRARME');setMode('register');return}
-  if(found.pass&&found.pass!==p){alert('❌ Contraseña incorrecta');return}
-  localStorage.setItem('naset_user',found.user);localStorage.removeItem('naset_is_admin');localStorage.removeItem('naset_is_mod');isAdmin=false;isMod=false;currentUser=found.user;showPanel();
-}
-async function register(){
-  let u=document.getElementById('user').value.trim();let p=document.getElementById('pass').value.trim();
-  if(!u||!p){alert('Pon usuario y contraseña');return}
-  if(localStorage.getItem('naset_banned_'+u.toLowerCase())==='1'){alert('🚫 Baneado');return}
-  if(u.toLowerCase()===ADMIN_USER.toLowerCase()||u.toLowerCase()===MOD_USER.toLowerCase()){alert('Ese usuario no se puede usar');return}
-  let all=getAllUsers(); if(all.find(x=>x.user.toLowerCase()===u.toLowerCase())){alert('Ese usuario ya existe. Dale a Iniciar Sesión');setMode('login');return}
-  let db=await dbGetUsers(); if(db.find(x=>(x.username||'').toLowerCase()===u.toLowerCase())){alert('Ese usuario ya existe. Dale a Iniciar Sesión');setMode('login');return}
-  let now=new Date();let newU={user:u,pass:p,date:now.toLocaleDateString(),time:now.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}),timestamp:now.getTime(),clicks:0,forcedAdLevel:0};
-  all.push(newU);saveAllUsers(all);setClicksOf(u,0);
-  let defAvatar=PRESET_AVATARS[Math.floor(Math.random()*PRESET_AVATARS.length)]; localStorage.setItem('naset_profile_'+u.toLowerCase(),JSON.stringify({avatar:defAvatar,displayName:u,bio:""})); cloudProfiles[u.toLowerCase()]={avatar:defAvatar,displayName:u,bio:""};
-  try{await dbSaveUser(newU)}catch(e){}
-  localStorage.setItem('naset_user',u);localStorage.removeItem('naset_is_admin');localStorage.removeItem('naset_is_mod');isAdmin=false;isMod=false;currentUser=u; alert('✅ Registrado! Bienvenido '+u);showPanel();
-}
+async function login(){let u=document.getElementById('user').value.trim();let p=document.getElementById('pass').value.trim();if(!u||!p){alert('Pon usuario y contraseña');return}if(localStorage.getItem('naset_banned_'+u.toLowerCase())==='1'){alert('🚫 Baneado');return}if(u.toLowerCase()===ADMIN_USER.toLowerCase()){if(p!==ADMIN_PASS){alert('❌ Contraseña incorrecta - Dueño');return}ensureOwnerModInList(ADMIN_USER,ADMIN_PASS);localStorage.setItem('naset_user',ADMIN_USER);localStorage.setItem('naset_is_admin','1');localStorage.removeItem('naset_is_mod');isAdmin=true;isMod=false;currentUser=ADMIN_USER;showPanel();return}if(u.toLowerCase()===MOD_USER.toLowerCase()){if(p!==MOD_PASS){alert('❌ Contraseña incorrecta - Admin');return}ensureOwnerModInList(MOD_USER,MOD_PASS);localStorage.setItem('naset_user',MOD_USER);localStorage.setItem('naset_is_mod','1');localStorage.removeItem('naset_is_admin');isAdmin=false;isMod=true;currentUser=MOD_USER;showPanel();return}let all=getAllUsers();let found=all.find(x=>x.user.toLowerCase()===u.toLowerCase());if(!found){let db=await dbGetUsers();let fdb=db.find(x=>(x.username||'').toLowerCase()===u.toLowerCase());if(fdb){found={user:fdb.username,pass:fdb.pass||'',clicks:fdb.clicks||0,date:fdb.date||'Hoy',time:fdb.time||''};all.push(found);saveAllUsers(all);setClicksOf(found.user,found.clicks)}}if(!found){alert('❌ Esa cuenta NO existe. Dale a REGISTRARME');setMode('register');return}if(found.pass&&found.pass!==p){alert('❌ Contraseña incorrecta');return}localStorage.setItem('naset_user',found.user);localStorage.removeItem('naset_is_admin');localStorage.removeItem('naset_is_mod');isAdmin=false;isMod=false;currentUser=found.user;showPanel()}
+async function register(){let u=document.getElementById('user').value.trim();let p=document.getElementById('pass').value.trim();if(!u||!p){alert('Pon usuario y contraseña');return}if(localStorage.getItem('naset_banned_'+u.toLowerCase())==='1'){alert('🚫 Baneado');return}if(u.toLowerCase()===ADMIN_USER.toLowerCase()||u.toLowerCase()===MOD_USER.toLowerCase()){alert('Ese usuario no se puede usar');return}let all=getAllUsers();if(all.find(x=>x.user.toLowerCase()===u.toLowerCase())){alert('Ese usuario ya existe. Dale a Iniciar Sesión');setMode('login');return}let db=await dbGetUsers();if(db.find(x=>(x.username||'').toLowerCase()===u.toLowerCase())){alert('Ese usuario ya existe. Dale a Iniciar Sesión');setMode('login');return}let now=new Date();let newU={user:u,pass:p,date:now.toLocaleDateString(),time:now.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}),timestamp:now.getTime(),clicks:0,forcedAdLevel:0};all.push(newU);saveAllUsers(all);setClicksOf(u,0);let defAvatar=PRESET_AVATARS[Math.floor(Math.random()*PRESET_AVATARS.length)];localStorage.setItem('naset_profile_'+u.toLowerCase(),JSON.stringify({avatar:defAvatar,displayName:u,bio:""}));cloudProfiles[u.toLowerCase()]={avatar:defAvatar,displayName:u,bio:""};try{await dbSaveUser(newU)}catch(e){}localStorage.setItem('naset_user',u);localStorage.removeItem('naset_is_admin');localStorage.removeItem('naset_is_mod');isAdmin=false;isMod=false;currentUser=u;alert('✅ Registrado! Bienvenido '+u);showPanel()}
 function logout(){localStorage.removeItem('naset_user');localStorage.removeItem('naset_is_admin');localStorage.removeItem('naset_is_mod');location.href='/'}
 const ALL_ADS=[{type:"💰 Dinero",bg:"#f59e0b",img:"https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=300&fit=crop",text:"🔥 ¡GANA $5 DIARIOS! 👉 TOCA AQUÍ"},{type:"🎮 Juegos",bg:"#22c55e",img:"https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=600&h=300&fit=crop",text:"🎮 ¡JUEGA Y GANA! 👉 TOCA AQUÍ"},{type:"📱 App",bg:"#3b82f6",img:"https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=300&fit=crop",text:"📱 APP QUE PAGA 👉 TOCA AQUÍ"},{type:"🎁 Premio",bg:"#a855f7",img:"https://images.unsplash.com/photo-1513151233558-d860c5398176?w=600&h=300&fit=crop",text:"🎁 ¡GANASTE PREMIO! 👉 TOCA AQUÍ"}];
 let AD_LEVELS=JSON.parse(localStorage.getItem('naset_ad_levels')||JSON.stringify([{level:2,ads:2,price:1},{level:4,ads:4,price:2.5},{level:6,ads:6,price:4},{level:8,ads:8,price:6},{level:10,ads:10,price:10}]));
 let currentUser=localStorage.getItem('naset_user');let links=JSON.parse(localStorage.getItem('naset_links')||'[]');let users=getAllUsers();let isAdmin=localStorage.getItem('naset_is_admin')==='1';let isMod=localStorage.getItem('naset_is_mod')==='1';let myAdLevel=parseInt(localStorage.getItem('naset_my_adlevel')||'2');let tempAdLevel=myAdLevel;let targetUrl='';let totalAds=2,currentAd=1,timerInt=null,shuffledAds=[],adStartTime=0,originalTotalAds=2;
-const params=new URLSearchParams(location.search);let slugParam='';for(let k of params.keys()){ if(k!=='ad'&&k!=='d'&&k!=='go'&&k!=='u'){ slugParam=k; break; } }
+const params=new URLSearchParams(location.search);let slugParam='';for(let k of params.keys()){if(k!=='ad'&&k!=='d'&&k!=='go'&&k!=='u'){slugParam=k;break}}
 let slugData=null,isVisitor=false,owner='';
-function decodeLegacyGo(){
-  try{ let go=params.get('go'); if(!go) return null; let decoded=atob(go.replace(/-/g,'+').replace(/_/g,'/')); decoded=decodeURIComponent(escape(decoded)); let u=params.get('u')||'NASETLINKOFC'; let ad=parseInt(params.get('ad')||'2'); if(!decoded.startsWith('http')) decoded='https://'+decoded; return {target:decoded,owner:u,adLevel:ad}; }catch(e){return null}
-}
-function showWaiterFor(ownerName,level){
-  isVisitor=true;owner=ownerName||'NASETLINKOFC';totalAds=parseInt(level||2);originalTotalAds=totalAds;currentAd=1;
-  document.getElementById('authBox').style.display='none'; document.getElementById('panel').style.display='none'; document.getElementById('waiter').style.display='block'; document.getElementById('stateClick').style.display='block'; document.getElementById('stateWait').style.display='none'; document.getElementById('stateDone').style.display='none';
-  shuffledAds=[...ALL_ADS].sort(()=>Math.random()-0.5).slice(0,totalAds);
-  let info=AD_LEVELS.find(x=>x.level===totalAds)||AD_LEVELS[0];
-  document.getElementById('adLevelShow').innerText='Nivel '+info.level+' • '+info.ads+' anuncios';
-  renderDots();updateWaitTitle();
-}
-function renderDots(){
-  let h=''; for(let i=1;i<=originalTotalAds;i++){ let cls=i<currentAd?'dot done':(i===currentAd?'dot current':'dot'); h+='<div class="'+cls+'">'+(i<currentAd?'✓':i)+'</div>'; }
-  document.getElementById('dots').innerHTML=h; document.getElementById('barFill').style.width=((currentAd-1)/Math.max(originalTotalAds,1)*100)+'%';
-}
-function applyCloudLevelToWaiter(newLevel){
-  newLevel=parseInt(newLevel);
-  if(!newLevel || newLevel===totalAds) return;
-  if(currentAd!==1) { totalAds=newLevel; originalTotalAds=newLevel; return; }
-  totalAds=newLevel; originalTotalAds=newLevel;
-  shuffledAds=[...ALL_ADS].sort(()=>Math.random()-0.5).slice(0,totalAds);
-  let info=AD_LEVELS.find(x=>x.level===totalAds)||AD_LEVELS[0];
-  document.getElementById('adLevelShow').innerText='Nivel '+info.level+' • '+info.ads+' anuncios';
-  renderDots(); updateWaitTitle();
-}
+function decodeLegacyGo(){try{let go=params.get('go');if(!go)return null;let decoded=atob(go.replace(/-/g,'+').replace(/_/g,'/'));decoded=decodeURIComponent(escape(decoded));let u=params.get('u')||'NASETLINKOFC';let ad=parseInt(params.get('ad')||'2');if(!decoded.startsWith('http'))decoded='https://'+decoded;return{target:decoded,owner:u,adLevel:ad}}catch(e){return null}}
+function showWaiterFor(ownerName,level){isVisitor=true;owner=ownerName||'NASETLINKOFC';totalAds=parseInt(level||2);originalTotalAds=totalAds;currentAd=1;document.getElementById('authBox').style.display='none';document.getElementById('panel').style.display='none';document.getElementById('waiter').style.display='block';document.getElementById('stateClick').style.display='block';document.getElementById('stateWait').style.display='none';document.getElementById('stateDone').style.display='none';shuffledAds=[...ALL_ADS].sort(()=>Math.random()-0.5).slice(0,totalAds);let info=AD_LEVELS.find(x=>x.level===totalAds)||AD_LEVELS[0];document.getElementById('adLevelShow').innerText='Nivel '+info.level+' • '+info.ads+' anuncios';renderDots();updateWaitTitle()}
+function renderDots(){let h='';for(let i=1;i<=originalTotalAds;i++){let cls=i<currentAd?'dot done':(i===currentAd?'dot current':'dot');h+='<div class="'+cls+'">'+(i<currentAd?'✓':i)+'</div>'}document.getElementById('dots').innerHTML=h;document.getElementById('barFill').style.width=((currentAd-1)/Math.max(originalTotalAds,1)*100)+'%'}
+function applyCloudLevelToWaiter(newLevel){newLevel=parseInt(newLevel);if(!newLevel||newLevel===totalAds)return;if(currentAd!==1){totalAds=newLevel;originalTotalAds=newLevel;return}totalAds=newLevel;originalTotalAds=newLevel;shuffledAds=[...ALL_ADS].sort(()=>Math.random()-0.5).slice(0,totalAds);let info=AD_LEVELS.find(x=>x.level===totalAds)||AD_LEVELS[0];document.getElementById('adLevelShow').innerText='Nivel '+info.level+' • '+info.ads+' anuncios';renderDots();updateWaitTitle()}
 function initSlug(){
-  if(params.has('go')){
-    let legacy=decodeLegacyGo();
-    if(legacy){ isVisitor=true;currentSlugForClicks='legacy-'+Date.now(); targetUrl=legacy.target;owner=legacy.owner;totalAds=parseInt(legacy.adLevel||2); showWaiterFor(owner,totalAds); return true; }
-  }
-  if(!slugParam) return false;
+  if(params.has('go')){let legacy=decodeLegacyGo();if(legacy){isVisitor=true;currentSlugForClicks='legacy-'+Date.now();targetUrl=legacy.target;owner=legacy.owner;totalAds=parseInt(legacy.adLevel||2);showWaiterFor(owner,totalAds);return true}}
+  if(!slugParam)return false;
   isVisitor=true;currentSlugForClicks=cleanSlug(slugParam);
-  document.getElementById('authBox').style.display='none'; document.getElementById('panel').style.display='none';
-  // Link corto: el destino NO viene en la URL, viene oculto en la nube
-  // Pero si es un link viejo largo con &d=, lo soportamos para no romperlo
-  let urlDest=decodeDest(params.get('d')||'');
-  let urlAd=parseInt(params.get('ad')||'');
+  document.getElementById('authBox').style.display='none';document.getElementById('panel').style.display='none';
+  let urlDest=decodeDest(params.get('d')||'');let urlAd=parseInt(params.get('ad')||'');
   let local=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
   let localKey=Object.keys(local).find(k=>k.toLowerCase()===currentSlugForClicks.toLowerCase());
   let cachedLevel=!isNaN(urlAd)?urlAd:parseInt(localStorage.getItem('naset_my_adlevel')||'2');
-  let cachedTarget=urlDest||'';
-  let cachedOwner='NASETLINKOFC';
-  if(localKey){ slugData=local[localKey]; if(!cachedTarget) cachedTarget=slugData.target; cachedOwner=slugData.owner||cachedOwner; if(isNaN(urlAd)) cachedLevel=parseInt(slugData.adLevel||cachedLevel); }
-  targetUrl=cachedTarget; owner=cachedOwner; totalAds=cachedLevel;
+  let cachedTarget=urlDest||'';let cachedOwner='NASETLINKOFC';
+  if(localKey){slugData=local[localKey];if(!cachedTarget)cachedTarget=slugData.target;cachedOwner=slugData.owner||cachedOwner;if(isNaN(urlAd))cachedLevel=parseInt(slugData.adLevel||cachedLevel)}
+  targetUrl=cachedTarget;owner=cachedOwner;totalAds=cachedLevel;
   showWaiterFor(owner,totalAds);
-  // TIEMPO REAL: buscar en la nube el destino oculto y el nivel, con reintentos
   (async()=>{
     let found=await dbGetLinkWithRetry(currentSlugForClicks);
-    let finalOwner=owner; let finalTarget=targetUrl; let finalLevel=totalAds;
-    if(found){ finalOwner=found.owner||finalOwner; if(found.target) finalTarget=found.target; finalLevel=parseInt(found.adLevel||finalLevel); }
+    let finalOwner=owner;let finalTarget=targetUrl;let finalLevel=totalAds;
+    if(found){finalOwner=found.owner||finalOwner;if(found.target)finalTarget=found.target;finalLevel=parseInt(found.adLevel||finalLevel)}
     let ownerLevel=await dbGetOwnerLevel(finalOwner);
-    if(ownerLevel) finalLevel=ownerLevel;
-    if(finalTarget) targetUrl=finalTarget;
+    if(ownerLevel)finalLevel=ownerLevel;
+    if(finalTarget)targetUrl=finalTarget;
     owner=finalOwner;
     applyCloudLevelToWaiter(finalLevel);
   })();
   return true;
 }
 function isAdBot(){if(!humanInteracted)return true;if(Date.now()-pageLoadTime<1500)return true;return false}
-async function addClickToOwner(ownerName){
-  if(!ownerName)ownerName='NASETLINKOFC'; if(isAdBot())return;
-  let c=getClicksOf(ownerName)+1;setClicksOf(ownerName,c);
-  let all=getAllUsers();let u=all.find(x=>x.user.toLowerCase()===ownerName.toLowerCase());if(u){u.clicks=c;saveAllUsers(all);try{await dbSaveUser({...u,clicks:c})}catch(e){}} else{let nu={user:ownerName,pass:'',clicks:c,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString()};all.push(nu);saveAllUsers(all)}
-  if(currentSlugForClicks && !String(currentSlugForClicks).startsWith('legacy-')) await addClickToThisLink(currentSlugForClicks,ownerName);
-  render();
-}
+async function addClickToOwner(ownerName){if(!ownerName)ownerName='NASETLINKOFC';if(isAdBot())return;let c=getClicksOf(ownerName)+1;setClicksOf(ownerName,c);let all=getAllUsers();let u=all.find(x=>x.user.toLowerCase()===ownerName.toLowerCase());if(u){u.clicks=c;saveAllUsers(all);try{await dbSaveUser({...u,clicks:c})}catch(e){}}else{let nu={user:ownerName,pass:'',clicks:c,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString()};all.push(nu);saveAllUsers(all)}if(currentSlugForClicks&&!String(currentSlugForClicks).startsWith('legacy-'))await addClickToThisLink(currentSlugForClicks,ownerName);render()}
 function getCurrentAd(){return shuffledAds[currentAd-1]||ALL_ADS[0]}
-function updateWaitTitle(){
-  document.getElementById('waitTitle').innerText='Anuncio '+currentAd; document.getElementById('adNum1').innerText=currentAd;
-  let ad=getCurrentAd();document.getElementById('adImg').src=ad.img;document.getElementById('adText').innerText=ad.text;document.getElementById('adText').style.background=ad.bg
-}
-function empezarEspera(){
-  if(currentAd>originalTotalAds) return;
-  adStartTime=Date.now();document.getElementById('stateClick').style.display='none';document.getElementById('stateWait').style.display='block';document.getElementById('stateDone').style.display='none';
-  let t=5,c=document.getElementById('count');c.innerText=t;let btn=document.getElementById('returnBtn');btn.disabled=true;btn.className='';btn.innerText='🔒 ESPERA 5 SEGUNDOS...';clearInterval(timerInt);timerInt=setInterval(()=>{t--;c.innerText=t>0?t:'¡Listo!';if(t<=0){clearInterval(timerInt);btn.disabled=false;btn.className='returnbtn';btn.innerText=(currentAd>=originalTotalAds?'✅ YA VI EL ANUNCIO, IR AL LINK':'✅ YA VI EL ANUNCIO, VER SIGUIENTE')}},1000)
-}
-function confirmReturn(){
-  if(Date.now()-adStartTime<4000){alert('🛡️ Espera los 5 seg completos');return}
-  addClickToOwner(owner);
-  if(currentAd>=originalTotalAds){ document.getElementById('stateWait').style.display='none'; document.getElementById('stateClick').style.display='none'; document.getElementById('stateDone').style.display='block'; document.getElementById('barFill').style.width='100%'; currentAd=originalTotalAds+1; renderDotsFinal(); return; }
-  currentAd++; renderDots();updateWaitTitle(); document.getElementById('stateWait').style.display='none'; document.getElementById('stateClick').style.display='block'; document.getElementById('stateDone').style.display='none';
-}
-function renderDotsFinal(){ let h=''; for(let i=1;i<=originalTotalAds;i++){h+='<div class="dot done">✓</div>'} document.getElementById('dots').innerHTML=h; document.getElementById('waitTitle').innerText='¡Completaste!'; }
+function updateWaitTitle(){document.getElementById('waitTitle').innerText='Anuncio '+currentAd;document.getElementById('adNum1').innerText=currentAd;let ad=getCurrentAd();document.getElementById('adImg').src=ad.img;document.getElementById('adText').innerText=ad.text;document.getElementById('adText').style.background=ad.bg}
+function empezarEspera(){if(currentAd>originalTotalAds)return;adStartTime=Date.now();document.getElementById('stateClick').style.display='none';document.getElementById('stateWait').style.display='block';document.getElementById('stateDone').style.display='none';let t=5,c=document.getElementById('count');c.innerText=t;let btn=document.getElementById('returnBtn');btn.disabled=true;btn.className='';btn.innerText='🔒 ESPERA 5 SEGUNDOS...';clearInterval(timerInt);timerInt=setInterval(()=>{t--;c.innerText=t>0?t:'¡Listo!';if(t<=0){clearInterval(timerInt);btn.disabled=false;btn.className='returnbtn';btn.innerText=(currentAd>=originalTotalAds?'✅ YA VI EL ANUNCIO, IR AL LINK':'✅ YA VI EL ANUNCIO, VER SIGUIENTE')}},1000)}
+function confirmReturn(){if(Date.now()-adStartTime<4000){alert('🛡️ Espera los 5 seg completos');return}addClickToOwner(owner);if(currentAd>=originalTotalAds){document.getElementById('stateWait').style.display='none';document.getElementById('stateClick').style.display='none';document.getElementById('stateDone').style.display='block';document.getElementById('barFill').style.width='100%';currentAd=originalTotalAds+1;renderDotsFinal();return}currentAd++;renderDots();updateWaitTitle();document.getElementById('stateWait').style.display='none';document.getElementById('stateClick').style.display='block';document.getElementById('stateDone').style.display='none'}
+function renderDotsFinal(){let h='';for(let i=1;i<=originalTotalAds;i++){h+='<div class="dot done">✓</div>'}document.getElementById('dots').innerHTML=h;document.getElementById('waitTitle').innerText='¡Completaste!'}
 async function goToLink(){
-  // SI O SI ABRE: busca el destino oculto en la nube, con reintentos, en cualquier navegador
-  if(!targetUrl){
-    let f=await dbGetLinkWithRetry(currentSlugForClicks);
-    if(f && f.target) targetUrl=f.target;
-  }
-  if(!targetUrl){
-    let urlDest=decodeDest(params.get('d')||'');
-    if(urlDest) targetUrl=urlDest;
-  }
-  if(!targetUrl && params.has('go')){ let legacy=decodeLegacyGo(); if(legacy) targetUrl=legacy.target; }
-  if(!targetUrl && currentSlugForClicks && !String(currentSlugForClicks).startsWith('legacy-')){
-    let local=JSON.parse(localStorage.getItem('naset_custom_links')||'{}'); let k=Object.keys(local).find(k=>k.toLowerCase()===String(currentSlugForClicks).toLowerCase()); if(k) targetUrl=local[k].target;
-  }
-  if(!targetUrl){alert('No se encontró destino. Vuelve a crear el link con este código nuevo, ese sí guarda el destino oculto en la nube.');return}
+  if(!targetUrl){let f=await dbGetLinkWithRetry(currentSlugForClicks);if(f&&f.target)targetUrl=f.target}
+  if(!targetUrl){let urlDest=decodeDest(params.get('d')||'');if(urlDest)targetUrl=urlDest}
+  if(!targetUrl&&params.has('go')){let legacy=decodeLegacyGo();if(legacy)targetUrl=legacy.target}
+  if(!targetUrl&&currentSlugForClicks&&!String(currentSlugForClicks).startsWith('legacy-')){let local=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');let k=Object.keys(local).find(k=>k.toLowerCase()===String(currentSlugForClicks).toLowerCase());if(k)targetUrl=local[k].target}
+  if(!targetUrl){alert('No se encontró destino para ?'+currentSlugForClicks+'. Crea uno nuevo con un nombre que nunca hayas usado, ese sí abre si o si.');return}
   location.href=targetUrl.startsWith('http')?targetUrl:'https://'+targetUrl
 }
 function getAdInfo(level){return AD_LEVELS.find(x=>x.level===level)||AD_LEVELS[0]}
-function applyLevelToAllMyLinks(level){
-  level=parseInt(level); if(!currentUser) return; let changed=false;
-  links.forEach(l=>{ if(l.user===currentUser && parseInt(l.adLevel)!==level){ l.adLevel=level; changed=true; } });
-  if(changed) localStorage.setItem('naset_links',JSON.stringify(links));
-  try{ let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}'); let cChanged=false; Object.keys(custom).forEach(k=>{ if(custom[k].owner===currentUser && parseInt(custom[k].adLevel)!==level){ custom[k].adLevel=level; cChanged=true; } }); if(cChanged) localStorage.setItem('naset_custom_links',JSON.stringify(custom)); }catch(e){}
-  links.forEach(l=>{ if(l.user===currentUser && l.slug && l.slug!=='undefined'){ dbUpdateLinkLevel(l.slug, level); } });
-}
-function changeAdLevel(v){
-  v=parseInt(v); tempAdLevel=v; myAdLevel=v; localStorage.setItem('naset_my_adlevel',String(v));
-  applyLevelToAllMyLinks(v);
-  if(currentUser) dbSaveOwnerLevel(currentUser, v);
-  updateAdUI(); let ml=document.getElementById('myLevel'); if(ml) ml.innerText='Nivel '+v; render();
-}
+function applyLevelToAllMyLinks(level){level=parseInt(level);if(!currentUser)return;let changed=false;links.forEach(l=>{if(l.user===currentUser&&parseInt(l.adLevel)!==level){l.adLevel=level;changed=true}});if(changed)localStorage.setItem('naset_links',JSON.stringify(links));try{let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');let cChanged=false;Object.keys(custom).forEach(k=>{if(custom[k].owner===currentUser&&parseInt(custom[k].adLevel)!==level){custom[k].adLevel=level;cChanged=true}});if(cChanged)localStorage.setItem('naset_custom_links',JSON.stringify(custom))}catch(e){}links.forEach(l=>{if(l.user===currentUser&&l.slug&&l.slug!=='undefined'){dbUpdateLinkLevel(l.slug,level)}})}
+function changeAdLevel(v){v=parseInt(v);tempAdLevel=v;myAdLevel=v;localStorage.setItem('naset_my_adlevel',String(v));applyLevelToAllMyLinks(v);if(currentUser)dbSaveOwnerLevel(currentUser,v);updateAdUI();let ml=document.getElementById('myLevel');if(ml)ml.innerText='Nivel '+v;render()}
 function updateAdUI(){let info=getAdInfo(tempAdLevel);document.getElementById('adLevelInfo').innerText='Nivel '+info.level+' • '+info.ads+' anuncios • Ganas $'+info.price.toFixed(2)+' por 1000 clics • ✅ Guardado en tiempo real en la nube';document.querySelectorAll('.level-btn').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.lv)===tempAdLevel))}
-function saveAdLevel(){myAdLevel=tempAdLevel;localStorage.setItem('naset_my_adlevel',myAdLevel);applyLevelToAllMyLinks(myAdLevel); if(currentUser) dbSaveOwnerLevel(currentUser, myAdLevel); render();alert('✅ Nivel '+myAdLevel+' guardado en tiempo real - Ahora jala en Safari, Chrome, Google, iOS y Android')}
-function updateProfileUI(){
-  if(!currentUser)return;let p=getProfile(currentUser);let av=document.getElementById('myAvatar');if(av){av.innerHTML=p.avatar?'<img src="'+p.avatar+'">':currentUser.charAt(0).toUpperCase()}
-  let wn=document.getElementById('welcomeName');if(wn)wn.innerHTML=(p.displayName||currentUser)+verifiedIcon(currentUser);
-  let pb=document.getElementById('profileBioShow');if(pb)pb.innerText=p.bio||''; let pus=document.getElementById('profileUserShow');if(pus)pus.innerText='@'+currentUser;
-  document.getElementById('headerBar').style.display='flex';document.getElementById('logoBig').style.display='none';
-  let topAv=document.getElementById('topAvatar');topAv.innerHTML=p.avatar?'<img src="'+p.avatar+'">':currentUser.charAt(0).toUpperCase();
-  let sideAv=document.getElementById('sideAvatar');if(sideAv)sideAv.innerHTML=p.avatar?'<img src="'+p.avatar+'">':currentUser.charAt(0).toUpperCase();
-  document.getElementById('sideName').innerText=p.displayName||currentUser;document.getElementById('sideUser').innerText='@'+currentUser;
-  document.getElementById('menuAdmin').style.display=isAdmin?'flex':'none';document.getElementById('menuStats').style.display=(isAdmin||isMod)?'flex':'none';
-  let myClicks=getClicksOf(currentUser);let r=getRank(myClicks,currentUser);
-  let rb=document.getElementById('rankBadge');if(rb){rb.className='badge '+r.cls;rb.innerText=r.emoji+' '+r.name}
-  let sb=document.getElementById('sideBadge');if(sb)sb.innerHTML=rb?rb.outerHTML:'';
-  let rpt=document.getElementById('rankProgressText');if(rpt)rpt.innerText=r.manual?r.emoji+' '+r.name+' • '+myClicks+' clics • Puesto a mano':(r.name==='DIOS'?('👑 DIOS • '+myClicks+' clics • Máximo'):(r.emoji+' '+r.name+' • '+r.inRank+' / '+(r.max-r.min+1)+' • '+Math.floor(r.progress)+'%'));
-  let rpb=document.getElementById('rankProgressBar');if(rpb)rpb.style.width=r.progress+'%';
-  let rps=document.getElementById('rankProgressSub');if(rps)rps.innerText=r.manual?'Ya pasaste, sube solo al pasar los clics':(r.next?'Te faltan '+(r.nextAt-myClicks)+' para '+r.nextEmoji+' '+r.next:'Ya eres DIOS');
-  let rt=document.getElementById('rankTableLive');if(rt){let html='';RANKS.forEach(rank=>{let isMine=rank.name===r.name;let pct=isMine?Math.floor(r.progress):(myClicks>rank.max?100:0);let txt=isMine?(r.inRank+' / '+(rank.max-rank.min+1)+' • '+pct+'%'):(myClicks>rank.max?'✅ Completado':'0 / '+(rank.max-rank.min+1)+' • 0%');html+='<div style="padding:10px 0;border-bottom:1px solid #222;'+(isMine?'background:#1a2a1a;border-radius:12px;padding:10px;':'')+'"><div style="display:flex;justify-content:space-between"><b>'+rank.emoji+' '+rank.name+'</b><span style="font-size:11px">'+txt+(isMine?' • 👈 Tú':'')+'</span></div><div style="font-size:11px;color:#aaa">'+rank.min+' - '+(rank.name==='DIOS'?'10,001+':rank.max+' clics')+'</div><div class="rank-bar"><div style="width:'+pct+'%"></div></div></div>'});rt.innerHTML=html}
-}
-function getLinkDisplayName(l){ if(l.slug && l.slug!=='undefined' && !String(l.slug).startsWith('config-')) return l.slug; if(l.short && l.short.includes('?go=')) return 'link-viejo'; return l.slug||'link-viejo'; }
-function renderLinkHTML(l, idx){
-  if(l.slug && String(l.slug).startsWith('config-')) return '';
-  let display=getLinkDisplayName(l); let safeShort=(l.short||'').replace(/'/g,"");
-  return '<div class="link-item"><b>🔗 '+display+'</b><p style="margin:6px 0;word-break:break-all">'+(l.short||'')+'</p><p style="font-size:11px;color:#aaa">Nivel '+(l.adLevel||2)+' • $'+getAdInfo(l.adLevel||2).price.toFixed(2)+' por 1000 • '+ (l.adLevel||2) +' anuncios • ✅ Este link sí abre si o si - Destino oculto</p><div class="flex" style="margin-top:8px"><button class="smallbtn" onclick="navigator.clipboard.writeText(\''+safeShort+'\');alert(\'Copiado ✅\')">📋 COPIAR</button><button class="smallbtn" style="background:#dc2626" onclick="borrarLinkPorIndice('+idx+')">🗑️ BORRAR</button></div></div>';
-}
-async function render(){
-  if(!currentUser)return; await syncLinkClicksFromCloud();
-  let myClicks=getClicksOf(currentUser);let info=getAdInfo(myAdLevel);
-  document.getElementById('totalClicks').innerText=myClicks; document.getElementById('totalEarn').innerText='$'+(myClicks/1000*info.price).toFixed(2); document.getElementById('myLevel').innerText='Nivel '+myAdLevel;
-  updateProfileUI();
-  let myIdx=[]; links.forEach((l,i)=>{ if(l.user===currentUser && !(l.slug||'').startsWith('config-')) myIdx.push(i); });
-  let html=''; if(myIdx.length===0) html='<p class="small">Aún no tienes enlaces. Crea uno arriba.</p>'; else html=myIdx.map(i=>renderLinkHTML(links[i],i)).join('');
-  document.getElementById('myLinks').innerHTML=html;
-}
-async function borrarLinkPorIndice(idx){
-  idx=parseInt(idx); if(isNaN(idx) || !links[idx]){alert('Ese link ya no existe');return}
-  let target=links[idx]; let nombre=getLinkDisplayName(target); if(!confirm('¿Borrar '+nombre+'? Tus clics y dinero NO se pierden.'))return;
-  let slugToDelete=target.slug; links.splice(idx,1); localStorage.setItem('naset_links',JSON.stringify(links));
-  try{ let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}'); if(slugToDelete && custom[slugToDelete]) delete custom[slugToDelete]; Object.keys(custom).forEach(k=>{ if(custom[k] && custom[k].target===target.orig) delete custom[k]; }); localStorage.setItem('naset_custom_links',JSON.stringify(custom)); }catch(e){}
-  if(slugToDelete) { try{localStorage.removeItem('naset_link_clicks_'+String(slugToDelete).toLowerCase())}catch(e){} await dbDeleteLink(String(slugToDelete)); }
-  await render(); alert('Borrado ✅ Ya no va a volver a aparecer');
-}
-async function borrarLink(slug){ slug=String(slug||''); let idx=links.findIndex(l=>String(l.slug||'')===slug || String(l.short||'')===slug); if(idx===-1 && slug==='undefined') idx=links.findIndex(l=>!l.slug || l.slug==='undefined'); if(idx===-1){alert('Ese link ya no existe');return} return borrarLinkPorIndice(idx); }
+function saveAdLevel(){myAdLevel=tempAdLevel;localStorage.setItem('naset_my_adlevel',myAdLevel);applyLevelToAllMyLinks(myAdLevel);if(currentUser)dbSaveOwnerLevel(currentUser,myAdLevel);render();alert('✅ Nivel '+myAdLevel+' guardado en tiempo real - Ahora jala en Safari, Chrome, Google, iOS y Android')}
+function updateProfileUI(){if(!currentUser)return;let p=getProfile(currentUser);let av=document.getElementById('myAvatar');if(av){av.innerHTML=p.avatar?'<img src="'+p.avatar+'">':currentUser.charAt(0).toUpperCase()}let wn=document.getElementById('welcomeName');if(wn)wn.innerHTML=(p.displayName||currentUser)+verifiedIcon(currentUser);let pb=document.getElementById('profileBioShow');if(pb)pb.innerText=p.bio||'';let pus=document.getElementById('profileUserShow');if(pus)pus.innerText='@'+currentUser;document.getElementById('headerBar').style.display='flex';document.getElementById('logoBig').style.display='none';let topAv=document.getElementById('topAvatar');topAv.innerHTML=p.avatar?'<img src="'+p.avatar+'">':currentUser.charAt(0).toUpperCase();let sideAv=document.getElementById('sideAvatar');if(sideAv)sideAv.innerHTML=p.avatar?'<img src="'+p.avatar+'">':currentUser.charAt(0).toUpperCase();document.getElementById('sideName').innerText=p.displayName||currentUser;document.getElementById('sideUser').innerText='@'+currentUser;document.getElementById('menuAdmin').style.display=isAdmin?'flex':'none';document.getElementById('menuStats').style.display=(isAdmin||isMod)?'flex':'none';let myClicks=getClicksOf(currentUser);let r=getRank(myClicks,currentUser);let rb=document.getElementById('rankBadge');if(rb){rb.className='badge '+r.cls;rb.innerText=r.emoji+' '+r.name}let sb=document.getElementById('sideBadge');if(sb)sb.innerHTML=rb?rb.outerHTML:'';let rpt=document.getElementById('rankProgressText');if(rpt)rpt.innerText=r.manual?r.emoji+' '+r.name+' • '+myClicks+' clics • Puesto a mano':(r.name==='DIOS'?('👑 DIOS • '+myClicks+' clics • Máximo'):(r.emoji+' '+r.name+' • '+r.inRank+' / '+(r.max-r.min+1)+' • '+Math.floor(r.progress)+'%'));let rpb=document.getElementById('rankProgressBar');if(rpb)rpb.style.width=r.progress+'%';let rps=document.getElementById('rankProgressSub');if(rps)rps.innerText=r.manual?'Ya pasaste, sube solo al pasar los clics':(r.next?'Te faltan '+(r.nextAt-myClicks)+' para '+r.nextEmoji+' '+r.next:'Ya eres DIOS');let rt=document.getElementById('rankTableLive');if(rt){let html='';RANKS.forEach(rank=>{let isMine=rank.name===r.name;let pct=isMine?Math.floor(r.progress):(myClicks>rank.max?100:0);let txt=isMine?(r.inRank+' / '+(rank.max-rank.min+1)+' • '+pct+'%'):(myClicks>rank.max?'✅ Completado':'0 / '+(rank.max-rank.min+1)+' • 0%');html+='<div style="padding:10px 0;border-bottom:1px solid #222;'+(isMine?'background:#1a2a1a;border-radius:12px;padding:10px;':'')+'"><div style="display:flex;justify-content:space-between"><b>'+rank.emoji+' '+rank.name+'</b><span style="font-size:11px">'+txt+(isMine?' • 👈 Tú':'')+'</span></div><div style="font-size:11px;color:#aaa">'+rank.min+' - '+(rank.name==='DIOS'?'10,001+':rank.max+' clics')+'</div><div class="rank-bar"><div style="width:'+pct+'%"></div></div></div>'});rt.innerHTML=html}}
+function getLinkDisplayName(l){if(l.slug&&l.slug!=='undefined'&&!String(l.slug).startsWith('config-'))return l.slug;if(l.short&&l.short.includes('?go='))return 'link-viejo';return l.slug||'link-viejo'}
+function renderLinkHTML(l,idx){if(l.slug&&String(l.slug).startsWith('config-'))return'';let display=getLinkDisplayName(l);let safeShort=(l.short||'').replace(/'/g,"");return '<div class="link-item"><b>🔗 '+display+'</b><p style="margin:6px 0;word-break:break-all">'+(l.short||'')+'</p><p style="font-size:11px;color:#aaa">Nivel '+(l.adLevel||2)+' • $'+getAdInfo(l.adLevel||2).price.toFixed(2)+' por 1000 • '+(l.adLevel||2)+' anuncios • ✅ Destino oculto, sí abre si o si</p><div class="flex" style="margin-top:8px"><button class="smallbtn" onclick="navigator.clipboard.writeText(\''+safeShort+'\');alert(\'Copiado ✅\')">📋 COPIAR</button><button class="smallbtn" style="background:#dc2626" onclick="borrarLinkPorIndice('+idx+')">🗑️ BORRAR</button></div></div>'}
+async function render(){if(!currentUser)return;await syncLinkClicksFromCloud();let myClicks=getClicksOf(currentUser);let info=getAdInfo(myAdLevel);document.getElementById('totalClicks').innerText=myClicks;document.getElementById('totalEarn').innerText='$'+(myClicks/1000*info.price).toFixed(2);document.getElementById('myLevel').innerText='Nivel '+myAdLevel;updateProfileUI();let myIdx=[];links.forEach((l,i)=>{if(l.user===currentUser&&!(l.slug||'').startsWith('config-'))myIdx.push(i)});let html='';if(myIdx.length===0)html='<p class="small">Aún no tienes enlaces. Crea uno arriba.</p>';else html=myIdx.map(i=>renderLinkHTML(links[i],i)).join('');document.getElementById('myLinks').innerHTML=html}
+async function borrarLinkPorIndice(idx){idx=parseInt(idx);if(isNaN(idx)||!links[idx]){alert('Ese link ya no existe');return}let target=links[idx];let nombre=getLinkDisplayName(target);if(!confirm('¿Borrar '+nombre+'? Tus clics y dinero NO se pierden.'))return;let slugToDelete=target.slug;links.splice(idx,1);localStorage.setItem('naset_links',JSON.stringify(links));try{let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');if(slugToDelete&&custom[slugToDelete])delete custom[slugToDelete];Object.keys(custom).forEach(k=>{if(custom[k]&&custom[k].target===target.orig)delete custom[k]});localStorage.setItem('naset_custom_links',JSON.stringify(custom))}catch(e){}if(slugToDelete){try{localStorage.removeItem('naset_link_clicks_'+String(slugToDelete).toLowerCase())}catch(e){}await dbDeleteLink(String(slugToDelete))}await render();alert('Borrado ✅ Ya no va a volver a aparecer')}
+async function borrarLink(slug){slug=String(slug||'');let idx=links.findIndex(l=>String(l.slug||'')===slug||String(l.short||'')===slug);if(idx===-1&&slug==='undefined')idx=links.findIndex(l=>!l.slug||l.slug==='undefined');if(idx===-1){alert('Ese link ya no existe');return}return borrarLinkPorIndice(idx)}
 async function crear(){
-  let nivelUsar=parseInt(tempAdLevel||myAdLevel||2); myAdLevel=nivelUsar; localStorage.setItem('naset_my_adlevel',String(nivelUsar));
-  if(currentUser) dbSaveOwnerLevel(currentUser, nivelUsar);
+  let nivelUsar=parseInt(tempAdLevel||myAdLevel||2);myAdLevel=nivelUsar;localStorage.setItem('naset_my_adlevel',String(nivelUsar));
+  if(currentUser)dbSaveOwnerLevel(currentUser,nivelUsar);
   let v=document.getElementById('longUrl').value.trim();let slug=cleanSlug(document.getElementById('linkName').value||'');
-  if(!slug||slug.length<3){alert('Pon un nombre mínimo 3 letras');return} if(!v){alert('Pega tu enlace de destino');return} if(!v.startsWith('http'))v='https://'+v;
-  if(slug.startsWith('config-')){ alert('Ese nombre no se puede usar'); return; }
+  if(!slug||slug.length<3){alert('Pon un nombre mínimo 3 letras');return}if(!v){alert('Pega tu enlace de destino');return}if(!v.startsWith('http'))v='https://'+v;
+  if(slug.startsWith('config-')){alert('Ese nombre no se puede usar');return}
   let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
   let existingCloud=await dbGetLinkFast(slug);
-  if(existingCloud && existingCloud.owner && existingCloud.owner.toLowerCase()!==currentUser.toLowerCase()){ alert('❌ Ese nombre ya lo usa otra persona: '+slug+'\nPon otro nombre'); return; }
-  if(custom[slug] && custom[slug].owner && custom[slug].owner.toLowerCase()!==currentUser.toLowerCase()){ alert('❌ Ese nombre ya lo usa otra persona'); return; }
-  // LINK CORTO Y LIMPIO: solo ?tu-nombre. El destino queda OCULTO en la nube, no en el link.
+  if(existingCloud&&existingCloud.owner&&existingCloud.owner.toLowerCase()!==currentUser.toLowerCase()){alert('❌ Ese nombre ya lo usa otra persona: '+slug+'\nPon otro nombre');return}
+  if(custom[slug]&&custom[slug].owner&&custom[slug].owner.toLowerCase()!==currentUser.toLowerCase()){alert('❌ Ese nombre ya lo usa otra persona');return}
   let short=location.origin+location.pathname+'?'+slug;
   custom[slug]={target:v,owner:currentUser,adLevel:nivelUsar};localStorage.setItem('naset_custom_links',JSON.stringify(custom));
   await dbSaveLinkVerified(slug,v,currentUser,nivelUsar);
   let idx=links.findIndex(l=>l.slug===slug);
-  if(idx>=0){links[idx]={orig:v,short:short,slug:slug,clicks:links[idx].clicks||0,user:currentUser,adLevel:nivelUsar,createdAt:links[idx].createdAt||Date.now()};}
-  else{setLinkClicks(slug,0);links.push({orig:v,short:short,slug:slug,clicks:0,user:currentUser,adLevel:nivelUsar,createdAt:Date.now()});}
+  if(idx>=0){links[idx]={orig:v,short:short,slug:slug,clicks:links[idx].clicks||0,user:currentUser,adLevel:nivelUsar,createdAt:links[idx].createdAt||Date.now()}}
+  else{setLinkClicks(slug,0);links.push({orig:v,short:short,slug:slug,clicks:0,user:currentUser,adLevel:nivelUsar,createdAt:Date.now()})}
   localStorage.setItem('naset_links',JSON.stringify(links));
   document.getElementById('linkName').value='';document.getElementById('longUrl').value='';document.getElementById('slugPreview').innerText='Tu enlace será: .../?tu-nombre';
-  render(); alert('✅ Enlace corto creado: '+short+'\nCon '+nivelUsar+' anuncios - Destino oculto, sí abre si o si en cualquier navegador');
+  render();alert('✅ Enlace corto creado: '+short+'\nCon '+nivelUsar+' anuncios - Destino oculto, sí abre si o si');
 }
-function showPanel(){
-  if(isVisitor)return; document.getElementById('authBox').style.display='none';document.getElementById('waiter').style.display='none';document.getElementById('panel').style.display='block';
-  let table='';AD_LEVELS.forEach(l=>{table+='<tr><td>Nivel '+l.level+'</td><td>'+l.ads+'</td><td>'+(l.ads*5)+' seg</td><td>$'+l.price.toFixed(2)+'</td></tr>'});document.getElementById('adTable').innerHTML=table;
-  tempAdLevel=myAdLevel;updateAdUI();updateProfileUI();if(isAdmin)document.getElementById('profileBox').classList.add('gold');render();
-  if(currentUser){ dbGetOwnerLevel(currentUser).then(lvl=>{ if(lvl && lvl!==myAdLevel){ myAdLevel=lvl; tempAdLevel=lvl; localStorage.setItem('naset_my_adlevel',String(lvl)); updateAdUI(); render(); } }); }
-}
-(function(){
-  let isLink=initSlug();
-  if(isLink){ if(currentUser){document.getElementById('headerBar').style.display='flex';updateProfileUI();} return; }
-  if(currentUser){
-    if(isOwnerOrMod(currentUser)){
-      if(currentUser.toLowerCase()===ADMIN_USER.toLowerCase()){isAdmin=true;isMod=false;ensureOwnerModInList(ADMIN_USER,ADMIN_PASS)}
-      if(currentUser.toLowerCase()===MOD_USER.toLowerCase()){isMod=true;isAdmin=false;ensureOwnerModInList(MOD_USER,MOD_PASS)}
-      showPanel();
-    } else {
-      let all=getAllUsers();let me=all.find(x=>x.user.toLowerCase()===currentUser.toLowerCase());
-      if(me){isAdmin=false;isMod=false;showPanel()} else{localStorage.removeItem('naset_user');currentUser=null}
-    }
-  }
-  setInterval(()=>{if(currentUser)render()},5000);
-})();
+function showPanel(){if(isVisitor)return;document.getElementById('authBox').style.display='none';document.getElementById('waiter').style.display='none';document.getElementById('panel').style.display='block';let table='';AD_LEVELS.forEach(l=>{table+='<tr><td>Nivel '+l.level+'</td><td>'+l.ads+'</td><td>'+(l.ads*5)+' seg</td><td>$'+l.price.toFixed(2)+'</td></tr>'});document.getElementById('adTable').innerHTML=table;tempAdLevel=myAdLevel;updateAdUI();updateProfileUI();if(isAdmin)document.getElementById('profileBox').classList.add('gold');render();if(currentUser){dbGetOwnerLevel(currentUser).then(lvl=>{if(lvl&&lvl!==myAdLevel){myAdLevel=lvl;tempAdLevel=lvl;localStorage.setItem('naset_my_adlevel',String(lvl));updateAdUI();render()}})}}
+(function(){let isLink=initSlug();if(isLink){if(currentUser){document.getElementById('headerBar').style.display='flex';updateProfileUI()}return}if(currentUser){if(isOwnerOrMod(currentUser)){if(currentUser.toLowerCase()===ADMIN_USER.toLowerCase()){isAdmin=true;isMod=false;ensureOwnerModInList(ADMIN_USER,ADMIN_PASS)}if(currentUser.toLowerCase()===MOD_USER.toLowerCase()){isMod=true;isAdmin=false;ensureOwnerModInList(MOD_USER,MOD_PASS)}showPanel()}else{let all=getAllUsers();let me=all.find(x=>x.user.toLowerCase()===currentUser.toLowerCase());if(me){isAdmin=false;isMod=false;showPanel()}else{localStorage.removeItem('naset_user');currentUser=null}}}setInterval(()=>{if(currentUser)render()},5000)})();
 </script>
 </body>
 </html>
