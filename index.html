@@ -42,14 +42,6 @@ button.adbtn{background:#f59e0b;color:#000;font-size:17px;padding:18px}button.re
 .grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0}
 .ad-preview{background:#000;border:1px dashed #f59e0b;border-radius:14px;padding:12px;text-align:center;margin:12px 0}
 .real-ad{width:100%;border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid #f59e0b;background:#fff;display:block;text-decoration:none}.real-ad img{width:100%;height:160px;object-fit:cover;display:block}.real-ad-text{padding:11px;font-weight:900;color:#000}
-#viewChat{position:relative;touch-action:pan-y;overscroll-behavior:contain}
-.chat-box{background:#0a0a0a;border:1px solid #333;border-radius:16px;overflow:hidden;position:relative;touch-action:pan-y}
-.chat-header{background:linear-gradient(90deg,#a855f7,#ec4899);padding:14px;text-align:center;font-weight:bold;font-size:16px;position:sticky;top:0;z-index:5;user-select:none;-webkit-user-select:none;touch-action:none}
-.chat-messages{height:420px;overflow-y:auto;overflow-x:hidden;padding:12px;display:flex;flex-direction:column;gap:8px;background:#0b141a;touch-action:pan-y;overscroll-behavior:contain}
-.chat-messages.full{height:calc(100vh - 220px)}
-.msg{background:#1a1a1a;border-radius:14px;padding:9px 11px;max-width:88%;font-size:13px;display:flex;gap:8px;align-items:flex-start;word-break:break-word}
-.msg.mine{background:#a855f7;align-self:flex-end}
-.chat-input-row{display:flex;gap:8px;padding:10px;background:#111;position:sticky;bottom:0}.chat-input-row input{margin-bottom:0}.chat-input-row button{width:60px;margin-bottom:0}
 .avatar{width:72px;height:72px;border-radius:99px;object-fit:cover;border:3px solid #a855f7;background:#222;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}
 .avatar-small{width:32px;height:32px;border-radius:99px;border:2px solid #a855f7;background:#222;display:flex;align-items:center;justify-content:center;font-weight:900;overflow:hidden;flex-shrink:0}.avatar-small img{width:100%;height:100%;object-fit:cover}
 .avatar-option{width:56px;height:56px;border-radius:99px;cursor:pointer;border:3px solid transparent;object-fit:cover}.avatar-option.selected{border-color:#25D366}
@@ -60,7 +52,6 @@ button.adbtn{background:#f59e0b;color:#000;font-size:17px;padding:18px}button.re
 .step-dots{display:flex;gap:6px;justify-content:center;margin:10px 0;flex-wrap:wrap}.dot{width:30px;height:30px;border-radius:99px;background:#222;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0}.dot.done{background:#16a34a}.dot.current{background:#f59e0b;color:#000}
 table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid #222}
 .top-sub{color:#aaa;text-align:center;font-size:13px;margin:5px 0 14px;white-space:normal;word-break:break-word;padding:0 4px}
-
 :root{
   --bg:#090a12;--surface:#121421;--surface-2:#191b2b;--line:#292c40;
   --brand:#a855f7;--brand-light:#c084fc;--text-muted:#a4a7bd;
@@ -121,7 +112,6 @@ button:not(:disabled):active{transform:scale(.98)}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}
 }
-
 </style>
 </head>
 <body>
@@ -147,7 +137,6 @@ button:not(:disabled):active{transform:scale(.98)}
   <nav aria-label="Menú principal">
     <div class="menu-item" id="menuAdmin" style="display:none" onclick="toggleMenu();openView('admin')"><span class="menu-icon">👑</span><span>Administración</span></div>
     <div class="menu-item" id="menuStats" style="display:none" onclick="toggleMenu();openView('stats')"><span class="menu-icon">📊</span><span>Estadísticas</span></div>
-    <div class="menu-item" onclick="toggleMenu();openView('chat')"><span class="menu-icon">💬</span><span>Chat de la comunidad</span></div>
     <div class="menu-item" onclick="toggleMenu();openView('profile')"><span class="menu-icon">👤</span><span>Mi perfil</span></div>
     <div class="menu-item" onclick="toggleMenu();closeView()"><span class="menu-icon">🔗</span><span>Inicio y mis enlaces</span></div>
   </nav>
@@ -158,7 +147,6 @@ button:not(:disabled):active{transform:scale(.98)}
 <p class="top-sub">📢 Sigue las instrucciones para continuar a tu enlace</p>
 
 <div id="viewProfile" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">✏️ Mi Perfil</p><div class="box" id="profileBoxSolo"></div></div>
-<div id="viewChat" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">💬 Chat de la comunidad</p><div class="box" style="padding:0;overflow:hidden"><div class="chat-box"><div class="chat-header">CHAT DE LA COMUNIDAD 💬</div><div class="chat-messages full" id="chatMessages"></div><div class="chat-input-row"><input id="chatInput" placeholder="Escribe algo..." maxlength="200"><button onclick="sendChat()">➤</button></div></div></div></div>
 <div id="viewAdmin" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">👑 Solo Admin</p><div class="box gold" id="adminPanelSolo"></div></div>
 <div id="viewStats" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">📊 Estadísticas</p><div class="box"><div class="stats"><div class="stat"><b id="statsTotalUsers">0</b><span>USUARIOS</span></div><div class="stat"><b id="statsTotalClicks">0</b><span>CLICS</span></div><div class="stat"><b id="statsTotalPay" style="color:#25D366">$0.00</b><span>POR PAGAR</span></div></div><label>🔍 Buscar:</label><input id="statsSearch" placeholder="Nombre..." oninput="renderStats()"><div id="statsList"></div></div></div>
 
@@ -182,8 +170,8 @@ button:not(:disabled):active{transform:scale(.98)}
 <script>
 const SUPABASE_URL="https://laponfeqxxspxcasxecg.supabase.co";
 const SUPABASE_KEY="sb_publishable_TBu_vM0xOlQsLX4aQvMmrQ_Nsp9Fv00";
-// IMPORTANTE: configura el acceso admin/mod en autenticación segura del servidor; no guardes claves aquí.
-const ADMIN_USER="NASETLINKOFC", ADMIN_PASS="", MOD_USER="DANYXITERS", MOD_PASS="";
+// DUEÑO Y MOD: ya con contraseña puesta para que sí puedas entrar
+const ADMIN_USER="NASETLINKOFC", ADMIN_PASS="NASET12CLICKS", MOD_USER="DANYXITERS", MOD_PASS="12345689";
 const MONETAG_LINK="https://uplcm.com/4/12244247";
 const WHATSAPP_GROUP="https://chat.whatsapp.com/JAqf2gVEFlz59saw6MVveK?s=cl&p=i&mlr=4&ilr=4&iam=2";
 function joinWhatsApp(){window.open(WHATSAPP_GROUP,'_blank')}
@@ -197,7 +185,7 @@ function updateSlugPreview(){
 function verPass(id){let i=document.getElementById(id);i.type=i.type==="password"?"text":"password"}
 let authMode='login';
 const PRESET_AVATARS=["https://i.pravatar.cc/150?img=12","https://i.pravatar.cc/150?img=32","https://i.pravatar.cc/150?img=5","https://i.pravatar.cc/150?img=47","https://i.pravatar.cc/150?img=68","https://i.pravatar.cc/150?img=15","https://i.pravatar.cc/150?img=8","https://i.pravatar.cc/150?img=60"];
-let selectedAvatar='',currentView='home',prevView='home',humanInteracted=false,pageLoadTime=Date.now(),lastClickTime=0,lastChatTime=0;
+let selectedAvatar='',currentView='home',prevView='home',humanInteracted=false,pageLoadTime=Date.now(),lastClickTime=0;
 let cloudProfiles={};
 let cloudVerified={};
 let currentSlugForClicks='';
@@ -221,7 +209,6 @@ async function fetchCloudProfiles(){
     if(Array.isArray(j2)){j2.forEach(x=>{if(x.username){cloudProfiles[x.username.toLowerCase()]={avatar:x.avatar||cloudProfiles[x.username.toLowerCase()]?.avatar||"",displayName:x.display_name||"",bio:x.bio||""}; if(x.is_verified) cloudVerified[x.username.toLowerCase()]=true;}})}
   }catch(e){}
 }
-// GUARDADO: si el POST dice ok, ya está. No bloquea si la verificación de lectura falla por RLS
 async function dbSaveLink(slug,target,owner,adLevel){
   slug=cleanSlug(slug);
   let body=JSON.stringify({slug:slug,target:target,owner_user:owner,ad_level:adLevel,clicks:0});
@@ -233,7 +220,6 @@ async function dbSaveLink(slug,target,owner,adLevel){
     let r2=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({target:target,owner_user:owner,ad_level:adLevel})});
     if(r2.ok) return true;
   }catch(e){}
-  // Si el POST falló por duplicado, el PATCH ya lo actualizó, lo damos por bueno
   return true;
 }
 async function dbGetLink(slug){
@@ -301,6 +287,13 @@ function getAllUsers(){try{return JSON.parse(localStorage.getItem('naset_all_use
 function saveAllUsers(arr){localStorage.setItem('naset_all_users',JSON.stringify(arr));users=arr}
 function getClicksOf(user){return parseInt(localStorage.getItem('naset_clicks_'+user.toLowerCase())||'0')}
 function setClicksOf(user,v){localStorage.setItem('naset_clicks_'+user.toLowerCase(),String(v))}
+function isOwnerOrMod(u){return (u||'').toLowerCase()===ADMIN_USER.toLowerCase() || (u||'').toLowerCase()===MOD_USER.toLowerCase()}
+function ensureOwnerModInList(u,pass){
+  let all=getAllUsers();
+  let ex=all.find(x=>x.user.toLowerCase()===u.toLowerCase());
+  if(!ex){all.push({user:u,pass:pass||'',date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString(),timestamp:Date.now(),clicks:getClicksOf(u)});saveAllUsers(all)}
+  return all;
+}
 const RANKS=[{name:'BRONCE',emoji:'🥉',cls:'bronce',min:0,max:1000},{name:'PLATA',emoji:'🥈',cls:'plata',min:1001,max:2000},{name:'ORO',emoji:'🥇',cls:'oro',min:2001,max:3000},{name:'DIAMANTE',emoji:'💎',cls:'diamante',min:3001,max:4000},{name:'ÉLITE',emoji:'👑',cls:'elite',min:4001,max:5000},{name:'LEYENDA',emoji:'🔥',cls:'leyenda',min:5001,max:6000},{name:'MÍTICO',emoji:'🐉',cls:'mitico',min:6001,max:7000},{name:'MAESTRO',emoji:'🌟',cls:'maestro',min:7001,max:10000},{name:'DIOS',emoji:'👑',cls:'dios',min:10001,max:999999999}];
 function getRank(clicks,user){
   clicks=parseInt(clicks||0);
@@ -337,7 +330,7 @@ function openProfileFromAvatar(e){
   openView('profile');
 }
 function openView(view){
-  if(currentView!=='profile' && currentView!=='chat' && currentView!=='admin' && currentView!=='stats'){
+  if(currentView!=='profile' && currentView!=='admin' && currentView!=='stats'){
     prevView = isVisitor ? 'waiter' : 'home';
   } else if(view!==currentView){
     prevView=currentView;
@@ -345,17 +338,14 @@ function openView(view){
   currentView=view;
   document.getElementById('mainView').style.display='none';
   document.getElementById('viewProfile').style.display='none';
-  document.getElementById('viewChat').style.display='none';
   document.getElementById('viewAdmin').style.display='none';
   document.getElementById('viewStats').style.display='none';
   if(view==='profile'){document.getElementById('viewProfile').style.display='block';document.getElementById('profileBoxSolo').innerHTML=buildProfileHTML();let p=getProfile(currentUser);renderAvatarOptionsSolo(p.avatar||'');document.getElementById('editDisplayNameSolo').value=p.displayName||'';document.getElementById('editBioSolo').value=p.bio||'';window.scrollTo(0,0)}
-  if(view==='chat'){document.getElementById('viewChat').style.display='block';renderChat();fetchCloudProfiles().then(()=>renderChat());window.scrollTo(0,0)}
   if(view==='admin'){if(!isAdmin&&!isMod)return;document.getElementById('viewAdmin').style.display='block';document.getElementById('adminPanelSolo').innerHTML=buildAdminHTML();showAdminSolo();window.scrollTo(0,0)}
   if(view==='stats'){if(!isAdmin&&!isMod)return;document.getElementById('viewStats').style.display='block';renderStats();window.scrollTo(0,0)}
 }
 function closeView(){
   document.getElementById('viewProfile').style.display='none';
-  document.getElementById('viewChat').style.display='none';
   document.getElementById('viewAdmin').style.display='none';
   document.getElementById('viewStats').style.display='none';
   document.getElementById('mainView').style.display='block';
@@ -380,7 +370,7 @@ function getAvatarInner(user){let p=getProfile(user);if(p.avatar)return '<img sr
 function renderAvatarOptionsSolo(cur){let h='';PRESET_AVATARS.forEach(u=>{h+='<img src="'+u+'" class="avatar-option '+(cur===u?'selected':'')+'" onclick="selectAvatar(\''+u+'\',this)">'});let el=document.getElementById('avatarOptionsSolo');if(el)el.innerHTML=h}
 function selectAvatar(url,el){selectedAvatar=url;document.querySelectorAll('.avatar-option').forEach(i=>i.classList.remove('selected'));if(el)el.classList.add('selected')}
 function uploadAvatarSolo(e){let f=e.target.files[0];if(!f)return;let rd=new FileReader();rd.onload=function(ev){let img=new Image();img.onload=function(){let c=document.createElement('canvas');let max=200,w=img.width,h=img.height;if(w>h){if(w>max){h=h*max/w;w=max}}else{if(h>max){w=w*max/h;h=max}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);selectedAvatar=c.toDataURL('image/jpeg',0.6)};img.src=ev.target.result};rd.readAsDataURL(f)}
-async function saveProfileSolo(){let dn=document.getElementById('editDisplayNameSolo').value.trim();let bio=document.getElementById('editBioSolo').value.trim();let p=getProfile(currentUser);if(selectedAvatar)p.avatar=selectedAvatar;if(dn)p.displayName=dn;p.bio=bio;try{localStorage.setItem('naset_profile_'+currentUser.toLowerCase(),JSON.stringify(p))}catch(e){alert('Foto muy pesada, elige un logo de arriba');return}selectedAvatar='';cloudProfiles[currentUser.toLowerCase()]=p;await dbSaveUser({user:currentUser,pass:getAllUsers().find(x=>x.user.toLowerCase()===currentUser.toLowerCase())?.pass||""});updateProfileUI();renderChat();alert('✅ Foto guardada - Todos la ven');closeView()}
+async function saveProfileSolo(){let dn=document.getElementById('editDisplayNameSolo').value.trim();let bio=document.getElementById('editBioSolo').value.trim();let p=getProfile(currentUser);if(selectedAvatar)p.avatar=selectedAvatar;if(dn)p.displayName=dn;p.bio=bio;try{localStorage.setItem('naset_profile_'+currentUser.toLowerCase(),JSON.stringify(p))}catch(e){alert('Foto muy pesada, elige un logo de arriba');return}selectedAvatar='';cloudProfiles[currentUser.toLowerCase()]=p;await dbSaveUser({user:currentUser,pass:getAllUsers().find(x=>x.user.toLowerCase()===currentUser.toLowerCase())?.pass||""});updateProfileUI();alert('✅ Foto guardada - Todos la ven');closeView()}
 function cambiarPassSolo(){
   let actual=document.getElementById('passActualSolo').value.trim();
   let nueva=document.getElementById('passNuevaSolo').value.trim();
@@ -392,51 +382,15 @@ function cambiarPassSolo(){
   alert('✅ Contraseña actualizada');closeView();
 }
 function buildAdminHTML(){return `<h3 style="text-align:center">👑 PANEL ADMIN</h3><label>🏆 Dar rango a alguien</label><input id="adminRankUserSolo" placeholder="Usuario"><select id="adminRankSelectSolo"><option value="">Elige rango...</option><option>BRONCE</option><option>PLATA</option><option>ORO</option><option>DIAMANTE</option><option>ÉLITE</option><option>LEYENDA</option><option>MÍTICO</option><option>MAESTRO</option><option>DIOS</option></select><button class="green" onclick="adminGiveRankSolo()">🏆 DAR RANGO</button><button class="sec" onclick="adminRemoveRankSolo()">↩️ QUITAR MANUAL (vuelve a subir solo)</button><label>✅ Verificado - Solo dueño</label><input id="verifyUserSolo" placeholder="Usuario"><div class="flex"><button class="smallbtn" style="background:#1d9bf0" onclick="giveVerifiedSolo('verified')">✓ DAR VERIFICADO</button></div><button class="sec" onclick="removeVerifiedSolo()">❌ QUITAR VERIFICADO</button><label>🚫 Banear</label><input id="banUserSolo" placeholder="Usuario a banear"><button class="danger" onclick="banUserSolo()">🚫 BANEAR</button><button class="sec" onclick="unbanUserSolo()">✅ DESBANEAR</button><label>👥 Miembros</label><div id="allUsersSolo"></div>`}
-function adminGiveRankSolo(){let n=document.getElementById('adminRankUserSolo').value.trim();let r=document.getElementById('adminRankSelectSolo').value;if(!n||!r){alert('Pon usuario y rango');return}localStorage.setItem('naset_rank_manual_'+n.toLowerCase(),r);showAdminSolo();renderStats();updateProfileUI();renderChat();alert('🏆 '+n+' ahora es '+r)}
+function adminGiveRankSolo(){let n=document.getElementById('adminRankUserSolo').value.trim();let r=document.getElementById('adminRankSelectSolo').value;if(!n||!r){alert('Pon usuario y rango');return}localStorage.setItem('naset_rank_manual_'+n.toLowerCase(),r);showAdminSolo();renderStats();updateProfileUI();alert('🏆 '+n+' ahora es '+r)}
 function adminRemoveRankSolo(){let n=document.getElementById('adminRankUserSolo').value.trim();if(!n){alert('Pon usuario');return}localStorage.setItem('naset_rank_manual_'+n.toLowerCase(),'AUTO');showAdminSolo();updateProfileUI();alert('↩️ '+n+' vuelve a subir solo')}
-async function giveVerifiedSolo(t){let n=document.getElementById('verifyUserSolo').value.trim();if(!n){alert('Pon usuario');return}if(!isAdmin){alert('Solo el dueño puede dar verificado');return}localStorage.setItem('naset_tag_'+n.toLowerCase(),t);cloudVerified[n.toLowerCase()]=true;let u=getAllUsers().find(x=>x.user.toLowerCase()===n.toLowerCase());if(u) await dbSaveUser(u);else await dbSaveUser({user:n,pass:""});showAdminSolo();renderChat();updateProfileUI();alert('✅ '+n+' ahora tiene verificado ✓')}
-async function removeVerifiedSolo(){let n=document.getElementById('verifyUserSolo').value.trim();if(!n){alert('Pon usuario');return}if(!isAdmin){alert('Solo el dueño puede quitar verificado');return}localStorage.setItem('naset_tag_'+n.toLowerCase(),'none');delete cloudVerified[n.toLowerCase()];let u=getAllUsers().find(x=>x.user.toLowerCase()===n.toLowerCase());if(u) await dbSaveUser(u);showAdminSolo();renderChat();alert('❌ Quitado')}
+async function giveVerifiedSolo(t){let n=document.getElementById('verifyUserSolo').value.trim();if(!n){alert('Pon usuario');return}if(!isAdmin){alert('Solo el dueño puede dar verificado');return}localStorage.setItem('naset_tag_'+n.toLowerCase(),t);cloudVerified[n.toLowerCase()]=true;let u=getAllUsers().find(x=>x.user.toLowerCase()===n.toLowerCase());if(u) await dbSaveUser(u);else await dbSaveUser({user:n,pass:""});showAdminSolo();updateProfileUI();alert('✅ '+n+' ahora tiene verificado ✓')}
+async function removeVerifiedSolo(){let n=document.getElementById('verifyUserSolo').value.trim();if(!n){alert('Pon usuario');return}if(!isAdmin){alert('Solo el dueño puede quitar verificado');return}localStorage.setItem('naset_tag_'+n.toLowerCase(),'none');delete cloudVerified[n.toLowerCase()];let u=getAllUsers().find(x=>x.user.toLowerCase()===n.toLowerCase());if(u) await dbSaveUser(u);showAdminSolo();alert('❌ Quitado')}
 function banUserSolo(){let n=document.getElementById('banUserSolo').value.trim();if(!n)return;if(n.toLowerCase()===ADMIN_USER.toLowerCase()){alert('No puedes banear al dueño');return}if(!confirm('¿Banear a '+n+'?'))return;localStorage.setItem('naset_banned_'+n.toLowerCase(),'1');showAdminSolo();alert('🚫 Baneado')}
 function unbanUserSolo(){let n=document.getElementById('banUserSolo').value.trim();if(!n)return;localStorage.removeItem('naset_banned_'+n.toLowerCase());showAdminSolo();alert('✅ Desbaneado')}
 async function showAdminSolo(){let el=document.getElementById('allUsersSolo');if(!el)return;let all=getAllUsers();if(all.length===0){el.innerHTML='<p class="small">Sin miembros aún</p>';return}let h='';all.forEach(u=>{let c=getClicksOf(u.user);let info=getAdInfo(2);h+='<div style="background:#000;border:1px solid #333;border-radius:12px;padding:10px;margin-bottom:8px"><b>'+(getDisplayName(u.user))+'</b> <span style="color:#888;font-size:11px">('+u.user+')</span><br>'+rankBadgeHTML(c,u.user)+' • '+c+' clics • $'+(c/1000*info.price).toFixed(2)+'</div>'});el.innerHTML=h}
 function getUserStats(u){let lvl=2,info=getAdInfo(lvl),c=getClicksOf(u.user);return {user:u.user,displayName:getDisplayName(u.user),clicks:c,earn:c/1000*info.price,level:lvl,price:info.price,tag:getTag(u.user),banned:localStorage.getItem('naset_banned_'+u.user.toLowerCase())==='1',rank:getRank(c,u.user)}}
 async function renderStats(){if(!isAdmin&&!isMod)return;let all=getAllUsers().map(getUserStats).sort((a,b)=>b.earn-a.earn);let search=(document.getElementById('statsSearch')?.value||'').toLowerCase();let f=search?all.filter(s=>s.displayName.toLowerCase().includes(search)||s.user.toLowerCase().includes(search)):all;let totalC=all.reduce((s,x)=>s+x.clicks,0),totalP=all.reduce((s,x)=>s+x.earn,0);document.getElementById('statsTotalUsers').innerText=all.length;document.getElementById('statsTotalClicks').innerText=totalC;document.getElementById('statsTotalPay').innerText='$'+totalP.toFixed(2);let list=document.getElementById('statsList');if(f.length===0){list.innerHTML='<p class="small">Sin usuarios</p>';return}list.innerHTML=f.map((s,i)=>'<div style="background:#000;border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:10px"><b>'+(i+1)+'. '+s.displayName+'</b> <span style="color:#888">'+s.user+'</span><br>'+rankBadgeHTML(s.clicks,s.user)+'<br>👆 '+s.clicks+' clics • 💰 $'+s.earn.toFixed(2)+'</div>').join('')}
-async function fetchChatCloud(){
-  try{
-    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_chat?select=*&order=created_at.asc&limit=100",{headers:H});
-    let j=await r.json();
-    if(Array.isArray(j)&&j.length>0){
-      return j.map(m=>({user:m.username||m.user||'?',text:String(m.text||'').slice(0,200),time:m.created_at?new Date(m.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):''}));
-    }
-  }catch(e){}
-  try{return JSON.parse(localStorage.getItem('naset_chat')||'[]')}catch(e){return[]}
-}
-async function sendChat(){
-  let inp=document.getElementById('chatInput');
-  let txt=inp.value.trim().slice(0,200);
-  if(!txt) return;
-  if(!currentUser){alert('Inicia sesión para chatear');return}
-  let now=Date.now(); if(now-lastChatTime<1000) return; lastChatTime=now;
-  inp.value='';
-  try{await fetch(SUPABASE_URL+"/rest/v1/naset_chat",{method:"POST",headers:H,body:JSON.stringify({username:currentUser,text:txt})})}catch(e){}
-  let chat=JSON.parse(localStorage.getItem('naset_chat')||'[]');
-  chat.push({user:currentUser,text:txt,time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
-  localStorage.setItem('naset_chat',JSON.stringify(chat.slice(-100)));
-  renderChat();
-}
-async function renderChat(){
-  let box=document.getElementById('chatMessages'); if(!box) return;
-  await fetchCloudProfiles();
-  let chat=await fetchChatCloud();
-  if(chat.length===0){box.innerHTML='<p class="small">Sé el primero en hablar 👋</p>';return}
-  box.innerHTML=chat.map(m=>{
-    let isMine=m.user===currentUser;
-    let p=getProfile(m.user);
-    let av=p.avatar?'<div class="avatar-small"><img src="'+p.avatar+'"></div>':'<div class="avatar-small">'+(getDisplayName(m.user).charAt(0).toUpperCase())+'</div>';
-    return '<div class="msg '+(isMine?'mine':'')+'">'+av+'<div><b>'+getDisplayName(m.user)+verifiedIcon(m.user)+'</b><br>'+m.text+'<div style="font-size:10px;opacity:.7">'+(m.time||'')+' ✓✓</div></div></div>';
-  }).join('');
-  box.scrollTop=box.scrollHeight;
-}
 function setMode(mode){
   authMode=mode;
   let userInput=document.getElementById('user');
@@ -457,12 +411,21 @@ function setMode(mode){
   passInput.value='';
 }
 function submitAuth(){if(authMode==='login')login();else register()}
+// ARREGLO LOGIN DUEÑO / MOD: ahora sí te guarda en la lista y no te borra al recargar
 async function login(){
   let u=document.getElementById('user').value.trim();let p=document.getElementById('pass').value.trim();
   if(!u||!p){alert('Pon usuario y contraseña');return}
   if(localStorage.getItem('naset_banned_'+u.toLowerCase())==='1'){alert('🚫 Baneado');return}
-  if(u.toLowerCase()===ADMIN_USER.toLowerCase()){if(p!==ADMIN_PASS){alert('❌ Contraseña incorrecta');return}localStorage.setItem('naset_user',ADMIN_USER);localStorage.setItem('naset_is_admin','1');localStorage.removeItem('naset_is_mod');isAdmin=true;isMod=false;currentUser=ADMIN_USER;showPanel();return}
-  if(u.toLowerCase()===MOD_USER.toLowerCase()){if(p!==MOD_PASS){alert('❌ Contraseña incorrecta');return}localStorage.setItem('naset_user',MOD_USER);localStorage.setItem('naset_is_mod','1');localStorage.removeItem('naset_is_admin');isAdmin=false;isMod=true;currentUser=MOD_USER;showPanel();return}
+  if(u.toLowerCase()===ADMIN_USER.toLowerCase()){
+    if(p!==ADMIN_PASS){alert('❌ Contraseña incorrecta - Dueño');return}
+    ensureOwnerModInList(ADMIN_USER,ADMIN_PASS);
+    localStorage.setItem('naset_user',ADMIN_USER);localStorage.setItem('naset_is_admin','1');localStorage.removeItem('naset_is_mod');isAdmin=true;isMod=false;currentUser=ADMIN_USER;showPanel();return
+  }
+  if(u.toLowerCase()===MOD_USER.toLowerCase()){
+    if(p!==MOD_PASS){alert('❌ Contraseña incorrecta - Admin');return}
+    ensureOwnerModInList(MOD_USER,MOD_PASS);
+    localStorage.setItem('naset_user',MOD_USER);localStorage.setItem('naset_is_mod','1');localStorage.removeItem('naset_is_admin');isAdmin=false;isMod=true;currentUser=MOD_USER;showPanel();return
+  }
   let all=getAllUsers();let found=all.find(x=>x.user.toLowerCase()===u.toLowerCase());
   if(!found){let db=await dbGetUsers();let fdb=db.find(x=>(x.username||'').toLowerCase()===u.toLowerCase());if(fdb){found={user:fdb.username,pass:fdb.pass||'',clicks:fdb.clicks||0,date:fdb.date||'Hoy',time:fdb.time||''};all.push(found);saveAllUsers(all);setClicksOf(found.user,found.clicks)}}
   if(!found){alert('❌ Esa cuenta NO existe. Dale a REGISTRARME');setMode('register');return}
@@ -638,14 +601,12 @@ function borrarLink(slug){
   let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');delete custom[slug];localStorage.setItem('naset_custom_links',JSON.stringify(custom));
   render();alert('Borrado. Tus clics siguen intactos ✅');
 }
-// ARREGLADO: SI ES TU MISMO LINK, TE DEJA ACTUALIZARLO, NO TE DICE "YA EXISTE" Y SÍ TE GENERA
 async function crear(){
   let v=document.getElementById('longUrl').value.trim();let slug=cleanSlug(document.getElementById('linkName').value||'');
   if(!slug||slug.length<3){alert('Pon un nombre mínimo 3 letras');return}
   if(!v){alert('Pega tu enlace de destino');return}
   if(!v.startsWith('http'))v='https://'+v;
   let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
-  // Solo bloquea si el nombre es de OTRA persona, no si es tuyo
   let existingCloud=await dbGetLink(slug);
   if(existingCloud && existingCloud.owner && existingCloud.owner.toLowerCase()!==currentUser.toLowerCase()){
     alert('❌ Ese nombre ya lo usa otra persona: '+slug+'\nPon otro nombre');
@@ -655,12 +616,9 @@ async function crear(){
     alert('❌ Ese nombre ya lo usa otra persona');
     return;
   }
-  // Si ya era tuyo, lo actualiza, no te bloquea
   let short=location.origin+location.pathname+'?'+slug;
   custom[slug]={target:v,owner:currentUser,adLevel:myAdLevel};localStorage.setItem('naset_custom_links',JSON.stringify(custom));
-  // Guarda en la nube en segundo plano, pero SIEMPRE te genera el link, no te deja sin nada
   dbSaveLink(slug,v,currentUser,myAdLevel).catch(()=>{});
-  // Si ya existía en tu lista, lo actualiza en vez de duplicarlo
   let idx=links.findIndex(l=>l.slug===slug);
   if(idx>=0){links[idx]={orig:v,short:short,slug:slug,clicks:links[idx].clicks||0,user:currentUser,adLevel:myAdLevel,createdAt:links[idx].createdAt||Date.now()};}
   else{setLinkClicks(slug,0);links.push({orig:v,short:short,slug:slug,clicks:0,user:currentUser,adLevel:myAdLevel,createdAt:Date.now()});}
@@ -673,7 +631,7 @@ function showPanel(){
   if(isVisitor)return;
   document.getElementById('authBox').style.display='none';document.getElementById('waiter').style.display='none';document.getElementById('panel').style.display='block';
   let table='';AD_LEVELS.forEach(l=>{table+='<tr><td>Nivel '+l.level+'</td><td>'+l.ads+'</td><td>'+(l.ads*5)+' seg</td><td>$'+l.price.toFixed(2)+'</td></tr>'});document.getElementById('adTable').innerHTML=table;
-  tempAdLevel=myAdLevel;updateAdUI();updateProfileUI();if(isAdmin)document.getElementById('profileBox').classList.add('gold');render();renderChat();
+  tempAdLevel=myAdLevel;updateAdUI();updateProfileUI();if(isAdmin)document.getElementById('profileBox').classList.add('gold');render();
 }
 (async()=>{
   let isLink=await initSlug();
@@ -682,12 +640,18 @@ function showPanel(){
     return;
   }
   if(currentUser){
-    let all=getAllUsers();let me=all.find(x=>x.user.toLowerCase()===currentUser.toLowerCase());
-    if(me){isAdmin=currentUser.toLowerCase()===ADMIN_USER.toLowerCase();isMod=currentUser.toLowerCase()===MOD_USER.toLowerCase();showPanel()}
-    else{localStorage.removeItem('naset_user');currentUser=null}
+    // ARREGLO: dueño y mod ya no se borran al recargar
+    if(isOwnerOrMod(currentUser)){
+      if(currentUser.toLowerCase()===ADMIN_USER.toLowerCase()){isAdmin=true;isMod=false;ensureOwnerModInList(ADMIN_USER,ADMIN_PASS)}
+      if(currentUser.toLowerCase()===MOD_USER.toLowerCase()){isMod=true;isAdmin=false;ensureOwnerModInList(MOD_USER,MOD_PASS)}
+      showPanel();
+    } else {
+      let all=getAllUsers();let me=all.find(x=>x.user.toLowerCase()===currentUser.toLowerCase());
+      if(me){isAdmin=false;isMod=false;showPanel()}
+      else{localStorage.removeItem('naset_user');currentUser=null}
+    }
   }
   setInterval(()=>{if(currentUser)render()},5000);
-  setInterval(()=>{if(currentView==='chat')renderChat()},5000);
 })();
 </script>
 </body>
