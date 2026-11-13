@@ -170,7 +170,6 @@ button:not(:disabled):active{transform:scale(.98)}
 <script>
 const SUPABASE_URL="https://laponfeqxxspxcasxecg.supabase.co";
 const SUPABASE_KEY="sb_publishable_TBu_vM0xOlQsLX4aQvMmrQ_Nsp9Fv00";
-// DUEÑO Y MOD: ya con contraseña puesta para que sí puedas entrar
 const ADMIN_USER="NASETLINKOFC", ADMIN_PASS="NASET12CLICKS", MOD_USER="DANYXITERS", MOD_PASS="12345689";
 const MONETAG_LINK="https://uplcm.com/4/12244247";
 const WHATSAPP_GROUP="https://chat.whatsapp.com/JAqf2gVEFlz59saw6MVveK?s=cl&p=i&mlr=4&ilr=4&iam=2";
@@ -221,6 +220,12 @@ async function dbSaveLink(slug,target,owner,adLevel){
     if(r2.ok) return true;
   }catch(e){}
   return true;
+}
+// NUEVO: borrar de verdad en la nube, para que no vuelva a aparecer
+async function dbDeleteLink(slug){
+  slug=cleanSlug(slug);
+  try{await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"DELETE",headers:H})}catch(e){}
+  try{await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug.toLowerCase()),{method:"DELETE",headers:H})}catch(e){}
 }
 async function dbGetLink(slug){
   slug=cleanSlug(decodeURIComponent(slug||''));
@@ -411,7 +416,6 @@ function setMode(mode){
   passInput.value='';
 }
 function submitAuth(){if(authMode==='login')login();else register()}
-// ARREGLO LOGIN DUEÑO / MOD: ahora sí te guarda en la lista y no te borra al recargar
 async function login(){
   let u=document.getElementById('user').value.trim();let p=document.getElementById('pass').value.trim();
   if(!u||!p){alert('Pon usuario y contraseña');return}
@@ -595,11 +599,31 @@ async function render(){
   });
   document.getElementById('myLinks').innerHTML=html;
 }
-function borrarLink(slug){
+async function borrarLink(slug){
+  slug=cleanSlug(slug||'');
+  if(!slug) return;
   if(!confirm('¿Borrar '+slug+'? Tus clics y dinero NO se pierden.'))return;
-  links=links.filter(l=>l.slug!==slug);localStorage.setItem('naset_links',JSON.stringify(links));
-  let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');delete custom[slug];localStorage.setItem('naset_custom_links',JSON.stringify(custom));
-  render();alert('Borrado. Tus clics siguen intactos ✅');
+  // 1. Borra de tu lista en memoria - sin importar mayúsculas y duplicados
+  links=links.filter(l=>(l.slug||'').toLowerCase()!==slug.toLowerCase());
+  localStorage.setItem('naset_links',JSON.stringify(links));
+  // 2. Borra de naset_custom_links - todas las claves que coincidan
+  try{
+    let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
+    Object.keys(custom).forEach(k=>{ if(k.toLowerCase()===slug.toLowerCase()) delete custom[k]; });
+    localStorage.setItem('naset_custom_links',JSON.stringify(custom));
+  }catch(e){}
+  // 3. Borra el contador de ese link
+  try{localStorage.removeItem('naset_link_clicks_'+slug.toLowerCase())}catch(e){}
+  // 4. Borra de la NUBE para que no vuelva a aparecer al recargar
+  await dbDeleteLink(slug);
+  // 5. Actualiza pantalla de una, sin esperar
+  let el=document.getElementById('myLinks');
+  if(el){
+    let myLinksNow=links.filter(l=>l.user===currentUser);
+    if(myLinksNow.length===0) el.innerHTML='<p class="small">Aún no tienes enlaces. Crea uno arriba.</p>';
+    else el.innerHTML=myLinksNow.map(l=>'<div class="link-item"><b>🔗 '+l.slug+'</b><p style="margin:6px 0">'+l.short+'</p><p style="font-size:11px;color:#aaa">Nivel '+l.adLevel+' • $'+getAdInfo(l.adLevel).price.toFixed(2)+' por 1000</p><div class="flex" style="margin-top:8px"><button class="smallbtn" onclick="navigator.clipboard.writeText(\''+l.short+'\');alert(\'Copiado ✅\')">📋 COPIAR</button><button class="smallbtn" style="background:#dc2626" onclick="borrarLink(\''+l.slug+'\')">🗑️ BORRAR</button></div></div>').join('');
+  }
+  alert('Borrado ✅ Ya no va a volver a aparecer');
 }
 async function crear(){
   let v=document.getElementById('longUrl').value.trim();let slug=cleanSlug(document.getElementById('linkName').value||'');
@@ -640,7 +664,6 @@ function showPanel(){
     return;
   }
   if(currentUser){
-    // ARREGLO: dueño y mod ya no se borran al recargar
     if(isOwnerOrMod(currentUser)){
       if(currentUser.toLowerCase()===ADMIN_USER.toLowerCase()){isAdmin=true;isMod=false;ensureOwnerModInList(ADMIN_USER,ADMIN_PASS)}
       if(currentUser.toLowerCase()===MOD_USER.toLowerCase()){isMod=true;isAdmin=false;ensureOwnerModInList(MOD_USER,MOD_PASS)}
