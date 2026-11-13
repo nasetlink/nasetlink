@@ -34,16 +34,13 @@ button.adbtn{background:#f59e0b;color:#000;font-size:17px;padding:18px}button.re
 .grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0}
 .ad-preview{background:#000;border:1px dashed #f59e0b;border-radius:14px;padding:12px;text-align:center;margin:12px 0}
 .real-ad{width:100%;border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid #f59e0b;background:#fff;display:block;text-decoration:none}.real-ad img{width:100%;height:160px;object-fit:cover;display:block}.real-ad-text{padding:11px;font-weight:900;color:#000}
-/* CHAT FIJO - NO SE MUEVE CON LOS DEDOS */
+/* CHAT FIJO - SIN PARPADEO */
 #viewChat{position:relative;touch-action:pan-y;overscroll-behavior:contain}
 .chat-box{background:#0a0a0a;border:1px solid #333;border-radius:16px;overflow:hidden;position:relative;touch-action:pan-y}
-.chat-header{background:linear-gradient(90deg,#a855f7,#ec4899);padding:12px;text-align:center;font-weight:bold;display:flex;align-items:center;justify-content:center;gap:8px;position:sticky;top:0;z-index:5;user-select:none;-webkit-user-select:none;touch-action:none}
-.chat-logo{width:36px;height:36px;border-radius:99px;background:#fff;color:#a855f7;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;animation:logoPulse 2s infinite}
-@keyframes logoPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.chat-header{background:linear-gradient(90deg,#a855f7,#ec4899);padding:14px;text-align:center;font-weight:bold;font-size:16px;position:sticky;top:0;z-index:5;user-select:none;-webkit-user-select:none;touch-action:none}
 .chat-messages{height:420px;overflow-y:auto;overflow-x:hidden;padding:12px;display:flex;flex-direction:column;gap:8px;background:#0b141a;touch-action:pan-y;overscroll-behavior:contain}
 .chat-messages.full{height:calc(100vh - 220px)}
-.msg{background:#1a1a1a;border-radius:14px;padding:9px 11px;max-width:88%;font-size:13px;animation:msgIn .3s ease;display:flex;gap:8px;align-items:flex-start;word-break:break-word}
-@keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.msg{background:#1a1a1a;border-radius:14px;padding:9px 11px;max-width:88%;font-size:13px;display:flex;gap:8px;align-items:flex-start;word-break:break-word}
 .msg.mine{background:#a855f7;align-self:flex-end}
 .chat-input-row{display:flex;gap:8px;padding:10px;background:#111;position:sticky;bottom:0}.chat-input-row input{margin-bottom:0}.chat-input-row button{width:60px;margin-bottom:0}
 .avatar{width:72px;height:72px;border-radius:99px;object-fit:cover;border:3px solid #a855f7;background:#222;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}
@@ -69,7 +66,7 @@ table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;borde
 <p style="color:#aaa;text-align:center;font-size:13px;margin:5px 0 14px">📢 Dale clic al anuncio • Espera 5 seg • Regresa</p>
 
 <div id="viewProfile" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">✏️ Mi Perfil</p><div class="box" id="profileBoxSolo"></div></div>
-<div id="viewChat" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">💬 Chat Mundial - TODOS</p><div class="box" style="padding:0;overflow:hidden"><div class="chat-box"><div class="chat-header"><div class="chat-logo">N</div><div>CHAT MUNDIAL • <span id="chatCount">0</span> mensajes<br><span style="font-size:11px;opacity:.9">🟢 En línea ahora</span></div></div><div class="chat-messages full" id="chatMessages"></div><div class="chat-input-row"><input id="chatInput" placeholder="Escribe algo..." maxlength="200"><button onclick="sendChat()">➤</button></div></div></div></div>
+<div id="viewChat" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">💬 Chat Mundial - TODOS</p><div class="box" style="padding:0;overflow:hidden"><div class="chat-box"><div class="chat-header">CHAT MUNDIAL 💬</div><div class="chat-messages full" id="chatMessages"></div><div class="chat-input-row"><input id="chatInput" placeholder="Escribe algo..." maxlength="200"><button onclick="sendChat()">➤</button></div></div></div></div>
 <div id="viewAdmin" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">👑 Solo Admin</p><div class="box gold" id="adminPanelSolo"></div></div>
 <div id="viewStats" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">📊 Estadísticas</p><div class="box"><div class="stats"><div class="stat"><b id="statsTotalUsers">0</b><span>USUARIOS</span></div><div class="stat"><b id="statsTotalClicks">0</b><span>CLICS</span></div><div class="stat"><b id="statsTotalPay" style="color:#25D366">$0.00</b><span>POR PAGAR</span></div></div><label>🔍 Buscar:</label><input id="statsSearch" placeholder="Nombre..." oninput="renderStats()"><div id="statsList"></div></div></div>
 
@@ -105,7 +102,7 @@ let authMode='login';
 const PRESET_AVATARS=["https://i.pravatar.cc/150?img=12","https://i.pravatar.cc/150?img=32","https://i.pravatar.cc/150?img=5","https://i.pravatar.cc/150?img=47","https://i.pravatar.cc/150?img=68","https://i.pravatar.cc/150?img=15","https://i.pravatar.cc/150?img=8","https://i.pravatar.cc/150?img=60"];
 let selectedAvatar='',currentView='home',humanInteracted=false,pageLoadTime=Date.now(),lastClickTime=0,lastChatTime=0;
 let cloudProfiles={};
-let currentSlugForClicks=''; // slug que está viendo el visitante ahora
+let currentSlugForClicks='';
 document.addEventListener('mousemove',()=>humanInteracted=true,{passive:true});document.addEventListener('touchstart',()=>humanInteracted=true,{passive:true});document.addEventListener('keydown',()=>humanInteracted=true,{passive:true});
 const H={"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"};
 async function dbGetUsers(){try{let r=await fetch(SUPABASE_URL+"/rest/v1/naset_users?select=*&order=clicks.desc",{headers:H});let j=await r.json();return Array.isArray(j)?j:[]}catch(e){return[]}}
@@ -128,11 +125,9 @@ async function fetchCloudProfiles(){
 }
 async function dbSaveLink(slug,target,owner,adLevel){try{await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({slug,target,owner_user:owner,ad_level:adLevel,clicks:0})})}catch(e){}}
 async function dbGetLink(slug){try{let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug)+"&select=*",{headers:H});let j=await r.json();if(Array.isArray(j)&&j[0])return{slug:j[0].slug,target:j[0].target,owner:j[0].owner_user,adLevel:j[0].ad_level||2,clicks:j[0].clicks||0}}catch(e){}return null}
-// --- CLICS POR CADA LINK, NO TOTAL ---
 function getLinkClicks(slug){return parseInt(localStorage.getItem('naset_link_clicks_'+slug.toLowerCase())||'0')}
 function setLinkClicks(slug,v){localStorage.setItem('naset_link_clicks_'+slug.toLowerCase(),String(v))}
 async function syncLinkClicksFromCloud(){
-  // Trae los clics reales de cada link desde Supabase cada 5 seg
   try{
     let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?select=slug,clicks,owner_user",{headers:H});
     let j=await r.json();
@@ -141,9 +136,7 @@ async function syncLinkClicksFromCloud(){
         if(row.slug){
           let cloudClicks=parseInt(row.clicks||0);
           let localClicks=getLinkClicks(row.slug);
-          // Nos quedamos con el mayor, para no perder clics
           if(cloudClicks>localClicks) setLinkClicks(row.slug,cloudClicks);
-          // Actualiza también el objeto links local
           let ll=links.find(x=>x.slug===row.slug);
           if(ll) ll.clicks=Math.max(cloudClicks,localClicks);
         }
@@ -157,7 +150,6 @@ async function addClickToThisLink(slug,ownerName){
   setLinkClicks(slug,c);
   let ll=links.find(x=>x.slug===slug);
   if(ll) ll.clicks=c;
-  // Guarda en nube para que el dueño lo vea en otro celular
   try{
     let cur=await dbGetLink(slug);
     let cloudC=cur?parseInt(cur.clicks||0):0;
@@ -166,7 +158,6 @@ async function addClickToThisLink(slug,ownerName){
     setLinkClicks(slug,finalC);
     if(ll) ll.clicks=finalC;
   }catch(e){}
-  // También guarda registro de clic en tabla naset_clicks para historial
   try{await fetch(SUPABASE_URL+"/rest/v1/naset_clicks",{method:"POST",headers:H,body:JSON.stringify({owner_user:ownerName,slug:slug})})}catch(e){}
 }
 function getAllUsers(){try{return JSON.parse(localStorage.getItem('naset_all_users')||'[]')}catch(e){return[]}}
@@ -230,8 +221,6 @@ function unbanUserSolo(){let n=document.getElementById('banUserSolo').value.trim
 async function showAdminSolo(){let el=document.getElementById('allUsersSolo');if(!el)return;let all=getAllUsers();if(all.length===0){el.innerHTML='<p class="small">Sin miembros aún</p>';return}let h='';all.forEach(u=>{let c=getClicksOf(u.user);let info=getAdInfo(2);h+='<div style="background:#000;border:1px solid #333;border-radius:12px;padding:10px;margin-bottom:8px"><b>'+(getDisplayName(u.user))+'</b> <span style="color:#888;font-size:11px">('+u.user+')</span><br>'+rankBadgeHTML(c,u.user)+' • '+c+' clics • $'+(c/1000*info.price).toFixed(2)+'</div>'});el.innerHTML=h}
 function getUserStats(u){let lvl=2,info=getAdInfo(lvl),c=getClicksOf(u.user);return {user:u.user,displayName:getDisplayName(u.user),clicks:c,earn:c/1000*info.price,level:lvl,price:info.price,tag:getTag(u.user),banned:localStorage.getItem('naset_banned_'+u.user.toLowerCase())==='1',rank:getRank(c,u.user)}}
 async function renderStats(){if(!isAdmin&&!isMod)return;let all=getAllUsers().map(getUserStats).sort((a,b)=>b.earn-a.earn);let search=(document.getElementById('statsSearch')?.value||'').toLowerCase();let f=search?all.filter(s=>s.displayName.toLowerCase().includes(search)||s.user.toLowerCase().includes(search)):all;let totalC=all.reduce((s,x)=>s+x.clicks,0),totalP=all.reduce((s,x)=>s+x.earn,0);document.getElementById('statsTotalUsers').innerText=all.length;document.getElementById('statsTotalClicks').innerText=totalC;document.getElementById('statsTotalPay').innerText='$'+totalP.toFixed(2);let list=document.getElementById('statsList');if(f.length===0){list.innerHTML='<p class="small">Sin usuarios</p>';return}list.innerHTML=f.map((s,i)=>'<div style="background:#000;border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:10px"><b>'+(i+1)+'. '+s.displayName+'</b> <span style="color:#888">'+s.user+'</span><br>'+rankBadgeHTML(s.clicks,s.user)+'<br>👆 '+s.clicks+' clics • 💰 $'+s.earn.toFixed(2)+'</div>').join('')}
-
-// --- CHAT GLOBAL FIJO - SIN ESCRIBIENDO ---
 async function fetchChatCloud(){
   try{
     let r=await fetch(SUPABASE_URL+"/rest/v1/naset_chat?select=*&order=created_at.asc&limit=100",{headers:H});
@@ -259,7 +248,6 @@ async function renderChat(){
   let box=document.getElementById('chatMessages'); if(!box) return;
   await fetchCloudProfiles();
   let chat=await fetchChatCloud();
-  let cc=document.getElementById('chatCount'); if(cc) cc.innerText=chat.length;
   if(chat.length===0){box.innerHTML='<p class="small">Sé el primero en hablar 👋</p>';return}
   box.innerHTML=chat.map(m=>{
     let isMine=m.user===currentUser;
@@ -338,7 +326,6 @@ async function addClickToOwner(ownerName){
   let c=getClicksOf(ownerName)+1;setClicksOf(ownerName,c);
   let all=getAllUsers();let u=all.find(x=>x.user.toLowerCase()===ownerName.toLowerCase());if(u){u.clicks=c;saveAllUsers(all);try{await dbSaveUser({...u,clicks:c})}catch(e){}}
   else{let nu={user:ownerName,pass:'',clicks:c,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString()};all.push(nu);saveAllUsers(all)}
-  // Clic por CADA link
   if(currentSlugForClicks) await addClickToThisLink(currentSlugForClicks,ownerName);
   render();
 }
@@ -372,7 +359,6 @@ function updateProfileUI(){
 }
 async function render(){
   if(!currentUser)return;
-  // Actualiza clics por link desde nube antes de pintar
   await syncLinkClicksFromCloud();
   let myClicks=getClicksOf(currentUser);let info=getAdInfo(myAdLevel);
   document.getElementById('totalClicks').innerText=myClicks;
@@ -383,9 +369,7 @@ async function render(){
   let html='';
   if(myLinks.length===0) html='<p class="small">Aún no tienes links. Crea uno arriba.</p>';
   else myLinks.forEach(l=>{
-    // CADA LINK TIENE SUS PROPIOS CLICS, NO EL TOTAL
     let clicksEsteLink = l.clicks!=null ? parseInt(l.clicks) : getLinkClicks(l.slug);
-    // Si no hay clics en nube, usa local
     if(!clicksEsteLink) clicksEsteLink=getLinkClicks(l.slug);
     let dineroEsteLink=(clicksEsteLink/1000*getAdInfo(l.adLevel).price).toFixed(2);
     let haceTxt=l.createdAt?(' • Hace '+tiempoHace(l.createdAt)):'';
@@ -407,7 +391,6 @@ function borrarLink(slug){
   if(!confirm('¿Borrar '+slug+'? Tus clics de otros links NO se pierden.'))return;
   links=links.filter(l=>l.slug!==slug);localStorage.setItem('naset_links',JSON.stringify(links));
   let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');delete custom[slug];localStorage.setItem('naset_custom_links',JSON.stringify(custom));
-  // NO borramos naset_link_clicks_ para que quede historial, solo el link
   render();alert('Borrado. Tus otros links siguen intactos ✅');
 }
 function borrarSeleccionados(){
@@ -448,7 +431,6 @@ function showPanel(){
     if(me){isAdmin=currentUser.toLowerCase()===ADMIN_USER.toLowerCase();isMod=currentUser.toLowerCase()===MOD_USER.toLowerCase();showPanel()}
     else{localStorage.removeItem('naset_user');currentUser=null}
   }
-  // Actualiza clics por link y chat cada 5 seg
   setInterval(()=>{if(currentUser)render()},5000);
   setInterval(()=>{if(currentView==='chat')renderChat()},5000);
 })();
