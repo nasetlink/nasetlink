@@ -10,7 +10,13 @@ body{background:#000;color:#fff;display:flex;justify-content:center;padding:0 14
 .card{width:100%;max-width:480px}
 .header{display:flex;align-items:center;justify-content:space-between;padding:14px 4px;position:sticky;top:0;background:#000;z-index:50}
 .logo{font-size:28px;font-weight:900}.logo span{color:#a855f7}
-.hamburger{width:46px;height:46px;border-radius:14px;background:#1a1a1a;border:1px solid #333;color:#fff;font-size:22px;cursor:pointer}
+/* HAMBURGUESA MEJORADA */
+.hamburger{width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,#a855f7,#ec4899);border:none;color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(168,85,247,.5);transition:transform .15s, box-shadow .15s;position:relative}
+.hamburger:active{transform:scale(.92);box-shadow:0 2px 8px rgba(168,85,247,.4)}
+.hamburger .bars{display:flex;flex-direction:column;gap:5px}
+.hamburger .bars span{display:block;width:22px;height:3px;background:#fff;border-radius:99px;transition:.2s}
+.hamburger:hover .bars span:nth-child(1){width:16px}
+.hamburger:hover .bars span:nth-child(3){width:16px}
 .header-avatar{width:42px;height:42px;border-radius:99px;background:#a855f7;display:flex;align-items:center;justify-content:center;font-weight:900;border:2px solid #a855f7;cursor:pointer;overflow:hidden}
 .header-avatar img{width:100%;height:100%;object-fit:cover}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:99;display:none}.overlay.show{display:block}
@@ -55,7 +61,7 @@ table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;borde
 </head>
 <body>
 <div class="card">
-<div class="header" id="headerBar" style="display:none"><button class="hamburger" onclick="toggleMenu()">☰</button><div class="logo">NASET<span>LINK</span></div><div class="header-avatar" id="topAvatar" onclick="openView('profile')">?</div></div>
+<div class="header" id="headerBar" style="display:none"><button class="hamburger" onclick="toggleMenu()"><span class="bars"><span></span><span></span><span></span></span></button><div class="logo">NASET<span>LINK</span></div><div class="header-avatar" id="topAvatar" onclick="openView('profile')">?</div></div>
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 <div class="sidebar" id="sidebar"><button class="close-menu" onclick="toggleMenu()">✕</button><div style="display:flex;gap:12px;padding-bottom:16px;border-bottom:1px solid #333;margin-bottom:16px"><div class="avatar-small" id="sideAvatar" style="width:52px;height:52px;font-size:20px">?</div><div><b id="sideName">Mi Perfil</b><p id="sideUser" style="font-size:12px;color:#aaa"></p><span id="sideBadge"></span></div></div><div class="menu-item" id="menuAdmin" style="display:none" onclick="toggleMenu();openView('admin')"><span>👑</span> Panel Admin</div><div class="menu-item" id="menuStats" style="display:none" onclick="toggleMenu();openView('stats')"><span>📊</span> Estadísticas</div><div class="menu-item" style="background:#fff;color:#000" onclick="toggleMenu();openView('chat')"><span>💬</span> Chat Mundial</div><div class="menu-item" onclick="toggleMenu();openView('profile')"><span>👤</span> Mi Perfil</div><div class="menu-item" onclick="toggleMenu();closeView()"><span>🏠</span> Inicio / Mis Links</div><div class="menu-item logout" onclick="logout()"><span>🚪</span> Cerrar Sesión</div></div>
 
@@ -99,25 +105,26 @@ let authMode='login';
 const PRESET_AVATARS=["https://i.pravatar.cc/150?img=12","https://i.pravatar.cc/150?img=32","https://i.pravatar.cc/150?img=5","https://i.pravatar.cc/150?img=47","https://i.pravatar.cc/150?img=68","https://i.pravatar.cc/150?img=15","https://i.pravatar.cc/150?img=8","https://i.pravatar.cc/150?img=60"];
 let selectedAvatar='',currentView='home',humanInteracted=false,pageLoadTime=Date.now(),lastClickTime=0,lastChatTime=0;
 let cloudProfiles={};
+let cloudVerified={};
 let currentSlugForClicks='';
 document.addEventListener('mousemove',()=>humanInteracted=true,{passive:true});document.addEventListener('touchstart',()=>humanInteracted=true,{passive:true});document.addEventListener('keydown',()=>humanInteracted=true,{passive:true});
 const H={"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"};
 async function dbGetUsers(){try{let r=await fetch(SUPABASE_URL+"/rest/v1/naset_users?select=*&order=clicks.desc",{headers:H});let j=await r.json();return Array.isArray(j)?j:[]}catch(e){return[]}}
 async function dbSaveUser(u){
   let prof=getProfile(u.user||currentUser);
-  try{await fetch(SUPABASE_URL+"/rest/v1/naset_users",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({username:u.user,pass:u.pass||"",clicks:u.clicks||0,date:u.date||"",time:u.time||"",timestamp:u.timestamp||Date.now(),avatar:prof.avatar||"",display_name:prof.displayName||"",bio:prof.bio||""})})}catch(e){}
-  try{await fetch(SUPABASE_URL+"/rest/v1/naset_profiles",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({username:(u.user||currentUser).toLowerCase(),avatar:prof.avatar||"",display_name:prof.displayName||"",bio:prof.bio||""})})}catch(e){}
+  try{await fetch(SUPABASE_URL+"/rest/v1/naset_users",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({username:u.user,pass:u.pass||"",clicks:u.clicks||0,date:u.date||"",time:u.time||"",timestamp:u.timestamp||Date.now(),avatar:prof.avatar||"",display_name:prof.displayName||"",bio:prof.bio||"",is_verified:getTag(u.user||currentUser)==='verified'?true:false})})}catch(e){}
+  try{await fetch(SUPABASE_URL+"/rest/v1/naset_profiles",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({username:(u.user||currentUser).toLowerCase(),avatar:prof.avatar||"",display_name:prof.displayName||"",bio:prof.bio||"",is_verified:getTag(u.user||currentUser)==='verified'?true:false})})}catch(e){}
 }
 async function fetchCloudProfiles(){
   try{
-    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_users?select=username,avatar,display_name,bio",{headers:H});
+    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_users?select=username,avatar,display_name,bio,is_verified",{headers:H});
     let j=await r.json();
-    if(Array.isArray(j)){j.forEach(x=>{if(x.username) cloudProfiles[x.username.toLowerCase()]={avatar:x.avatar||"",displayName:x.display_name||"",bio:x.bio||""}})}
+    if(Array.isArray(j)){j.forEach(x=>{if(x.username){cloudProfiles[x.username.toLowerCase()]={avatar:x.avatar||"",displayName:x.display_name||"",bio:x.bio||""}; if(x.is_verified) cloudVerified[x.username.toLowerCase()]=true;}})}
   }catch(e){}
   try{
     let r2=await fetch(SUPABASE_URL+"/rest/v1/naset_profiles?select=*",{headers:H});
     let j2=await r2.json();
-    if(Array.isArray(j2)){j2.forEach(x=>{if(x.username) cloudProfiles[x.username.toLowerCase()]={avatar:x.avatar||cloudProfiles[x.username.toLowerCase()]?.avatar||"",displayName:x.display_name||"",bio:x.bio||""}})}
+    if(Array.isArray(j2)){j2.forEach(x=>{if(x.username){cloudProfiles[x.username.toLowerCase()]={avatar:x.avatar||cloudProfiles[x.username.toLowerCase()]?.avatar||"",displayName:x.display_name||"",bio:x.bio||""}; if(x.is_verified) cloudVerified[x.username.toLowerCase()]=true;}})}
   }catch(e){}
 }
 async function dbSaveLink(slug,target,owner,adLevel){try{await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({slug,target,owner_user:owner,ad_level:adLevel,clicks:0})})}catch(e){}}
@@ -183,21 +190,25 @@ function getProfile(user){
   }catch(e){return cloud}
 }
 function getDisplayName(user){let p=getProfile(user);return p.displayName||user}
-function getTag(user){try{let s=localStorage.getItem('naset_tag_'+(user||'').toLowerCase());if(s==='verified'||s==='influencer')return s} catch(e){} return ''}
+function getTag(user){
+  // Solo el dueño puede dar verificado, y se guarda en nube para que todos lo vean
+  if(cloudVerified[(user||'').toLowerCase()]) return 'verified';
+  try{let s=localStorage.getItem('naset_tag_'+(user||'').toLowerCase());if(s==='verified'||s==='influencer')return s} catch(e){} return ''
+}
 function verifiedIcon(user){return getTag(user)==='verified'?' <span style="background:#1d9bf0;color:#fff;border-radius:99px;padding:1px 5px;font-size:10px">✓</span>':''}
 function openView(view){currentView=view;document.getElementById('mainView').style.display='none';document.getElementById('viewProfile').style.display='none';document.getElementById('viewChat').style.display='none';document.getElementById('viewAdmin').style.display='none';document.getElementById('viewStats').style.display='none';if(view==='profile'){document.getElementById('viewProfile').style.display='block';document.getElementById('profileBoxSolo').innerHTML=buildProfileHTML();let p=getProfile(currentUser);renderAvatarOptionsSolo(p.avatar||'');document.getElementById('editDisplayNameSolo').value=p.displayName||'';document.getElementById('editBioSolo').value=p.bio||'';window.scrollTo(0,0)}if(view==='chat'){document.getElementById('viewChat').style.display='block';renderChat();fetchCloudProfiles().then(()=>renderChat());window.scrollTo(0,0)}if(view==='admin'){if(!isAdmin&&!isMod)return;document.getElementById('viewAdmin').style.display='block';document.getElementById('adminPanelSolo').innerHTML=buildAdminHTML();showAdminSolo();window.scrollTo(0,0)}if(view==='stats'){if(!isAdmin&&!isMod)return;document.getElementById('viewStats').style.display='block';renderStats();window.scrollTo(0,0)}}
 function closeView(){currentView='home';document.getElementById('viewProfile').style.display='none';document.getElementById('viewChat').style.display='none';document.getElementById('viewAdmin').style.display='none';document.getElementById('viewStats').style.display='none';document.getElementById('mainView').style.display='block';window.scrollTo(0,0);render();updateProfileUI()}
 function buildProfileHTML(){
   let myClicks=getClicksOf(currentUser);let r=getRank(myClicks,currentUser);
   return `<div style="display:flex;gap:14px;align-items:center"><div class="avatar">${getAvatarInner(currentUser)}</div><div><h3>${getDisplayName(currentUser)}${verifiedIcon(currentUser)}</h3><p style="color:#aaa;font-size:12px">Usuario: ${currentUser}</p><p style="color:#aaa;font-size:12px">${getProfile(currentUser).bio||''}</p><div style="margin-top:6px">${rankBadgeHTML(myClicks,currentUser)}</div><p style="font-size:11px;color:#aaa">${myClicks} clics ${r.next?'• Faltan '+(r.nextAt-myClicks)+' para '+r.nextEmoji+' '+r.next:''}</p></div></div>
-  <div style="margin-top:14px;border-top:1px solid #333;padding-top:12px"><p style="font-weight:bold">Elige tu logo - Todos lo verán para siempre ✅</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0" id="avatarOptionsSolo"></div><label>📸 O sube tu foto:</label><input type="file" accept="image/*" onchange="uploadAvatarSolo(event)"><label>📝 Nombre para mostrar:</label><input id="editDisplayNameSolo" placeholder="Ej: Naset"><label>✍️ Biografía:</label><input id="editBioSolo" placeholder="Ej: Gano dinero 🔥" maxlength="80"><button class="green" onclick="saveProfileSolo()">💾 GUARDAR MI PERFIL - TODOS LO VEN</button></div>
+  <div style="margin-top:14px;border-top:1px solid #333;padding-top:12px"><p style="font-weight:bold">Elige tu foto - Todos la verán ✅</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0" id="avatarOptionsSolo"></div><label>📸 O sube tu foto:</label><input type="file" accept="image/*" onchange="uploadAvatarSolo(event)"><label>📝 Nombre para mostrar:</label><input id="editDisplayNameSolo" placeholder="Ej: Naset"><label>✍️ Biografía:</label><input id="editBioSolo" placeholder="Ej: Gano dinero 🔥" maxlength="80"><button class="green" onclick="saveProfileSolo()">💾 GUARDAR MI PERFIL - TODOS LO VEN</button></div>
   <div style="margin-top:14px;border-top:1px solid #333;padding-top:12px"><p style="font-weight:bold">🔒 Cambiar Contraseña</p><label>Contraseña actual:</label><div class="flex"><input type="password" id="passActualSolo" placeholder="Contraseña actual" style="flex:1"><button style="width:50px" onclick="verPass('passActualSolo')">👁️</button></div><label>Nueva contraseña:</label><div class="flex"><input type="password" id="passNuevaSolo" placeholder="Nueva contraseña" style="flex:1"><button style="width:50px" onclick="verPass('passNuevaSolo')">👁️</button></div><button class="green" onclick="cambiarPassSolo()">🔐 ACTUALIZAR CONTRASEÑA</button></div>`;
 }
 function getAvatarInner(user){let p=getProfile(user);if(p.avatar)return '<img src="'+p.avatar+'">';return user.charAt(0).toUpperCase()}
 function renderAvatarOptionsSolo(cur){let h='';PRESET_AVATARS.forEach(u=>{h+='<img src="'+u+'" class="avatar-option '+(cur===u?'selected':'')+'" onclick="selectAvatar(\''+u+'\',this)">'});let el=document.getElementById('avatarOptionsSolo');if(el)el.innerHTML=h}
 function selectAvatar(url,el){selectedAvatar=url;document.querySelectorAll('.avatar-option').forEach(i=>i.classList.remove('selected'));if(el)el.classList.add('selected')}
 function uploadAvatarSolo(e){let f=e.target.files[0];if(!f)return;let rd=new FileReader();rd.onload=function(ev){let img=new Image();img.onload=function(){let c=document.createElement('canvas');let max=200,w=img.width,h=img.height;if(w>h){if(w>max){h=h*max/w;w=max}}else{if(h>max){w=w*max/h;h=max}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);selectedAvatar=c.toDataURL('image/jpeg',0.6)};img.src=ev.target.result};rd.readAsDataURL(f)}
-async function saveProfileSolo(){let dn=document.getElementById('editDisplayNameSolo').value.trim();let bio=document.getElementById('editBioSolo').value.trim();let p=getProfile(currentUser);if(selectedAvatar)p.avatar=selectedAvatar;if(dn)p.displayName=dn;p.bio=bio;try{localStorage.setItem('naset_profile_'+currentUser.toLowerCase(),JSON.stringify(p))}catch(e){alert('Foto muy pesada, elige un logo de arriba');return}selectedAvatar='';cloudProfiles[currentUser.toLowerCase()]=p;await dbSaveUser({user:currentUser,pass:getAllUsers().find(x=>x.user.toLowerCase()===currentUser.toLowerCase())?.pass||""});updateProfileUI();renderChat();alert('✅ Perfil guardado - Todos lo ven para siempre');closeView()}
+async function saveProfileSolo(){let dn=document.getElementById('editDisplayNameSolo').value.trim();let bio=document.getElementById('editBioSolo').value.trim();let p=getProfile(currentUser);if(selectedAvatar)p.avatar=selectedAvatar;if(dn)p.displayName=dn;p.bio=bio;try{localStorage.setItem('naset_profile_'+currentUser.toLowerCase(),JSON.stringify(p))}catch(e){alert('Foto muy pesada, elige un logo de arriba');return}selectedAvatar='';cloudProfiles[currentUser.toLowerCase()]=p;await dbSaveUser({user:currentUser,pass:getAllUsers().find(x=>x.user.toLowerCase()===currentUser.toLowerCase())?.pass||""});updateProfileUI();renderChat();alert('✅ Foto guardada - Todos la ven');closeView()}
 function cambiarPassSolo(){
   let actual=document.getElementById('passActualSolo').value.trim();
   let nueva=document.getElementById('passNuevaSolo').value.trim();
@@ -208,11 +219,11 @@ function cambiarPassSolo(){
   if(u) dbSaveUser(u);
   alert('✅ Contraseña actualizada');closeView();
 }
-function buildAdminHTML(){return `<h3 style="text-align:center">👑 PANEL ADMIN</h3><label>🏆 Dar rango a alguien</label><input id="adminRankUserSolo" placeholder="Usuario"><select id="adminRankSelectSolo"><option value="">Elige rango...</option><option>BRONCE</option><option>PLATA</option><option>ORO</option><option>DIAMANTE</option><option>ÉLITE</option><option>LEYENDA</option><option>MÍTICO</option><option>MAESTRO</option><option>DIOS</option></select><button class="green" onclick="adminGiveRankSolo()">🏆 DAR RANGO</button><button class="sec" onclick="adminRemoveRankSolo()">↩️ QUITAR MANUAL (vuelve a subir solo)</button><label>✅ Verificado / Influencer</label><input id="verifyUserSolo" placeholder="Usuario"><div class="flex"><button class="smallbtn" style="background:#1d9bf0" onclick="giveVerifiedSolo('verified')">✓ VERIFICADO</button><button class="smallbtn" style="background:#f59e0b" onclick="giveVerifiedSolo('influencer')">⭐ INFLUENCER</button></div><button class="sec" onclick="removeVerifiedSolo()">❌ QUITAR TODO</button><label>🚫 Banear</label><input id="banUserSolo" placeholder="Usuario a banear"><button class="danger" onclick="banUserSolo()">🚫 BANEAR</button><button class="sec" onclick="unbanUserSolo()">✅ DESBANEAR</button><label>👥 Miembros</label><div id="allUsersSolo"></div>`}
+function buildAdminHTML(){return `<h3 style="text-align:center">👑 PANEL ADMIN</h3><label>🏆 Dar rango a alguien</label><input id="adminRankUserSolo" placeholder="Usuario"><select id="adminRankSelectSolo"><option value="">Elige rango...</option><option>BRONCE</option><option>PLATA</option><option>ORO</option><option>DIAMANTE</option><option>ÉLITE</option><option>LEYENDA</option><option>MÍTICO</option><option>MAESTRO</option><option>DIOS</option></select><button class="green" onclick="adminGiveRankSolo()">🏆 DAR RANGO</button><button class="sec" onclick="adminRemoveRankSolo()">↩️ QUITAR MANUAL (vuelve a subir solo)</button><label>✅ Verificado - Solo dueño</label><input id="verifyUserSolo" placeholder="Usuario"><div class="flex"><button class="smallbtn" style="background:#1d9bf0" onclick="giveVerifiedSolo('verified')">✓ DAR VERIFICADO</button></div><button class="sec" onclick="removeVerifiedSolo()">❌ QUITAR VERIFICADO</button><label>🚫 Banear</label><input id="banUserSolo" placeholder="Usuario a banear"><button class="danger" onclick="banUserSolo()">🚫 BANEAR</button><button class="sec" onclick="unbanUserSolo()">✅ DESBANEAR</button><label>👥 Miembros</label><div id="allUsersSolo"></div>`}
 function adminGiveRankSolo(){let n=document.getElementById('adminRankUserSolo').value.trim();let r=document.getElementById('adminRankSelectSolo').value;if(!n||!r){alert('Pon usuario y rango');return}localStorage.setItem('naset_rank_manual_'+n.toLowerCase(),r);showAdminSolo();renderStats();updateProfileUI();renderChat();alert('🏆 '+n+' ahora es '+r)}
 function adminRemoveRankSolo(){let n=document.getElementById('adminRankUserSolo').value.trim();if(!n){alert('Pon usuario');return}localStorage.setItem('naset_rank_manual_'+n.toLowerCase(),'AUTO');showAdminSolo();updateProfileUI();alert('↩️ '+n+' vuelve a subir solo')}
-function giveVerifiedSolo(t){let n=document.getElementById('verifyUserSolo').value.trim();if(!n){alert('Pon usuario');return}localStorage.setItem('naset_tag_'+n.toLowerCase(),t);showAdminSolo();renderChat();updateProfileUI();alert('✅ Listo')}
-function removeVerifiedSolo(){let n=document.getElementById('verifyUserSolo').value.trim();if(!n){alert('Pon usuario');return}localStorage.setItem('naset_tag_'+n.toLowerCase(),'none');showAdminSolo();renderChat();alert('❌ Quitado')}
+async function giveVerifiedSolo(t){let n=document.getElementById('verifyUserSolo').value.trim();if(!n){alert('Pon usuario');return}if(!isAdmin){alert('Solo el dueño puede dar verificado');return}localStorage.setItem('naset_tag_'+n.toLowerCase(),t);cloudVerified[n.toLowerCase()]=true;let u=getAllUsers().find(x=>x.user.toLowerCase()===n.toLowerCase());if(u) await dbSaveUser(u);else await dbSaveUser({user:n,pass:""});showAdminSolo();renderChat();updateProfileUI();alert('✅ '+n+' ahora tiene verificado ✓')}
+async function removeVerifiedSolo(){let n=document.getElementById('verifyUserSolo').value.trim();if(!n){alert('Pon usuario');return}if(!isAdmin){alert('Solo el dueño puede quitar verificado');return}localStorage.setItem('naset_tag_'+n.toLowerCase(),'none');delete cloudVerified[n.toLowerCase()];let u=getAllUsers().find(x=>x.user.toLowerCase()===n.toLowerCase());if(u) await dbSaveUser(u);showAdminSolo();renderChat();alert('❌ Quitado')}
 function banUserSolo(){let n=document.getElementById('banUserSolo').value.trim();if(!n)return;if(n.toLowerCase()===ADMIN_USER.toLowerCase()){alert('No puedes banear al dueño');return}if(!confirm('¿Banear a '+n+'?'))return;localStorage.setItem('naset_banned_'+n.toLowerCase(),'1');showAdminSolo();alert('🚫 Baneado')}
 function unbanUserSolo(){let n=document.getElementById('banUserSolo').value.trim();if(!n)return;localStorage.removeItem('naset_banned_'+n.toLowerCase());showAdminSolo();alert('✅ Desbaneado')}
 async function showAdminSolo(){let el=document.getElementById('allUsersSolo');if(!el)return;let all=getAllUsers();if(all.length===0){el.innerHTML='<p class="small">Sin miembros aún</p>';return}let h='';all.forEach(u=>{let c=getClicksOf(u.user);let info=getAdInfo(2);h+='<div style="background:#000;border:1px solid #333;border-radius:12px;padding:10px;margin-bottom:8px"><b>'+(getDisplayName(u.user))+'</b> <span style="color:#888;font-size:11px">('+u.user+')</span><br>'+rankBadgeHTML(c,u.user)+' • '+c+' clics • $'+(c/1000*info.price).toFixed(2)+'</div>'});el.innerHTML=h}
@@ -246,12 +257,12 @@ async function renderChat(){
   await fetchCloudProfiles();
   let chat=await fetchChatCloud();
   if(chat.length===0){box.innerHTML='<p class="small">Sé el primero en hablar 👋</p>';return}
+  // EN CHAT YA NO SALE RANGO DE NADIE, SOLO NOMBRE + FOTO + VERIFICADO SI EL DUEÑO SE LO DIO
   box.innerHTML=chat.map(m=>{
     let isMine=m.user===currentUser;
-    let c=getClicksOf(m.user); let r=getRank(c,m.user);
     let p=getProfile(m.user);
     let av=p.avatar?'<div class="avatar-small"><img src="'+p.avatar+'"></div>':'<div class="avatar-small">'+(getDisplayName(m.user).charAt(0).toUpperCase())+'</div>';
-    return '<div class="msg '+(isMine?'mine':'')+'">'+av+'<div><b>'+getDisplayName(m.user)+' '+r.emoji+' '+r.name+'</b><br>'+m.text+'<div style="font-size:10px;opacity:.7">'+(m.time||'')+' ✓✓</div></div></div>';
+    return '<div class="msg '+(isMine?'mine':'')+'">'+av+'<div><b>'+getDisplayName(m.user)+verifiedIcon(m.user)+'</b><br>'+m.text+'<div style="font-size:10px;opacity:.7">'+(m.time||'')+' ✓✓</div></div></div>';
   }).join('');
   box.scrollTop=box.scrollHeight;
 }
