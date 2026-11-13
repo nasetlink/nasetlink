@@ -196,103 +196,52 @@ async function dbSaveUser(u){
   try{await fetch(SUPABASE_URL+"/rest/v1/naset_users",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({username:u.user,pass:u.pass||"",clicks:u.clicks||0,date:u.date||"",time:u.time||"",timestamp:u.timestamp||Date.now(),avatar:prof.avatar||"",display_name:prof.displayName||"",bio:prof.bio||"",is_verified:getTag(u.user||currentUser)==='verified'?true:false})})}catch(e){}
   try{await fetch(SUPABASE_URL+"/rest/v1/naset_profiles",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({username:(u.user||currentUser).toLowerCase(),avatar:prof.avatar||"",display_name:prof.displayName||"",bio:prof.bio||"",is_verified:getTag(u.user||currentUser)==='verified'?true:false})})}catch(e){}
 }
-async function fetchCloudProfiles(){
-  try{
-    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_users?select=username,avatar,display_name,bio,is_verified",{headers:H});
-    let j=await r.json();
-    if(Array.isArray(j)){j.forEach(x=>{if(x.username){cloudProfiles[x.username.toLowerCase()]={avatar:x.avatar||"",displayName:x.display_name||"",bio:x.bio||""}; if(x.is_verified) cloudVerified[x.username.toLowerCase()]=true;}})}
-  }catch(e){}
-  try{
-    let r2=await fetch(SUPABASE_URL+"/rest/v1/naset_profiles?select=*",{headers:H});
-    let j2=await r2.json();
-    if(Array.isArray(j2)){j2.forEach(x=>{if(x.username){cloudProfiles[x.username.toLowerCase()]={avatar:x.avatar||cloudProfiles[x.username.toLowerCase()]?.avatar||"",displayName:x.display_name||"",bio:x.bio||""}; if(x.is_verified) cloudVerified[x.username.toLowerCase()]=true;}})}
-  }catch(e){}
-}
 async function dbSaveLink(slug,target,owner,adLevel){
-  slug=cleanSlug(slug);
-  adLevel=parseInt(adLevel||2);
-  let existing=null;
-  try{existing=await dbGetLink(slug)}catch(e){}
+  slug=cleanSlug(slug); adLevel=parseInt(adLevel||2);
+  let existing=null; try{existing=await dbGetLink(slug)}catch(e){}
   let clicksToSave=existing?parseInt(existing.clicks||0):0;
   let body=JSON.stringify({slug:slug,target:target,owner_user:owner,ad_level:adLevel,clicks:clicksToSave});
-  try{
-    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:body});
-    if(r.ok) return true;
-  }catch(e){}
-  try{
-    let r2=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({target:target,owner_user:owner,ad_level:adLevel})});
-    if(r2.ok) return true;
-  }catch(e){}
+  try{let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:body}); if(r.ok) return true;}catch(e){}
+  try{let r2=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({target:target,owner_user:owner,ad_level:adLevel})}); if(r2.ok) return true;}catch(e){}
   return true;
 }
 async function dbUpdateLinkLevel(slug,adLevel){
-  slug=cleanSlug(slug||'');
-  if(!slug||slug==='undefined') return;
+  slug=cleanSlug(slug||''); if(!slug||slug==='undefined') return;
   try{await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({ad_level:parseInt(adLevel)})})}catch(e){}
 }
 async function dbDeleteLink(slug){
-  slug=cleanSlug(slug||'');
-  if(!slug || slug==='undefined') return;
+  slug=cleanSlug(slug||''); if(!slug || slug==='undefined') return;
   try{await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"DELETE",headers:H})}catch(e){}
 }
-async function dbGetLink(slug){
-  slug=cleanSlug(decodeURIComponent(slug||''));
-  if(!slug) return null;
+// FAST: 1 solo intento, sin esperar 3 segundos
+async function dbGetLinkFast(slug){
+  slug=cleanSlug(decodeURIComponent(slug||'')); if(!slug) return null;
   try{
     let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug)+"&select=*",{headers:H});
     let j=await r.json();
     if(Array.isArray(j)&&j[0]) return {slug:j[0].slug,target:j[0].target,owner:j[0].owner_user,adLevel:parseInt(j[0].ad_level||2),clicks:j[0].clicks||0};
   }catch(e){}
-  try{
-    let r2=await fetch(SUPABASE_URL+"/rest/v1/naset_links?select=*&limit=1000",{headers:H});
-    let j2=await r2.json();
-    if(Array.isArray(j2)){
-      let f=j2.find(x=>(x.slug||'').toLowerCase()===slug.toLowerCase());
-      if(f) return {slug:f.slug,target:f.target,owner:f.owner_user,adLevel:parseInt(f.ad_level||2),clicks:f.clicks||0};
-    }
-  }catch(e){}
   return null;
 }
-async function dbGetLinkWithRetry(slug){
-  for(let i=0;i<5;i++){
-    let f=await dbGetLink(slug);
-    if(f) return f;
-    await new Promise(r=>setTimeout(r,700));
-  }
-  return null;
-}
+async function dbGetLink(slug){ return dbGetLinkFast(slug); }
+async function dbGetLinkWithRetry(slug){ return dbGetLinkFast(slug); }
 function getLinkClicks(slug){return parseInt(localStorage.getItem('naset_link_clicks_'+slug.toLowerCase())||'0')}
 function setLinkClicks(slug,v){localStorage.setItem('naset_link_clicks_'+slug.toLowerCase(),String(v))}
 async function syncLinkClicksFromCloud(){
   try{
     let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?select=slug,clicks,owner_user,ad_level",{headers:H});
     let j=await r.json();
-    if(Array.isArray(j)){
-      j.forEach(row=>{
-        if(row.slug){
-          let cloudClicks=parseInt(row.clicks||0);
-          let localClicks=getLinkClicks(row.slug);
-          if(cloudClicks>localClicks) setLinkClicks(row.slug,cloudClicks);
-          let ll=links.find(x=>(x.slug||'')===row.slug);
-          if(ll) ll.clicks=Math.max(cloudClicks,localClicks);
-        }
-      });
-    }
+    if(Array.isArray(j)){ j.forEach(row=>{ if(row.slug){ let cc=parseInt(row.clicks||0); let lc=getLinkClicks(row.slug); if(cc>lc) setLinkClicks(row.slug,cc); let ll=links.find(x=>(x.slug||'')===row.slug); if(ll) ll.clicks=Math.max(cc,lc); } }); }
   }catch(e){}
 }
 async function addClickToThisLink(slug,ownerName){
   if(!slug) return;
-  let c=getLinkClicks(slug)+1;
-  setLinkClicks(slug,c);
-  let ll=links.find(x=>x.slug===slug);
-  if(ll) ll.clicks=c;
+  let c=getLinkClicks(slug)+1; setLinkClicks(slug,c);
+  let ll=links.find(x=>x.slug===slug); if(ll) ll.clicks=c;
   try{
-    let cur=await dbGetLink(slug);
-    let cloudC=cur?parseInt(cur.clicks||0):0;
-    let finalC=Math.max(c,cloudC+1);
+    let cur=await dbGetLinkFast(slug); let cloudC=cur?parseInt(cur.clicks||0):0; let finalC=Math.max(c,cloudC+1);
     await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(cleanSlug(slug)),{method:"PATCH",headers:H,body:JSON.stringify({clicks:finalC})});
-    setLinkClicks(slug,finalC);
-    if(ll) ll.clicks=finalC;
+    setLinkClicks(slug,finalC); if(ll) ll.clicks=finalC;
   }catch(e){}
   try{await fetch(SUPABASE_URL+"/rest/v1/naset_clicks",{method:"POST",headers:H,body:JSON.stringify({owner_user:ownerName,slug:slug})})}catch(e){}
 }
@@ -302,31 +251,20 @@ function getClicksOf(user){return parseInt(localStorage.getItem('naset_clicks_'+
 function setClicksOf(user,v){localStorage.setItem('naset_clicks_'+user.toLowerCase(),String(v))}
 function isOwnerOrMod(u){return (u||'').toLowerCase()===ADMIN_USER.toLowerCase() || (u||'').toLowerCase()===MOD_USER.toLowerCase()}
 function ensureOwnerModInList(u,pass){
-  let all=getAllUsers();
-  let ex=all.find(x=>x.user.toLowerCase()===u.toLowerCase());
-  if(!ex){all.push({user:u,pass:pass||'',date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString(),timestamp:Date.now(),clicks:getClicksOf(u)});saveAllUsers(all)}
-  return all;
+  let all=getAllUsers(); let ex=all.find(x=>x.user.toLowerCase()===u.toLowerCase());
+  if(!ex){all.push({user:u,pass:pass||'',date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString(),timestamp:Date.now(),clicks:getClicksOf(u)});saveAllUsers(all)} return all;
 }
 const RANKS=[{name:'BRONCE',emoji:'🥉',cls:'bronce',min:0,max:1000},{name:'PLATA',emoji:'🥈',cls:'plata',min:1001,max:2000},{name:'ORO',emoji:'🥇',cls:'oro',min:2001,max:3000},{name:'DIAMANTE',emoji:'💎',cls:'diamante',min:3001,max:4000},{name:'ÉLITE',emoji:'👑',cls:'elite',min:4001,max:5000},{name:'LEYENDA',emoji:'🔥',cls:'leyenda',min:5001,max:6000},{name:'MÍTICO',emoji:'🐉',cls:'mitico',min:6001,max:7000},{name:'MAESTRO',emoji:'🌟',cls:'maestro',min:7001,max:10000},{name:'DIOS',emoji:'👑',cls:'dios',min:10001,max:999999999}];
 function getRank(clicks,user){
   clicks=parseInt(clicks||0);
-  if(user){
-    let manual=null;try{manual=localStorage.getItem('naset_rank_manual_'+user.toLowerCase())}catch(e){}
-    if(manual&&manual!=='AUTO'){
-      let rm=RANKS.find(r=>r.name===manual)||RANKS[0];
-      if(clicks<=rm.max) return {...rm,manual:true,progress:100,next:null,nextAt:null,nextEmoji:'',inRank:clicks};
-    }
-  }
+  if(user){ let manual=null;try{manual=localStorage.getItem('naset_rank_manual_'+user.toLowerCase())}catch(e){} if(manual&&manual!=='AUTO'){ let rm=RANKS.find(r=>r.name===manual)||RANKS[0]; if(clicks<=rm.max) return {...rm,manual:true,progress:100,next:null,nextAt:null,nextEmoji:'',inRank:clicks}; } }
   for(let i=0;i<RANKS.length;i++){let r=RANKS[i];if(clicks>=r.min&&clicks<=r.max){let next=RANKS[i+1]||null;let range=r.max-r.min+1;let prog=next?Math.min(100,((clicks-r.min+1)/range*100)):100;return {...r,manual:false,next:next?next.name:null,nextAt:next?next.min:null,progress:prog,nextEmoji:next?next.emoji:'',inRank:clicks-r.min+1,totalInRank:range}}}
   return {...RANKS[0],manual:false,next:'PLATA',nextAt:1001,progress:0,nextEmoji:'🥈',inRank:0};
 }
 function rankBadgeHTML(clicks,user){let r=getRank(clicks,user);return '<span class="badge '+r.cls+'">'+r.emoji+' '+r.name+'</span>'}
 function getProfile(user){
   let cloud=cloudProfiles[(user||'').toLowerCase()]||{};
-  try{
-    let local=JSON.parse(localStorage.getItem('naset_profile_'+(user||'').toLowerCase())||'{}');
-    return {avatar:cloud.avatar||local.avatar||"",displayName:cloud.displayName||local.displayName||"",bio:cloud.bio||local.bio||""};
-  }catch(e){return cloud}
+  try{ let local=JSON.parse(localStorage.getItem('naset_profile_'+(user||'').toLowerCase())||'{}'); return {avatar:cloud.avatar||local.avatar||"",displayName:cloud.displayName||local.displayName||"",bio:cloud.bio||local.bio||""}; }catch(e){return cloud}
 }
 function getDisplayName(user){let p=getProfile(user);return p.displayName||user}
 function getTag(user){
@@ -334,43 +272,18 @@ function getTag(user){
   try{let s=localStorage.getItem('naset_tag_'+(user||'').toLowerCase());if(s==='verified'||s==='influencer')return s} catch(e){} return ''
 }
 function verifiedIcon(user){return getTag(user)==='verified'?' <span style="background:#1d9bf0;color:#fff;border-radius:99px;padding:1px 5px;font-size:10px">✓</span>':''}
-function openProfileFromAvatar(e){
-  if(e) e.stopPropagation();
-  if(!currentUser){alert('Inicia sesión');return}
-  prevView=currentView;
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('overlay').classList.remove('show');
-  openView('profile');
-}
+function openProfileFromAvatar(e){ if(e) e.stopPropagation(); if(!currentUser){alert('Inicia sesión');return} prevView=currentView; document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); openView('profile'); }
 function openView(view){
-  if(currentView!=='profile' && currentView!=='admin' && currentView!=='stats'){
-    prevView = isVisitor ? 'waiter' : 'home';
-  } else if(view!==currentView){
-    prevView=currentView;
-  }
+  if(currentView!=='profile' && currentView!=='admin' && currentView!=='stats'){ prevView = isVisitor ? 'waiter' : 'home'; } else if(view!==currentView){ prevView=currentView; }
   currentView=view;
-  document.getElementById('mainView').style.display='none';
-  document.getElementById('viewProfile').style.display='none';
-  document.getElementById('viewAdmin').style.display='none';
-  document.getElementById('viewStats').style.display='none';
+  document.getElementById('mainView').style.display='none'; document.getElementById('viewProfile').style.display='none'; document.getElementById('viewAdmin').style.display='none'; document.getElementById('viewStats').style.display='none';
   if(view==='profile'){document.getElementById('viewProfile').style.display='block';document.getElementById('profileBoxSolo').innerHTML=buildProfileHTML();let p=getProfile(currentUser);renderAvatarOptionsSolo(p.avatar||'');document.getElementById('editDisplayNameSolo').value=p.displayName||'';document.getElementById('editBioSolo').value=p.bio||'';window.scrollTo(0,0)}
   if(view==='admin'){if(!isAdmin&&!isMod)return;document.getElementById('viewAdmin').style.display='block';document.getElementById('adminPanelSolo').innerHTML=buildAdminHTML();showAdminSolo();window.scrollTo(0,0)}
   if(view==='stats'){if(!isAdmin&&!isMod)return;document.getElementById('viewStats').style.display='block';renderStats();window.scrollTo(0,0)}
 }
 function closeView(){
-  document.getElementById('viewProfile').style.display='none';
-  document.getElementById('viewAdmin').style.display='none';
-  document.getElementById('viewStats').style.display='none';
-  document.getElementById('mainView').style.display='block';
-  if(prevView==='waiter' || isVisitor){
-    currentView='waiter';
-    document.getElementById('authBox').style.display='none';
-    document.getElementById('panel').style.display='none';
-    document.getElementById('waiter').style.display='block';
-  } else {
-    currentView='home';
-    if(currentUser) showPanel();
-  }
+  document.getElementById('viewProfile').style.display='none'; document.getElementById('viewAdmin').style.display='none'; document.getElementById('viewStats').style.display='none'; document.getElementById('mainView').style.display='block';
+  if(prevView==='waiter' || isVisitor){ currentView='waiter'; document.getElementById('authBox').style.display='none'; document.getElementById('panel').style.display='none'; document.getElementById('waiter').style.display='block'; } else { currentView='home'; if(currentUser) showPanel(); }
   window.scrollTo(0,0);render();updateProfileUI();
 }
 function buildProfileHTML(){
@@ -385,14 +298,11 @@ function selectAvatar(url,el){selectedAvatar=url;document.querySelectorAll('.ava
 function uploadAvatarSolo(e){let f=e.target.files[0];if(!f)return;let rd=new FileReader();rd.onload=function(ev){let img=new Image();img.onload=function(){let c=document.createElement('canvas');let max=200,w=img.width,h=img.height;if(w>h){if(w>max){h=h*max/w;w=max}}else{if(h>max){w=w*max/h;h=max}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);selectedAvatar=c.toDataURL('image/jpeg',0.6)};img.src=ev.target.result};rd.readAsDataURL(f)}
 async function saveProfileSolo(){let dn=document.getElementById('editDisplayNameSolo').value.trim();let bio=document.getElementById('editBioSolo').value.trim();let p=getProfile(currentUser);if(selectedAvatar)p.avatar=selectedAvatar;if(dn)p.displayName=dn;p.bio=bio;try{localStorage.setItem('naset_profile_'+currentUser.toLowerCase(),JSON.stringify(p))}catch(e){alert('Foto muy pesada, elige un logo de arriba');return}selectedAvatar='';cloudProfiles[currentUser.toLowerCase()]=p;await dbSaveUser({user:currentUser,pass:getAllUsers().find(x=>x.user.toLowerCase()===currentUser.toLowerCase())?.pass||""});updateProfileUI();alert('✅ Foto guardada - Todos la ven');closeView()}
 function cambiarPassSolo(){
-  let actual=document.getElementById('passActualSolo').value.trim();
-  let nueva=document.getElementById('passNuevaSolo').value.trim();
+  let actual=document.getElementById('passActualSolo').value.trim(); let nueva=document.getElementById('passNuevaSolo').value.trim();
   if(!actual||!nueva){alert('Llena las 2 contraseñas');return}
   let all=getAllUsers();let u=all.find(x=>x.user.toLowerCase()===currentUser.toLowerCase());
   if(u&&u.pass&&u.pass!==actual){alert('❌ Contraseña actual incorrecta');return}
-  if(u){u.pass=nueva;saveAllUsers(all)}
-  if(u) dbSaveUser(u);
-  alert('✅ Contraseña actualizada');closeView();
+  if(u){u.pass=nueva;saveAllUsers(all)} if(u) dbSaveUser(u); alert('✅ Contraseña actualizada');closeView();
 }
 function buildAdminHTML(){return `<h3 style="text-align:center">👑 PANEL ADMIN</h3><label>🏆 Dar rango a alguien</label><input id="adminRankUserSolo" placeholder="Usuario"><select id="adminRankSelectSolo"><option value="">Elige rango...</option><option>BRONCE</option><option>PLATA</option><option>ORO</option><option>DIAMANTE</option><option>ÉLITE</option><option>LEYENDA</option><option>MÍTICO</option><option>MAESTRO</option><option>DIOS</option></select><button class="green" onclick="adminGiveRankSolo()">🏆 DAR RANGO</button><button class="sec" onclick="adminRemoveRankSolo()">↩️ QUITAR MANUAL (vuelve a subir solo)</button><label>✅ Verificado - Solo dueño</label><input id="verifyUserSolo" placeholder="Usuario"><div class="flex"><button class="smallbtn" style="background:#1d9bf0" onclick="giveVerifiedSolo('verified')">✓ DAR VERIFICADO</button></div><button class="sec" onclick="removeVerifiedSolo()">❌ QUITAR VERIFICADO</button><label>🚫 Banear</label><input id="banUserSolo" placeholder="Usuario a banear"><button class="danger" onclick="banUserSolo()">🚫 BANEAR</button><button class="sec" onclick="unbanUserSolo()">✅ DESBANEAR</button><label>👥 Miembros</label><div id="allUsersSolo"></div>`}
 function adminGiveRankSolo(){let n=document.getElementById('adminRankUserSolo').value.trim();let r=document.getElementById('adminRankSelectSolo').value;if(!n||!r){alert('Pon usuario y rango');return}localStorage.setItem('naset_rank_manual_'+n.toLowerCase(),r);showAdminSolo();renderStats();updateProfileUI();alert('🏆 '+n+' ahora es '+r)}
@@ -405,39 +315,18 @@ async function showAdminSolo(){let el=document.getElementById('allUsersSolo');if
 function getUserStats(u){let lvl=2,info=getAdInfo(lvl),c=getClicksOf(u.user);return {user:u.user,displayName:getDisplayName(u.user),clicks:c,earn:c/1000*info.price,level:lvl,price:info.price,tag:getTag(u.user),banned:localStorage.getItem('naset_banned_'+u.user.toLowerCase())==='1',rank:getRank(c,u.user)}}
 async function renderStats(){if(!isAdmin&&!isMod)return;let all=getAllUsers().map(getUserStats).sort((a,b)=>b.earn-a.earn);let search=(document.getElementById('statsSearch')?.value||'').toLowerCase();let f=search?all.filter(s=>s.displayName.toLowerCase().includes(search)||s.user.toLowerCase().includes(search)):all;let totalC=all.reduce((s,x)=>s+x.clicks,0),totalP=all.reduce((s,x)=>s+x.earn,0);document.getElementById('statsTotalUsers').innerText=all.length;document.getElementById('statsTotalClicks').innerText=totalC;document.getElementById('statsTotalPay').innerText='$'+totalP.toFixed(2);let list=document.getElementById('statsList');if(f.length===0){list.innerHTML='<p class="small">Sin usuarios</p>';return}list.innerHTML=f.map((s,i)=>'<div style="background:#000;border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:10px"><b>'+(i+1)+'. '+s.displayName+'</b> <span style="color:#888">'+s.user+'</span><br>'+rankBadgeHTML(s.clicks,s.user)+'<br>👆 '+s.clicks+' clics • 💰 $'+s.earn.toFixed(2)+'</div>').join('')}
 function setMode(mode){
-  authMode=mode;
-  let userInput=document.getElementById('user');
-  let passInput=document.getElementById('pass');
-  let mainBtn=document.getElementById('mainAuthBtn');
-  document.getElementById('btnTabLogin').className=mode==='login'?'active':'';
-  document.getElementById('btnTabRegister').className=mode==='register'?'active':'';
-  if(mode==='login'){
-    userInput.placeholder='Usuario:';
-    passInput.placeholder='Contraseña:';
-    mainBtn.innerText='ENTRAR';
-  } else {
-    userInput.placeholder='Crear usuario:';
-    passInput.placeholder='Crear contraseña:';
-    mainBtn.innerText='REGISTRARME';
-  }
-  userInput.value='';
-  passInput.value='';
+  authMode=mode; let userInput=document.getElementById('user'); let passInput=document.getElementById('pass'); let mainBtn=document.getElementById('mainAuthBtn');
+  document.getElementById('btnTabLogin').className=mode==='login'?'active':''; document.getElementById('btnTabRegister').className=mode==='register'?'active':'';
+  if(mode==='login'){ userInput.placeholder='Usuario:'; passInput.placeholder='Contraseña:'; mainBtn.innerText='ENTRAR'; } else { userInput.placeholder='Crear usuario:'; passInput.placeholder='Crear contraseña:'; mainBtn.innerText='REGISTRARME'; }
+  userInput.value=''; passInput.value='';
 }
 function submitAuth(){if(authMode==='login')login();else register()}
 async function login(){
   let u=document.getElementById('user').value.trim();let p=document.getElementById('pass').value.trim();
   if(!u||!p){alert('Pon usuario y contraseña');return}
   if(localStorage.getItem('naset_banned_'+u.toLowerCase())==='1'){alert('🚫 Baneado');return}
-  if(u.toLowerCase()===ADMIN_USER.toLowerCase()){
-    if(p!==ADMIN_PASS){alert('❌ Contraseña incorrecta - Dueño');return}
-    ensureOwnerModInList(ADMIN_USER,ADMIN_PASS);
-    localStorage.setItem('naset_user',ADMIN_USER);localStorage.setItem('naset_is_admin','1');localStorage.removeItem('naset_is_mod');isAdmin=true;isMod=false;currentUser=ADMIN_USER;showPanel();return
-  }
-  if(u.toLowerCase()===MOD_USER.toLowerCase()){
-    if(p!==MOD_PASS){alert('❌ Contraseña incorrecta - Admin');return}
-    ensureOwnerModInList(MOD_USER,MOD_PASS);
-    localStorage.setItem('naset_user',MOD_USER);localStorage.setItem('naset_is_mod','1');localStorage.removeItem('naset_is_admin');isAdmin=false;isMod=true;currentUser=MOD_USER;showPanel();return
-  }
+  if(u.toLowerCase()===ADMIN_USER.toLowerCase()){ if(p!==ADMIN_PASS){alert('❌ Contraseña incorrecta - Dueño');return} ensureOwnerModInList(ADMIN_USER,ADMIN_PASS); localStorage.setItem('naset_user',ADMIN_USER);localStorage.setItem('naset_is_admin','1');localStorage.removeItem('naset_is_mod');isAdmin=true;isMod=false;currentUser=ADMIN_USER;showPanel();return }
+  if(u.toLowerCase()===MOD_USER.toLowerCase()){ if(p!==MOD_PASS){alert('❌ Contraseña incorrecta - Admin');return} ensureOwnerModInList(MOD_USER,MOD_PASS); localStorage.setItem('naset_user',MOD_USER);localStorage.setItem('naset_is_mod','1');localStorage.removeItem('naset_is_admin');isAdmin=false;isMod=true;currentUser=MOD_USER;showPanel();return }
   let all=getAllUsers();let found=all.find(x=>x.user.toLowerCase()===u.toLowerCase());
   if(!found){let db=await dbGetUsers();let fdb=db.find(x=>(x.username||'').toLowerCase()===u.toLowerCase());if(fdb){found={user:fdb.username,pass:fdb.pass||'',clicks:fdb.clicks||0,date:fdb.date||'Hoy',time:fdb.time||''};all.push(found);saveAllUsers(all);setClicksOf(found.user,found.clicks)}}
   if(!found){alert('❌ Esa cuenta NO existe. Dale a REGISTRARME');setMode('register');return}
@@ -449,18 +338,13 @@ async function register(){
   if(!u||!p){alert('Pon usuario y contraseña');return}
   if(localStorage.getItem('naset_banned_'+u.toLowerCase())==='1'){alert('🚫 Baneado');return}
   if(u.toLowerCase()===ADMIN_USER.toLowerCase()||u.toLowerCase()===MOD_USER.toLowerCase()){alert('Ese usuario no se puede usar');return}
-  let all=getAllUsers();
-  if(all.find(x=>x.user.toLowerCase()===u.toLowerCase())){alert('Ese usuario ya existe. Dale a Iniciar Sesión');setMode('login');return}
-  let db=await dbGetUsers();
-  if(db.find(x=>(x.username||'').toLowerCase()===u.toLowerCase())){alert('Ese usuario ya existe. Dale a Iniciar Sesión');setMode('login');return}
+  let all=getAllUsers(); if(all.find(x=>x.user.toLowerCase()===u.toLowerCase())){alert('Ese usuario ya existe. Dale a Iniciar Sesión');setMode('login');return}
+  let db=await dbGetUsers(); if(db.find(x=>(x.username||'').toLowerCase()===u.toLowerCase())){alert('Ese usuario ya existe. Dale a Iniciar Sesión');setMode('login');return}
   let now=new Date();let newU={user:u,pass:p,date:now.toLocaleDateString(),time:now.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}),timestamp:now.getTime(),clicks:0,forcedAdLevel:0};
   all.push(newU);saveAllUsers(all);setClicksOf(u,0);
-  let defAvatar=PRESET_AVATARS[Math.floor(Math.random()*PRESET_AVATARS.length)];
-  localStorage.setItem('naset_profile_'+u.toLowerCase(),JSON.stringify({avatar:defAvatar,displayName:u,bio:""}));
-  cloudProfiles[u.toLowerCase()]={avatar:defAvatar,displayName:u,bio:""};
+  let defAvatar=PRESET_AVATARS[Math.floor(Math.random()*PRESET_AVATARS.length)]; localStorage.setItem('naset_profile_'+u.toLowerCase(),JSON.stringify({avatar:defAvatar,displayName:u,bio:""})); cloudProfiles[u.toLowerCase()]={avatar:defAvatar,displayName:u,bio:""};
   try{await dbSaveUser(newU)}catch(e){}
-  localStorage.setItem('naset_user',u);localStorage.removeItem('naset_is_admin');localStorage.removeItem('naset_is_mod');isAdmin=false;isMod=false;currentUser=u;
-  alert('✅ Registrado! Bienvenido '+u);showPanel();
+  localStorage.setItem('naset_user',u);localStorage.removeItem('naset_is_admin');localStorage.removeItem('naset_is_mod');isAdmin=false;isMod=false;currentUser=u; alert('✅ Registrado! Bienvenido '+u);showPanel();
 }
 function logout(){localStorage.removeItem('naset_user');localStorage.removeItem('naset_is_admin');localStorage.removeItem('naset_is_mod');location.href='/'}
 const ALL_ADS=[{type:"💰 Dinero",bg:"#f59e0b",img:"https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=300&fit=crop",text:"🔥 ¡GANA $5 DIARIOS! 👉 TOCA AQUÍ"},{type:"🎮 Juegos",bg:"#22c55e",img:"https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=600&h=300&fit=crop",text:"🎮 ¡JUEGA Y GANA! 👉 TOCA AQUÍ"},{type:"📱 App",bg:"#3b82f6",img:"https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=300&fit=crop",text:"📱 APP QUE PAGA 👉 TOCA AQUÍ"},{type:"🎁 Premio",bg:"#a855f7",img:"https://images.unsplash.com/photo-1513151233558-d860c5398176?w=600&h=300&fit=crop",text:"🎁 ¡GANASTE PREMIO! 👉 TOCA AQUÍ"}];
@@ -469,88 +353,69 @@ let currentUser=localStorage.getItem('naset_user');let links=JSON.parse(localSto
 const params=new URLSearchParams(location.search);let slugParam='';for(let k of params.keys()){slugParam=k;break}
 let slugData=null,isVisitor=false,owner='';
 function decodeLegacyGo(){
-  try{
-    let go=params.get('go');
-    if(!go) return null;
-    let decoded=atob(go.replace(/-/g,'+').replace(/_/g,'/'));
-    decoded=decodeURIComponent(escape(decoded));
-    let u=params.get('u')||'NASETLINKOFC';
-    let ad=parseInt(params.get('ad')||'2');
-    if(!decoded.startsWith('http')) decoded='https://'+decoded;
-    return {target:decoded,owner:u,adLevel:ad};
-  }catch(e){return null}
+  try{ let go=params.get('go'); if(!go) return null; let decoded=atob(go.replace(/-/g,'+').replace(/_/g,'/')); decoded=decodeURIComponent(escape(decoded)); let u=params.get('u')||'NASETLINKOFC'; let ad=parseInt(params.get('ad')||'2'); if(!decoded.startsWith('http')) decoded='https://'+decoded; return {target:decoded,owner:u,adLevel:ad}; }catch(e){return null}
 }
 function showWaiterFor(ownerName,level){
   isVisitor=true;owner=ownerName||'NASETLINKOFC';totalAds=parseInt(level||2);originalTotalAds=totalAds;currentAd=1;
-  document.getElementById('authBox').style.display='none';
-  document.getElementById('panel').style.display='none';
-  document.getElementById('waiter').style.display='block';
-  document.getElementById('stateClick').style.display='block';
-  document.getElementById('stateWait').style.display='none';
-  document.getElementById('stateDone').style.display='none';
+  document.getElementById('authBox').style.display='none'; document.getElementById('panel').style.display='none'; document.getElementById('waiter').style.display='block'; document.getElementById('stateClick').style.display='block'; document.getElementById('stateWait').style.display='none'; document.getElementById('stateDone').style.display='none';
   shuffledAds=[...ALL_ADS].sort(()=>Math.random()-0.5).slice(0,totalAds);
   let info=AD_LEVELS.find(x=>x.level===totalAds)||AD_LEVELS[0];
   document.getElementById('adLevelShow').innerText='Nivel '+info.level+' • '+info.ads+' anuncios';
   renderDots();updateWaitTitle();
 }
-async function initSlug(){
+// FAST: muestra de una, no espera 3 segundos. Después actualiza en segundo plano.
+function initSlug(){
   if(params.has('go')){
     let legacy=decodeLegacyGo();
-    if(legacy){
-      isVisitor=true;currentSlugForClicks='legacy-'+Date.now();
-      targetUrl=legacy.target;owner=legacy.owner;totalAds=parseInt(legacy.adLevel||2);
-      showWaiterFor(owner,totalAds);
-      return true;
-    }
+    if(legacy){ isVisitor=true;currentSlugForClicks='legacy-'+Date.now(); targetUrl=legacy.target;owner=legacy.owner;totalAds=parseInt(legacy.adLevel||2); showWaiterFor(owner,totalAds); return true; }
   }
   if(!slugParam) return false;
   isVisitor=true;currentSlugForClicks=cleanSlug(slugParam);
-  document.getElementById('authBox').style.display='none';
-  document.getElementById('panel').style.display='none';
-  // CORREGIDO: primero buscamos en la nube el nivel real, no ponemos 2 de una
-  let cloudFound=await dbGetLinkWithRetry(currentSlugForClicks);
-  if(cloudFound){
-    targetUrl=cloudFound.target;owner=cloudFound.owner||'NASETLINKOFC';totalAds=parseInt(cloudFound.adLevel||2);
-    showWaiterFor(owner,totalAds);
-    return true;
-  }
+  document.getElementById('authBox').style.display='none'; document.getElementById('panel').style.display='none';
+  // 1. Mostrar AL INSTANTE con lo que tenemos guardado en este celular
   let local=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
   let localKey=Object.keys(local).find(k=>k.toLowerCase()===currentSlugForClicks.toLowerCase());
-  if(localKey){
-    slugData=local[localKey];
-    targetUrl=slugData.target;owner=slugData.owner||'NASETLINKOFC';totalAds=parseInt(slugData.adLevel||2);
-    showWaiterFor(owner,totalAds);
-    return true;
-  }
-  // Si no existe en ningún lado, mostramos waiter en 2 pero ya no decimos que no abre
-  targetUrl='';owner='NASETLINKOFC';totalAds=2;
-  showWaiterFor(owner,2);
-  document.getElementById('doneMsg').innerText='';
+  let cachedLevel=parseInt(localStorage.getItem('naset_my_adlevel')||'2');
+  let cachedTarget='';
+  let cachedOwner='NASETLINKOFC';
+  if(localKey){ slugData=local[localKey]; cachedTarget=slugData.target; cachedOwner=slugData.owner||cachedOwner; cachedLevel=parseInt(slugData.adLevel||cachedLevel); }
+  // Si es tu propio link, usa tu nivel actual para que no salga 2 viejo
+  if(currentUser && localKey && slugData && slugData.owner===currentUser){ cachedLevel=parseInt(localStorage.getItem('naset_my_adlevel')||cachedLevel); }
+  targetUrl=cachedTarget; owner=cachedOwner; totalAds=cachedLevel;
+  showWaiterFor(owner,totalAds);
+  // 2. En segundo plano, buscar el nivel y destino real en la nube, sin bloquear
+  dbGetLinkFast(currentSlugForClicks).then(found=>{
+    if(found){
+      // Solo actualizamos si el usuario todavía está en el anuncio 1, para no romperle el conteo
+      if(currentAd===1){
+        targetUrl=found.target; owner=found.owner||owner; totalAds=parseInt(found.adLevel||totalAds); originalTotalAds=totalAds;
+        // Re-crear los puntitos con el nivel real
+        shuffledAds=[...ALL_ADS].sort(()=>Math.random()-0.5).slice(0,totalAds);
+        let info=AD_LEVELS.find(x=>x.level===totalAds)||AD_LEVELS[0];
+        document.getElementById('adLevelShow').innerText='Nivel '+info.level+' • '+info.ads+' anuncios';
+        renderDots(); updateWaitTitle();
+      } else {
+        targetUrl=found.target; owner=found.owner||owner;
+      }
+    }
+  });
   return true;
 }
 function isAdBot(){if(!humanInteracted)return true;if(Date.now()-pageLoadTime<1500)return true;return false}
 async function addClickToOwner(ownerName){
-  if(!ownerName)ownerName='NASETLINKOFC';
-  if(isAdBot())return;
+  if(!ownerName)ownerName='NASETLINKOFC'; if(isAdBot())return;
   let c=getClicksOf(ownerName)+1;setClicksOf(ownerName,c);
-  let all=getAllUsers();let u=all.find(x=>x.user.toLowerCase()===ownerName.toLowerCase());if(u){u.clicks=c;saveAllUsers(all);try{await dbSaveUser({...u,clicks:c})}catch(e){}}
-  else{let nu={user:ownerName,pass:'',clicks:c,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString()};all.push(nu);saveAllUsers(all)}
+  let all=getAllUsers();let u=all.find(x=>x.user.toLowerCase()===ownerName.toLowerCase());if(u){u.clicks=c;saveAllUsers(all);try{await dbSaveUser({...u,clicks:c})}catch(e){}} else{let nu={user:ownerName,pass:'',clicks:c,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString()};all.push(nu);saveAllUsers(all)}
   if(currentSlugForClicks && !String(currentSlugForClicks).startsWith('legacy-')) await addClickToThisLink(currentSlugForClicks,ownerName);
   render();
 }
 function renderDots(){
-  let h='';
-  for(let i=1;i<=originalTotalAds;i++){
-    let cls=i<currentAd?'dot done':(i===currentAd?'dot current':'dot');
-    h+='<div class="'+cls+'">'+(i<currentAd?'✓':i)+'</div>';
-  }
-  document.getElementById('dots').innerHTML=h;
-  document.getElementById('barFill').style.width=((currentAd-1)/Math.max(originalTotalAds,1)*100)+'%';
+  let h=''; for(let i=1;i<=originalTotalAds;i++){ let cls=i<currentAd?'dot done':(i===currentAd?'dot current':'dot'); h+='<div class="'+cls+'">'+(i<currentAd?'✓':i)+'</div>'; }
+  document.getElementById('dots').innerHTML=h; document.getElementById('barFill').style.width=((currentAd-1)/Math.max(originalTotalAds,1)*100)+'%';
 }
 function getCurrentAd(){return shuffledAds[currentAd-1]||ALL_ADS[0]}
 function updateWaitTitle(){
-  document.getElementById('waitTitle').innerText='Anuncio '+currentAd;
-  document.getElementById('adNum1').innerText=currentAd;
+  document.getElementById('waitTitle').innerText='Anuncio '+currentAd; document.getElementById('adNum1').innerText=currentAd;
   let ad=getCurrentAd();document.getElementById('adImg').src=ad.img;document.getElementById('adText').innerText=ad.text;document.getElementById('adText').style.background=ad.bg
 }
 function empezarEspera(){
@@ -561,87 +426,37 @@ function empezarEspera(){
 function confirmReturn(){
   if(Date.now()-adStartTime<4000){alert('🛡️ Espera los 5 seg completos');return}
   addClickToOwner(owner);
-  if(currentAd>=originalTotalAds){
-    document.getElementById('stateWait').style.display='none';
-    document.getElementById('stateClick').style.display='none';
-    document.getElementById('stateDone').style.display='block';
-    document.getElementById('barFill').style.width='100%';
-    currentAd=originalTotalAds+1; renderDotsFinal();
-    return;
-  }
-  currentAd++;
-  renderDots();updateWaitTitle();
-  document.getElementById('stateWait').style.display='none';
-  document.getElementById('stateClick').style.display='block';
-  document.getElementById('stateDone').style.display='none';
+  if(currentAd>=originalTotalAds){ document.getElementById('stateWait').style.display='none'; document.getElementById('stateClick').style.display='none'; document.getElementById('stateDone').style.display='block'; document.getElementById('barFill').style.width='100%'; currentAd=originalTotalAds+1; renderDotsFinal(); return; }
+  currentAd++; renderDots();updateWaitTitle(); document.getElementById('stateWait').style.display='none'; document.getElementById('stateClick').style.display='block'; document.getElementById('stateDone').style.display='none';
 }
-function renderDotsFinal(){
-  let h='';
-  for(let i=1;i<=originalTotalAds;i++){h+='<div class="dot done">✓</div>'}
-  document.getElementById('dots').innerHTML=h;
-  document.getElementById('waitTitle').innerText='¡Completaste!';
-}
+function renderDotsFinal(){ let h=''; for(let i=1;i<=originalTotalAds;i++){h+='<div class="dot done">✓</div>'} document.getElementById('dots').innerHTML=h; document.getElementById('waitTitle').innerText='¡Completaste!'; }
 async function goToLink(){
-  if(!targetUrl && params.has('go')){
-    let legacy=decodeLegacyGo();
-    if(legacy) targetUrl=legacy.target;
-  }
+  if(!targetUrl && params.has('go')){ let legacy=decodeLegacyGo(); if(legacy) targetUrl=legacy.target; }
   if(!targetUrl && currentSlugForClicks && !String(currentSlugForClicks).startsWith('legacy-')){
-    let f=await dbGetLinkWithRetry(currentSlugForClicks);
-    if(f) targetUrl=f.target;
-    // Si sigue sin destino, buscamos en local
-    if(!targetUrl){
-      let local=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
-      let k=Object.keys(local).find(k=>k.toLowerCase()===String(currentSlugForClicks).toLowerCase());
-      if(k) targetUrl=local[k].target;
-    }
+    let f=await dbGetLinkFast(currentSlugForClicks); if(f) targetUrl=f.target;
+    if(!targetUrl){ let local=JSON.parse(localStorage.getItem('naset_custom_links')||'{}'); let k=Object.keys(local).find(k=>k.toLowerCase()===String(currentSlugForClicks).toLowerCase()); if(k) targetUrl=local[k].target; }
   }
-  if(!targetUrl){alert('No se pudo abrir el destino, vuelve a intentarlo');return}
+  if(!targetUrl){alert('Este link viejo no tiene destino guardado. Borralo y crea uno nuevo con nombre, ese sí abre.');return}
   location.href=targetUrl.startsWith('http')?targetUrl:'https://'+targetUrl
 }
 function getAdInfo(level){return AD_LEVELS.find(x=>x.level===level)||AD_LEVELS[0]}
-// CORREGIDO PARA 2-4-6-8-10: al tocar el número, se aplica a TODOS tus links
 function applyLevelToAllMyLinks(level){
-  level=parseInt(level);
-  if(!currentUser) return;
-  let changed=false;
-  links.forEach(l=>{
-    if(l.user===currentUser && parseInt(l.adLevel)!==level){ l.adLevel=level; changed=true; }
-  });
+  level=parseInt(level); if(!currentUser) return; let changed=false;
+  links.forEach(l=>{ if(l.user===currentUser && parseInt(l.adLevel)!==level){ l.adLevel=level; changed=true; } });
   if(changed) localStorage.setItem('naset_links',JSON.stringify(links));
-  try{
-    let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
-    let cChanged=false;
-    Object.keys(custom).forEach(k=>{
-      if(custom[k].owner===currentUser && parseInt(custom[k].adLevel)!==level){ custom[k].adLevel=level; cChanged=true; }
-    });
-    if(cChanged) localStorage.setItem('naset_custom_links',JSON.stringify(custom));
-  }catch(e){}
-  // Actualiza en la nube todos tus links
-  links.forEach(l=>{
-    if(l.user===currentUser && l.slug && l.slug!=='undefined'){
-      dbUpdateLinkLevel(l.slug, level);
-    }
-  });
+  try{ let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}'); let cChanged=false; Object.keys(custom).forEach(k=>{ if(custom[k].owner===currentUser && parseInt(custom[k].adLevel)!==level){ custom[k].adLevel=level; cChanged=true; } }); if(cChanged) localStorage.setItem('naset_custom_links',JSON.stringify(custom)); }catch(e){}
+  links.forEach(l=>{ if(l.user===currentUser && l.slug && l.slug!=='undefined'){ dbUpdateLinkLevel(l.slug, level); } });
 }
 function changeAdLevel(v){
-  v=parseInt(v);
-  tempAdLevel=v;
-  myAdLevel=v;
-  localStorage.setItem('naset_my_adlevel',String(v));
-  // ESTO ES LO NUEVO: cambia TODOS tus links viejos a ese nivel
-  applyLevelToAllMyLinks(v);
-  updateAdUI();
-  let ml=document.getElementById('myLevel'); if(ml) ml.innerText='Nivel '+v;
-  render();
+  v=parseInt(v); tempAdLevel=v; myAdLevel=v; localStorage.setItem('naset_my_adlevel',String(v));
+  applyLevelToAllMyLinks(v); updateAdUI(); let ml=document.getElementById('myLevel'); if(ml) ml.innerText='Nivel '+v; render();
 }
 function updateAdUI(){let info=getAdInfo(tempAdLevel);document.getElementById('adLevelInfo').innerText='Nivel '+info.level+' • '+info.ads+' anuncios • Ganas $'+info.price.toFixed(2)+' por 1000 clics • ✅ Aplicado a todos tus links';document.querySelectorAll('.level-btn').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.lv)===tempAdLevel))}
 function saveAdLevel(){myAdLevel=tempAdLevel;localStorage.setItem('naset_my_adlevel',myAdLevel);applyLevelToAllMyLinks(myAdLevel);render();alert('✅ Nivel '+myAdLevel+' guardado - TODOS tus links ahora son de '+myAdLevel+' anuncios')}
 function updateProfileUI(){
   if(!currentUser)return;let p=getProfile(currentUser);let av=document.getElementById('myAvatar');if(av){av.innerHTML=p.avatar?'<img src="'+p.avatar+'">':currentUser.charAt(0).toUpperCase()}
   let wn=document.getElementById('welcomeName');if(wn)wn.innerHTML=(p.displayName||currentUser)+verifiedIcon(currentUser);
-  let pb=document.getElementById('profileBioShow');if(pb)pb.innerText=p.bio||'';
-  let pus=document.getElementById('profileUserShow');if(pus)pus.innerText='@'+currentUser;
+  let pb=document.getElementById('profileBioShow');if(pb)pb.innerText=p.bio||''; let pus=document.getElementById('profileUserShow');if(pus)pus.innerText='@'+currentUser;
   document.getElementById('headerBar').style.display='flex';document.getElementById('logoBig').style.display='none';
   let topAv=document.getElementById('topAvatar');topAv.innerHTML=p.avatar?'<img src="'+p.avatar+'">':currentUser.charAt(0).toUpperCase();
   let sideAv=document.getElementById('sideAvatar');if(sideAv)sideAv.innerHTML=p.avatar?'<img src="'+p.avatar+'">':currentUser.charAt(0).toUpperCase();
@@ -655,74 +470,37 @@ function updateProfileUI(){
   let rps=document.getElementById('rankProgressSub');if(rps)rps.innerText=r.manual?'Ya pasaste, sube solo al pasar los clics':(r.next?'Te faltan '+(r.nextAt-myClicks)+' para '+r.nextEmoji+' '+r.next:'Ya eres DIOS');
   let rt=document.getElementById('rankTableLive');if(rt){let html='';RANKS.forEach(rank=>{let isMine=rank.name===r.name;let pct=isMine?Math.floor(r.progress):(myClicks>rank.max?100:0);let txt=isMine?(r.inRank+' / '+(rank.max-rank.min+1)+' • '+pct+'%'):(myClicks>rank.max?'✅ Completado':'0 / '+(rank.max-rank.min+1)+' • 0%');html+='<div style="padding:10px 0;border-bottom:1px solid #222;'+(isMine?'background:#1a2a1a;border-radius:12px;padding:10px;':'')+'"><div style="display:flex;justify-content:space-between"><b>'+rank.emoji+' '+rank.name+'</b><span style="font-size:11px">'+txt+(isMine?' • 👈 Tú':'')+'</span></div><div style="font-size:11px;color:#aaa">'+rank.min+' - '+(rank.name==='DIOS'?'10,001+':rank.max+' clics')+'</div><div class="rank-bar"><div style="width:'+pct+'%"></div></div></div>'});rt.innerHTML=html}
 }
-function getLinkDisplayName(l){
-  if(l.slug && l.slug!=='undefined') return l.slug;
-  if(l.short && l.short.includes('?go=')) return 'link-viejo';
-  return l.slug||'link-viejo';
-}
+function getLinkDisplayName(l){ if(l.slug && l.slug!=='undefined') return l.slug; if(l.short && l.short.includes('?go=')) return 'link-viejo'; return l.slug||'link-viejo'; }
 function renderLinkHTML(l, idx){
-  let display=getLinkDisplayName(l);
-  let safeShort=(l.short||'').replace(/'/g,"");
+  let display=getLinkDisplayName(l); let safeShort=(l.short||'').replace(/'/g,"");
   return '<div class="link-item"><b>🔗 '+display+'</b><p style="margin:6px 0">'+(l.short||'')+'</p><p style="font-size:11px;color:#aaa">Nivel '+(l.adLevel||2)+' • $'+getAdInfo(l.adLevel||2).price.toFixed(2)+' por 1000 • '+ (l.adLevel||2) +' anuncios</p><div class="flex" style="margin-top:8px"><button class="smallbtn" onclick="navigator.clipboard.writeText(\''+safeShort+'\');alert(\'Copiado ✅\')">📋 COPIAR</button><button class="smallbtn" style="background:#dc2626" onclick="borrarLinkPorIndice('+idx+')">🗑️ BORRAR</button></div></div>';
 }
 async function render(){
-  if(!currentUser)return;
-  await syncLinkClicksFromCloud();
+  if(!currentUser)return; await syncLinkClicksFromCloud();
   let myClicks=getClicksOf(currentUser);let info=getAdInfo(myAdLevel);
-  document.getElementById('totalClicks').innerText=myClicks;
-  document.getElementById('totalEarn').innerText='$'+(myClicks/1000*info.price).toFixed(2);
-  document.getElementById('myLevel').innerText='Nivel '+myAdLevel;
+  document.getElementById('totalClicks').innerText=myClicks; document.getElementById('totalEarn').innerText='$'+(myClicks/1000*info.price).toFixed(2); document.getElementById('myLevel').innerText='Nivel '+myAdLevel;
   updateProfileUI();
-  let myIdx=[];
-  links.forEach((l,i)=>{ if(l.user===currentUser) myIdx.push(i); });
-  let html='';
-  if(myIdx.length===0) html='<p class="small">Aún no tienes enlaces. Crea uno arriba.</p>';
-  else html=myIdx.map(i=>renderLinkHTML(links[i],i)).join('');
+  let myIdx=[]; links.forEach((l,i)=>{ if(l.user===currentUser) myIdx.push(i); });
+  let html=''; if(myIdx.length===0) html='<p class="small">Aún no tienes enlaces. Crea uno arriba.</p>'; else html=myIdx.map(i=>renderLinkHTML(links[i],i)).join('');
   document.getElementById('myLinks').innerHTML=html;
 }
 async function borrarLinkPorIndice(idx){
-  idx=parseInt(idx);
-  if(isNaN(idx) || !links[idx]){alert('Ese link ya no existe');return}
-  let target=links[idx];
-  let nombre=getLinkDisplayName(target);
-  if(!confirm('¿Borrar '+nombre+'? Tus clics y dinero NO se pierden.'))return;
-  let slugToDelete=target.slug;
-  links.splice(idx,1);
-  localStorage.setItem('naset_links',JSON.stringify(links));
-  try{
-    let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
-    if(slugToDelete && custom[slugToDelete]) delete custom[slugToDelete];
-    Object.keys(custom).forEach(k=>{ if(custom[k] && custom[k].target===target.orig) delete custom[k]; });
-    localStorage.setItem('naset_custom_links',JSON.stringify(custom));
-  }catch(e){}
+  idx=parseInt(idx); if(isNaN(idx) || !links[idx]){alert('Ese link ya no existe');return}
+  let target=links[idx]; let nombre=getLinkDisplayName(target); if(!confirm('¿Borrar '+nombre+'? Tus clics y dinero NO se pierden.'))return;
+  let slugToDelete=target.slug; links.splice(idx,1); localStorage.setItem('naset_links',JSON.stringify(links));
+  try{ let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}'); if(slugToDelete && custom[slugToDelete]) delete custom[slugToDelete]; Object.keys(custom).forEach(k=>{ if(custom[k] && custom[k].target===target.orig) delete custom[k]; }); localStorage.setItem('naset_custom_links',JSON.stringify(custom)); }catch(e){}
   if(slugToDelete) { try{localStorage.removeItem('naset_link_clicks_'+String(slugToDelete).toLowerCase())}catch(e){} await dbDeleteLink(String(slugToDelete)); }
-  await render();
-  alert('Borrado ✅ Ya no va a volver a aparecer');
+  await render(); alert('Borrado ✅ Ya no va a volver a aparecer');
 }
-async function borrarLink(slug){
-  slug=String(slug||'');
-  let idx=links.findIndex(l=>String(l.slug||'')===slug || String(l.short||'')===slug);
-  if(idx===-1 && slug==='undefined') idx=links.findIndex(l=>!l.slug || l.slug==='undefined');
-  if(idx===-1){alert('Ese link ya no existe');return}
-  return borrarLinkPorIndice(idx);
-}
+async function borrarLink(slug){ slug=String(slug||''); let idx=links.findIndex(l=>String(l.slug||'')===slug || String(l.short||'')===slug); if(idx===-1 && slug==='undefined') idx=links.findIndex(l=>!l.slug || l.slug==='undefined'); if(idx===-1){alert('Ese link ya no existe');return} return borrarLinkPorIndice(idx); }
 async function crear(){
-  let nivelUsar=parseInt(tempAdLevel||myAdLevel||2);
-  myAdLevel=nivelUsar; localStorage.setItem('naset_my_adlevel',String(nivelUsar));
+  let nivelUsar=parseInt(tempAdLevel||myAdLevel||2); myAdLevel=nivelUsar; localStorage.setItem('naset_my_adlevel',String(nivelUsar));
   let v=document.getElementById('longUrl').value.trim();let slug=cleanSlug(document.getElementById('linkName').value||'');
-  if(!slug||slug.length<3){alert('Pon un nombre mínimo 3 letras');return}
-  if(!v){alert('Pega tu enlace de destino');return}
-  if(!v.startsWith('http'))v='https://'+v;
+  if(!slug||slug.length<3){alert('Pon un nombre mínimo 3 letras');return} if(!v){alert('Pega tu enlace de destino');return} if(!v.startsWith('http'))v='https://'+v;
   let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
-  let existingCloud=await dbGetLink(slug);
-  if(existingCloud && existingCloud.owner && existingCloud.owner.toLowerCase()!==currentUser.toLowerCase()){
-    alert('❌ Ese nombre ya lo usa otra persona: '+slug+'\nPon otro nombre');
-    return;
-  }
-  if(custom[slug] && custom[slug].owner && custom[slug].owner.toLowerCase()!==currentUser.toLowerCase()){
-    alert('❌ Ese nombre ya lo usa otra persona');
-    return;
-  }
+  let existingCloud=await dbGetLinkFast(slug);
+  if(existingCloud && existingCloud.owner && existingCloud.owner.toLowerCase()!==currentUser.toLowerCase()){ alert('❌ Ese nombre ya lo usa otra persona: '+slug+'\nPon otro nombre'); return; }
+  if(custom[slug] && custom[slug].owner && custom[slug].owner.toLowerCase()!==currentUser.toLowerCase()){ alert('❌ Ese nombre ya lo usa otra persona'); return; }
   let short=location.origin+location.pathname+'?'+slug;
   custom[slug]={target:v,owner:currentUser,adLevel:nivelUsar};localStorage.setItem('naset_custom_links',JSON.stringify(custom));
   dbSaveLink(slug,v,currentUser,nivelUsar).catch(()=>{});
@@ -731,21 +509,16 @@ async function crear(){
   else{setLinkClicks(slug,0);links.push({orig:v,short:short,slug:slug,clicks:0,user:currentUser,adLevel:nivelUsar,createdAt:Date.now()});}
   localStorage.setItem('naset_links',JSON.stringify(links));
   document.getElementById('linkName').value='';document.getElementById('longUrl').value='';document.getElementById('slugPreview').innerText='Tu enlace será: .../?tu-nombre';
-  render();
-  alert('✅ Enlace corto creado: '+short+'\nCon '+nivelUsar+' anuncios - Ya puedes copiarlo');
+  render(); alert('✅ Enlace corto creado: '+short+'\nCon '+nivelUsar+' anuncios - Ya puedes copiarlo');
 }
 function showPanel(){
-  if(isVisitor)return;
-  document.getElementById('authBox').style.display='none';document.getElementById('waiter').style.display='none';document.getElementById('panel').style.display='block';
+  if(isVisitor)return; document.getElementById('authBox').style.display='none';document.getElementById('waiter').style.display='none';document.getElementById('panel').style.display='block';
   let table='';AD_LEVELS.forEach(l=>{table+='<tr><td>Nivel '+l.level+'</td><td>'+l.ads+'</td><td>'+(l.ads*5)+' seg</td><td>$'+l.price.toFixed(2)+'</td></tr>'});document.getElementById('adTable').innerHTML=table;
   tempAdLevel=myAdLevel;updateAdUI();updateProfileUI();if(isAdmin)document.getElementById('profileBox').classList.add('gold');render();
 }
-(async()=>{
-  let isLink=await initSlug();
-  if(isLink){
-    if(currentUser){document.getElementById('headerBar').style.display='flex';updateProfileUI();}
-    return;
-  }
+(function(){
+  let isLink=initSlug();
+  if(isLink){ if(currentUser){document.getElementById('headerBar').style.display='flex';updateProfileUI();} return; }
   if(currentUser){
     if(isOwnerOrMod(currentUser)){
       if(currentUser.toLowerCase()===ADMIN_USER.toLowerCase()){isAdmin=true;isMod=false;ensureOwnerModInList(ADMIN_USER,ADMIN_PASS)}
@@ -753,8 +526,7 @@ function showPanel(){
       showPanel();
     } else {
       let all=getAllUsers();let me=all.find(x=>x.user.toLowerCase()===currentUser.toLowerCase());
-      if(me){isAdmin=false;isMod=false;showPanel()}
-      else{localStorage.removeItem('naset_user');currentUser=null}
+      if(me){isAdmin=false;isMod=false;showPanel()} else{localStorage.removeItem('naset_user');currentUser=null}
     }
   }
   setInterval(()=>{if(currentUser)render()},5000);
