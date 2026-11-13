@@ -34,7 +34,6 @@ button.adbtn{background:#f59e0b;color:#000;font-size:17px;padding:18px}button.re
 .grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0}
 .ad-preview{background:#000;border:1px dashed #f59e0b;border-radius:14px;padding:12px;text-align:center;margin:12px 0}
 .real-ad{width:100%;border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid #f59e0b;background:#fff;display:block;text-decoration:none}.real-ad img{width:100%;height:160px;object-fit:cover;display:block}.real-ad-text{padding:11px;font-weight:900;color:#000}
-/* CHAT FIJO - SIN PARPADEO */
 #viewChat{position:relative;touch-action:pan-y;overscroll-behavior:contain}
 .chat-box{background:#0a0a0a;border:1px solid #333;border-radius:16px;overflow:hidden;position:relative;touch-action:pan-y}
 .chat-header{background:linear-gradient(90deg,#a855f7,#ec4899);padding:14px;text-align:center;font-weight:bold;font-size:16px;position:sticky;top:0;z-index:5;user-select:none;-webkit-user-select:none;touch-action:none}
@@ -52,8 +51,6 @@ button.adbtn{background:#f59e0b;color:#000;font-size:17px;padding:18px}button.re
 .slug-preview{background:#000;border:1px dashed #a855f7;border-radius:12px;padding:10px;text-align:center;color:#a855f7;margin-bottom:10px;word-break:break-all}
 .step-dots{display:flex;gap:6px;justify-content:center;margin:10px 0}.dot{width:30px;height:30px;border-radius:99px;background:#222;display:flex;align-items:center;justify-content:center;font-weight:bold}.dot.done{background:#16a34a}.dot.current{background:#f59e0b;color:#000}
 table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid #222}
-.link-clicks{background:#111;border:1px solid #25D366;border-radius:10px;padding:10px;text-align:center;margin:8px 0}
-.link-clicks b{font-size:22px;color:#25D366;display:block}
 </style>
 </head>
 <body>
@@ -369,34 +366,21 @@ async function render(){
   let html='';
   if(myLinks.length===0) html='<p class="small">Aún no tienes links. Crea uno arriba.</p>';
   else myLinks.forEach(l=>{
-    let clicksEsteLink = l.clicks!=null ? parseInt(l.clicks) : getLinkClicks(l.slug);
-    if(!clicksEsteLink) clicksEsteLink=getLinkClicks(l.slug);
-    let dineroEsteLink=(clicksEsteLink/1000*getAdInfo(l.adLevel).price).toFixed(2);
-    let haceTxt=l.createdAt?(' • Hace '+tiempoHace(l.createdAt)):'';
-    html+='<div class="link-item"><div class="flex" style="justify-content:space-between"><b>🔗 '+l.slug+'</b><input type="checkbox" data-slug="'+l.slug+'" style="width:20px;margin:0"></div><p style="margin:6px 0">'+l.short+'</p><div class="link-clicks"><b>👆 Clics: '+clicksEsteLink+'</b><span style="font-size:12px;color:#aaa">Solo de este link'+haceTxt+'</span><span style="font-size:12px;color:#25D366;display:block;margin-top:4px">💰 Este link te dio: $'+dineroEsteLink+'</span></div><p style="font-size:11px;color:#aaa">Nivel '+l.adLevel+' • $'+getAdInfo(l.adLevel).price.toFixed(2)+' por 1000</p><div class="flex" style="margin-top:8px"><button class="smallbtn" onclick="navigator.clipboard.writeText(\''+l.short+'\');alert(\'Copiado ✅\')">📋 COPIAR</button><button class="smallbtn" style="background:#dc2626" onclick="borrarLink(\''+l.slug+'\')">🗑️ BORRAR</button></div></div>';
+    html+='<div class="link-item"><div class="flex" style="justify-content:space-between"><b>🔗 '+l.slug+'</b><input type="checkbox" data-slug="'+l.slug+'" style="width:20px;margin:0"></div><p style="margin:6px 0">'+l.short+'</p><p style="font-size:11px;color:#aaa">Nivel '+l.adLevel+' • $'+getAdInfo(l.adLevel).price.toFixed(2)+' por 1000</p><div class="flex" style="margin-top:8px"><button class="smallbtn" onclick="navigator.clipboard.writeText(\''+l.short+'\');alert(\'Copiado ✅\')">📋 COPIAR</button><button class="smallbtn" style="background:#dc2626" onclick="borrarLink(\''+l.slug+'\')">🗑️ BORRAR</button></div></div>';
   });
-  html+='<button class="sec" style="margin-top:8px" onclick="borrarSeleccionados()">🗑️ BORRAR SELECCIONADOS (sin perder clics ni dinero)</button><p class="small">Cada link tiene sus clics por separado. Al borrar un link, SOLO se borra ese link. Tus otros links y tu total siguen guardados ✅</p>';
+  html+='<button class="sec" style="margin-top:8px" onclick="borrarSeleccionados()">🗑️ BORRAR SELECCIONADOS (sin perder clics ni dinero)</button><p class="small">Al borrar un link, SOLO se borra ese link. Tus clics y tu dinero siguen guardados ✅</p>';
   document.getElementById('myLinks').innerHTML=html;
 }
-function tiempoHace(ts){
-  let diff=Date.now()-ts;
-  let mins=Math.floor(diff/60000);
-  if(mins<1) return 'unos segundos';
-  if(mins<60) return mins+' min';
-  let horas=Math.floor(mins/60);
-  if(horas<24) return horas+' hora'+(horas>1?'s':'');
-  return Math.floor(horas/24)+' día'+(Math.floor(horas/24)>1?'s':'');
-}
 function borrarLink(slug){
-  if(!confirm('¿Borrar '+slug+'? Tus clics de otros links NO se pierden.'))return;
+  if(!confirm('¿Borrar '+slug+'? Tus clics y dinero NO se pierden.'))return;
   links=links.filter(l=>l.slug!==slug);localStorage.setItem('naset_links',JSON.stringify(links));
   let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');delete custom[slug];localStorage.setItem('naset_custom_links',JSON.stringify(custom));
-  render();alert('Borrado. Tus otros links siguen intactos ✅');
+  render();alert('Borrado. Tus clics siguen intactos ✅');
 }
 function borrarSeleccionados(){
   let checks=document.querySelectorAll('#myLinks input[type="checkbox"]:checked');
   if(checks.length===0){alert('Selecciona al menos uno');return}
-  if(!confirm('¿Borrar '+checks.length+' links? No pierdes dinero ni clics de los otros.'))return;
+  if(!confirm('¿Borrar '+checks.length+' links? No pierdes dinero ni clics.'))return;
   let toDel=[...checks].map(c=>c.dataset.slug);
   links=links.filter(l=>!toDel.includes(l.slug));localStorage.setItem('naset_links',JSON.stringify(links));
   let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');toDel.forEach(s=>delete custom[s]);localStorage.setItem('naset_custom_links',JSON.stringify(custom));
@@ -415,7 +399,7 @@ async function crear(){
   setLinkClicks(slug,0);
   links.push({orig:v,short:short,slug:slug,clicks:0,user:currentUser,adLevel:myAdLevel,createdAt:Date.now()});localStorage.setItem('naset_links',JSON.stringify(links));
   document.getElementById('linkName').value='';document.getElementById('longUrl').value='';document.getElementById('slugPreview').innerText='Tu link será: .../?tu-nombre';
-  render();alert('✅ Link creado: '+short+'\nEmpieza en Clics: 0');
+  render();alert('✅ Link creado: '+short);
 }
 function showPanel(){
   if(isVisitor)return;
