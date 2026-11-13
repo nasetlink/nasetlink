@@ -7,151 +7,142 @@
 <style>
   *{box-sizing:border-box;font-family:Arial}
   body{background:#0f001a;color:#fff;margin:0;padding:15px}
-  .logo{text-align:center;font-size:28px;font-weight:900}
+  .topbar{display:flex;justify-content:space-between;align-items:center}
+  .hamb{font-size:28px;cursor:pointer;background:#1d0a2e;border:1px solid #a855f7;border-radius:12px;padding:5px 12px}
+  .logo{font-size:26px;font-weight:900}
   .logo span{color:#e879ff}
+  .saldo{background:#22c55e;padding:6px 12px;border-radius:20px;font-weight:900;font-size:13px}
+  /* MENU HAMBURGUESA */
+  #menu{position:fixed;top:0;left:-260px;width:250px;height:100%;background:#1d0a2e;border-right:2px solid #a855f7;padding:20px;transition:0.3s;z-index:99}
+  #menu.abierto{left:0}
+  #menu button{width:100%;text-align:left;background:transparent;border:none;color:#fff;padding:13px;font-size:16px;border-bottom:1px solid #333;cursor:pointer}
+  #menu button:hover{background:#a855f7;border-radius:10px}
   .card{background:#1d0a2e;border:1px solid #a855f7;border-radius:20px;padding:15px;margin:15px 0}
   input{width:100%;padding:12px;border-radius:12px;border:1px solid #444;background:#12051f;color:#fff;margin:8px 0}
   .btn{width:100%;padding:13px;border:none;border-radius:12px;font-weight:900;cursor:pointer}
   .btn-green{background:#22c55e;color:#fff}
   .btn-purple{background:#a855f7;color:#fff}
   .btn-gray{background:#555;color:#ccc}
-  .btn-red{background:#7f1d1d;color:#fff;padding:8px 12px;border-radius:10px}
+  .btn-red{background:#7f1d1d;color:#fff;padding:8px 12px;border-radius:10px;border:none}
   .btn-copy{background:#a855f7;color:#fff;padding:8px 12px;border-radius:10px;border:none;font-weight:800}
   .link-card{background:#250a3a;border:1px solid #a855f7;border-radius:15px;padding:12px;margin:12px 0}
   .flex{display:flex;gap:8px;align-items:center;justify-content:space-between}
-  .ojo{cursor:pointer}
   .badge{background:gold;color:#000;padding:3px 8px;border-radius:20px;font-size:12px;font-weight:900}
-  .nav{position:fixed;bottom:0;left:0;right:0;background:#1d0a2e;display:flex;justify-content:space-around;padding:10px}
+  .fondo{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;z-index:90}
+  .fondo.ver{display:block}
 </style>
 </head>
 <body>
 
-<div class="logo">NASET<span>LINK</span></div>
+<!-- HAMBURGUESA COMO ANTES -->
+<div class="fondo" id="fondo" onclick="cerrarMenu()"></div>
+<div id="menu">
+  <h2>NASET<span style="color:#e879ff">LINK</span> ☰</h2>
+  <button onclick="cerrarMenu()">🏠 Inicio</button>
+  <button onclick="cerrarMenu()">👤 Mi Perfil</button>
+  <button onclick="cerrarMenu()">🔗 Mis Links</button>
+  <button onclick="cerrarMenu()">💬 Chat</button>
+  <button onclick="cerrarMenu()">📊 Mis Datos</button>
+  <button onclick="cerrarMenu()">🏆 Mi Rango</button>
+  <button onclick="cerrarMenu()">🔒 Cambiar Contraseña</button>
+  <button onclick="alert('Cerraste sesión')">🚪 Salir</button>
+  <p style="font-size:12px;color:#aaa">Tus clics y dinero están guardados, no se pierden.</p>
+</div>
 
-<!-- PUNTO 1: BOTON SIGUIENTE BLOQUEADO 5 SEG -->
+<div class="topbar">
+  <div class="hamb" onclick="abrirMenu()">☰</div>
+  <div class="logo">NASET<span>LINK</span></div>
+  <div class="saldo">$<span id="saldo">5.10</span></div>
+</div>
+
+<!-- PUNTO 1 -->
 <div class="card">
-  <h3>⏭️ Anuncio / Paso</h3>
-  <p>Espera 5 segundos para continuar...</p>
+  <h3>⏭️ Anuncio</h3>
+  <p>Espera 5 segundos...</p>
   <button id="btnSiguiente" class="btn btn-gray" disabled>SIGUIENTE (5)</button>
 </div>
 
-<!-- PUNTO 3: MIS LINKS -->
+<!-- PUNTO 3 + PUNTO 4 -->
 <div class="card">
   <h3>🔗 Mis Links</h3>
-  <p>Selecciona y luego borra. Si borras, NO pierdes clics ni dinero.</p>
   <div id="links"></div>
-  <button class="btn btn-red" onclick="borrarSeleccionados()">🗑️ BORRAR SELECCIONADOS</button>
-  <p id="historial">Historial guardado: 1020 clics • Saldo: $5.10 (no se borra)</p>
+  <button class="btn btn-red" style="width:100%;padding:12px" onclick="borrarSeleccionados()">🗑️ BORRAR SELECCIONADOS</button>
+  <p>Historial guardado: <b id="totalClicsTxt">1020 clics</b> • Saldo: $5.10 - NO se borra</p>
 </div>
 
-<!-- PUNTO 4: RANGO AUTOMATICO -->
 <div class="card">
   <h3>🏆 Tu Rango - Automático</h3>
   <p>Total Clics: <b id="totalClics">1020</b></p>
-  <p>Rango Actual: <span class="badge" id="rango">PLATA</span></p>
-  <p id="msgRango">¡Felicidades! Subiste a PLATA 🎉</p>
+  <p>Rango: <span class="badge" id="rango">PLATA</span></p>
+  <p id="msgRango">¡Ya subiste a PLATA! 🎉</p>
   <button class="btn btn-purple" onclick="sumarClic()">+ Simular 1 Clic</button>
 </div>
 
-<!-- PUNTO 2: PERFIL + CAMBIAR CONTRASEÑA -->
+<!-- PUNTO 2 -->
 <div class="card">
   <h3>👤 Mi Perfil</h3>
-  <input placeholder="Tu nombre para mostrar: Ej: Naset">
-  <input placeholder="Tu biografía: Ej: Gano dinero con NasetLink 🔥">
+  <input placeholder="Tu nombre para mostrar">
+  <input placeholder="Tu biografía">
   <button class="btn btn-green">💾 GUARDAR MI PERFIL</button>
   <hr>
   <h3>🔒 Cambiar contraseña</h3>
-  <div class="flex">
-    <input type="password" id="passActual" placeholder="Contraseña actual" style="flex:1">
-    <span class="ojo" onclick="verPass('passActual')">👁️</span>
-  </div>
-  <div class="flex">
-    <input type="password" id="passNueva" placeholder="Nueva contraseña" style="flex:1">
-    <span class="ojo" onclick="verPass('passNueva')">👁️</span>
-  </div>
-  <button class="btn" style="background:#333" onclick="alert('Contraseña actualizada ✅')">🔐 ACTUALIZAR CONTRASEÑA</button>
+  <div class="flex"><input type="password" id="passActual" placeholder="Contraseña actual" style="flex:1"><span onclick="verPass('passActual')" style="cursor:pointer">👁️</span></div>
+  <div class="flex"><input type="password" id="passNueva" placeholder="Nueva contraseña" style="flex:1"><span onclick="verPass('passNueva')" style="cursor:pointer">👁️</span></div>
+  <button class="btn" style="background:#333;color:#fff" onclick="alert('Contraseña actualizada ✅')">🔐 ACTUALIZAR CONTRASEÑA</button>
 </div>
 
-<!-- CHAT MEJORA -->
-<div class="card" style="margin-bottom:80px">
+<div class="card" style="margin-bottom:30px">
   <h3>💬 Chat</h3>
   <p><b>PAPI DARK</b> 🥉 BRONCE<br>Hip</p>
   <p style="background:#a855f7;padding:10px;border-radius:12px"><b>Ff ⭐ CREADOR 🥉 BRONCE</b><br>Zz</p>
   <input placeholder="Escribe algo...">
 </div>
 
-<div class="nav"><span>🏠 Inicio</span><span>👤 Perfil</span><span>💬 Chat</span><span>📊 Datos</span></div>
-
 <script>
-// PUNTO 1 - Bloqueo 5 seg
-let seg=5;
-let btn=document.getElementById('btnSiguiente');
-let timer=setInterval(()=>{
-  seg--;
-  if(seg<=0){
-    btn.disabled=false; btn.textContent="SIGUIENTE ✅";
-    btn.className="btn btn-green"; clearInterval(timer);
-  } else { btn.textContent="SIGUIENTE ("+seg+")"; }
-},1000);
+function abrirMenu(){document.getElementById('menu').classList.add('abierto');document.getElementById('fondo').classList.add('ver');}
+function cerrarMenu(){document.getElementById('menu').classList.remove('abierto');document.getElementById('fondo').classList.remove('ver');}
 
-// PUNTO 3 - Links con Visualizaciones en tiempo real
+// PUNTO 1 - 5 seg bloqueado
+let seg=5, btn=document.getElementById('btnSiguiente');
+let timer=setInterval(()=>{seg--;if(seg<=0){btn.disabled=false;btn.textContent="SIGUIENTE ✅";btn.className="btn btn-green";clearInterval(timer);}else{btn.textContent="SIGUIENTE ("+seg+")";}},1000);
+
+// GUARDADO PARA NO PERDER DINERO - localStorage
+let total = parseInt(localStorage.getItem('clics') || 1020);
+let saldo = parseFloat(localStorage.getItem('saldo') || 5.10);
+function guardar(){localStorage.setItem('clics',total);localStorage.setItem('saldo',saldo);}
+
+// PUNTO 3
 let misLinks=[
-  {id:1, nombre:"xdd-ttstw", url:"https://nasetlink.com/?xdd-ttstw", views:12, seleccionado:false},
-  {id:2, nombre:"csgs-jsjs", url:"https://nasetlink.com/?csgs-jsjs", views:8, seleccionado:false}
+  {id:1,nombre:"xdd-ttstw",url:"https://nasetlink.com/?xdd-ttstw",views:12,sel:false},
+  {id:2,nombre:"csgs-jsjs",url:"https://nasetlink.com/?csgs-jsjs",views:8,sel:false}
 ];
-let clicsGuardados=1020; // no se borra aunque borres link
-
 function pintarLinks(){
-  let html="";
-  misLinks.forEach(l=>{
-    html+=`<div class="link-card">
-      <div class="flex"><b>🔗 ${l.nombre}</b> <input type="checkbox" onchange="seleccionar(${l.id},this.checked)" style="width:20px"></div>
-      <p style="font-size:12px;word-break:break-all">${l.url}</p>
-      <p><b>Visualizaciones: <span id="v-${l.id}">${l.views}</span></b> • Nivel 2</p>
-      <div class="flex"><button class="btn-copy" onclick="navigator.clipboard.writeText('${l.url}');alert('Copiado ✅')">📋 COPIAR LINK</button>
-      <button class="btn-red" onclick="borrarUno(${l.id})">🗑️ BORRAR</button></div>
-    </div>`;
+  let h=""; misLinks.forEach(l=>{
+    h+=`<div class="link-card"><div class="flex"><b>🔗 ${l.nombre}</b><input type="checkbox" onchange="selLink(${l.id},this.checked)" style="width:20px"></div>
+    <p style="font-size:12px;word-break:break-all">${l.url}</p>
+    <p><b>Visualizaciones: <span id="v-${l.id}">${l.views}</span></b> • Nivel 2</p>
+    <div class="flex"><button class="btn-copy" onclick="navigator.clipboard.writeText('${l.url}');alert('Copiado ✅')">📋 COPIAR LINK</button>
+    <button class="btn-red" onclick="borrarUno(${l.id})">🗑️ BORRAR</button></div></div>`;
   });
-  document.getElementById('links').innerHTML=html || "<p>No tienes links, pero tus clics y dinero siguen guardados.</p>";
+  document.getElementById('links').innerHTML=h||"<p>Sin links, pero tus clics y dinero siguen guardados.</p>";
 }
-function seleccionar(id,check){ misLinks.find(l=>l.id==id).seleccionado=check; }
-function borrarUno(id){
-  if(!confirm("¿Seguro que quieres borrar este link? Tus clics y dinero NO se pierden.")) return;
-  misLinks=misLinks.filter(l=>l.id!=id); pintarLinks(); alert("Link borrado. Tus 1020 clics y dinero siguen intactos ✅");
-}
-function borrarSeleccionados(){
-  if(!confirm("¿Borrar los seleccionados? No pierdes dinero ni clics.")) return;
-  misLinks=misLinks.filter(l=>!l.seleccionado); pintarLinks();
-}
+function selLink(id,c){misLinks.find(l=>l.id==id).sel=c;}
+function borrarUno(id){if(!confirm("¿Borrar este link? Tus clics y dinero NO se pierden."))return;misLinks=misLinks.filter(l=>l.id!=id);pintarLinks();alert("Borrado. Tus clics y dinero siguen intactos ✅");}
+function borrarSeleccionados(){if(!confirm("¿Borrar seleccionados? No pierdes nada."))return;misLinks=misLinks.filter(l=>!l.sel);pintarLinks();}
 pintarLinks();
-
-// Simular visitas en tiempo real cada 4 seg
-setInterval(()=>{
-  if(misLinks.length>0){
-    let random=misLinks[Math.floor(Math.random()*misLinks.length)];
-    random.views++;
-    document.getElementById('v-'+random.id).textContent=random.views;
-  }
-},4000);
+setInterval(()=>{if(misLinks.length>0){let r=misLinks[Math.floor(Math.random()*misLinks.length)];r.views++;document.getElementById('v-'+r.id).textContent=r.views;}},4000);
 
 // PUNTO 4 - Rango automatico
-let total=1020;
 function calcularRango(){
-  let rango="BRONCE";
-  if(total>=3000) rango="DIAMANTE";
-  else if(total>=2000) rango="ORO";
-  else if(total>1000) rango="PLATA";
-  document.getElementById('rango').textContent=rango;
+  let r="BRONCE"; if(total>=3000)r="DIAMANTE"; else if(total>=2000)r="ORO"; else if(total>1000)r="PLATA";
+  document.getElementById('rango').textContent=r;
   document.getElementById('totalClics').textContent=total;
+  document.getElementById('totalClicsTxt').textContent=total+" clics";
+  document.getElementById('saldo').textContent=saldo.toFixed(2);
 }
-function sumarClic(){ total++; calcularRango(); }
+function sumarClic(){total++;guardar();calcularRango();}
 calcularRango();
-
-// PUNTO 2 - Ojito
-function verPass(id){
-  let inp=document.getElementById(id);
-  inp.type = inp.type==="password" ? "text" : "password";
-}
+function verPass(id){let i=document.getElementById(id);i.type=i.type==="password"?"text":"password";}
 </script>
 </body>
 </html>
