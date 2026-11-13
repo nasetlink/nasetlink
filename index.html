@@ -159,7 +159,7 @@ button:not(:disabled):active{transform:scale(.98)}
 <div class="box" id="profileBox"><div style="display:flex;gap:14px;align-items:center"><div class="avatar" id="myAvatar" onclick="openView('profile')" style="cursor:pointer">?</div><div><h3 id="welcomeName">Hola 👋</h3><p id="profileUserShow" style="color:#aaa;font-size:12px"></p><p id="profileBioShow" style="color:#aaa;font-size:12px"></p><div style="margin-top:6px"><span id="rankBadge" class="badge bronce">🥉 BRONCE</span></div><p id="rankProgressText" style="font-size:12px;margin-top:8px;font-weight:bold"></p><div class="rank-bar"><div id="rankProgressBar" style="width:0%"></div></div><p id="rankProgressSub" style="font-size:11px;color:#aaa;margin-top:4px"></p></div></div></div>
 <div class="stats"><div class="stat"><b id="totalClicks">0</b><span>MIS CLICS TOTALES</span></div><div class="stat"><b id="totalEarn">$0.00</b><span>MI GANADO</span></div><div class="stat"><b id="myLevel">Nivel 2</b><span>ANUNCIOS</span></div></div>
 <div class="box"><h3>🏆 Mis Rangos - Suben solos</h3><div id="rankTableLive"></div><p class="small" id="rankMsg"></p></div>
-<div class="box"><h3>📢 Tu Nivel de Anuncios</h3><div class="grid5"><button class="level-btn" data-lv="2" onclick="changeAdLevel(2)">2</button><button class="level-btn" data-lv="4" onclick="changeAdLevel(4)">4</button><button class="level-btn" data-lv="6" onclick="changeAdLevel(6)">6</button><button class="level-btn" data-lv="8" onclick="changeAdLevel(8)">8</button><button class="level-btn" data-lv="10" onclick="changeAdLevel(10)">10</button></div><p class="small" id="adLevelInfo"></p><button class="green" onclick="saveAdLevel()">💾 GUARDAR MI NIVEL</button></div>
+<div class="box"><h3>📢 Tu Nivel de Anuncios</h3><p class="small" style="text-align:left;margin:0 0 8px">Toca un número y se aplica a TODOS tus links, viejos y nuevos:</p><div class="grid5"><button class="level-btn" data-lv="2" onclick="changeAdLevel(2)">2</button><button class="level-btn" data-lv="4" onclick="changeAdLevel(4)">4</button><button class="level-btn" data-lv="6" onclick="changeAdLevel(6)">6</button><button class="level-btn" data-lv="8" onclick="changeAdLevel(8)">8</button><button class="level-btn" data-lv="10" onclick="changeAdLevel(10)">10</button></div><p class="small" id="adLevelInfo"></p><button class="green" onclick="saveAdLevel()">💾 GUARDAR MI NIVEL</button></div>
 <div class="box"><h3>✨ Crea un enlace personalizado</h3><label>📝 Nombre:</label><input id="linkName" placeholder="Ej: aimbot-head" oninput="updateSlugPreview()"><div class="slug-preview" id="slugPreview">Tu enlace será: .../?tu-nombre</div><label>🔗 Enlace de destino:</label><input id="longUrl" placeholder="Pega tu enlace de destino aquí..."><button onclick="crear()">✨ GENERAR MI LINK</button><div id="myLinks"></div></div>
 <div class="box"><h3>💰 Pagos por 1000 clics</h3><table><tr><th>Nivel</th><th>Variantes</th><th>Tiempo</th><th>Pago</th></tr><tbody id="adTable"></tbody></table></div>
 <button class="sec" onclick="logout()">Cerrar Sesión</button>
@@ -210,20 +210,25 @@ async function fetchCloudProfiles(){
 }
 async function dbSaveLink(slug,target,owner,adLevel){
   slug=cleanSlug(slug);
-  // ARREGLO: guardamos adLevel correcto, no 2 fijo, y no reseteamos clics si ya existe
+  adLevel=parseInt(adLevel||2);
   let existing=null;
   try{existing=await dbGetLink(slug)}catch(e){}
   let clicksToSave=existing?parseInt(existing.clicks||0):0;
-  let body=JSON.stringify({slug:slug,target:target,owner_user:owner,ad_level:parseInt(adLevel||2),clicks:clicksToSave});
+  let body=JSON.stringify({slug:slug,target:target,owner_user:owner,ad_level:adLevel,clicks:clicksToSave});
   try{
     let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:body});
     if(r.ok) return true;
   }catch(e){}
   try{
-    let r2=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({target:target,owner_user:owner,ad_level:parseInt(adLevel||2)})});
+    let r2=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({target:target,owner_user:owner,ad_level:adLevel})});
     if(r2.ok) return true;
   }catch(e){}
   return true;
+}
+async function dbUpdateLinkLevel(slug,adLevel){
+  slug=cleanSlug(slug||'');
+  if(!slug||slug==='undefined') return;
+  try{await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({ad_level:parseInt(adLevel)})})}catch(e){}
 }
 async function dbDeleteLink(slug){
   slug=cleanSlug(slug||'');
@@ -236,14 +241,14 @@ async function dbGetLink(slug){
   try{
     let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug)+"&select=*",{headers:H});
     let j=await r.json();
-    if(Array.isArray(j)&&j[0]) return {slug:j[0].slug,target:j[0].target,owner:j[0].owner_user,adLevel:j[0].ad_level||2,clicks:j[0].clicks||0};
+    if(Array.isArray(j)&&j[0]) return {slug:j[0].slug,target:j[0].target,owner:j[0].owner_user,adLevel:parseInt(j[0].ad_level||2),clicks:j[0].clicks||0};
   }catch(e){}
   try{
     let r2=await fetch(SUPABASE_URL+"/rest/v1/naset_links?select=*&limit=1000",{headers:H});
     let j2=await r2.json();
     if(Array.isArray(j2)){
       let f=j2.find(x=>(x.slug||'').toLowerCase()===slug.toLowerCase());
-      if(f) return {slug:f.slug,target:f.target,owner:f.owner_user,adLevel:f.ad_level||2,clicks:f.clicks||0};
+      if(f) return {slug:f.slug,target:f.target,owner:f.owner_user,adLevel:parseInt(f.ad_level||2),clicks:f.clicks||0};
     }
   }catch(e){}
   return null;
@@ -260,7 +265,7 @@ function getLinkClicks(slug){return parseInt(localStorage.getItem('naset_link_cl
 function setLinkClicks(slug,v){localStorage.setItem('naset_link_clicks_'+slug.toLowerCase(),String(v))}
 async function syncLinkClicksFromCloud(){
   try{
-    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?select=slug,clicks,owner_user",{headers:H});
+    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links?select=slug,clicks,owner_user,ad_level",{headers:H});
     let j=await r.json();
     if(Array.isArray(j)){
       j.forEach(row=>{
@@ -468,7 +473,6 @@ function decodeLegacyGo(){
     let go=params.get('go');
     if(!go) return null;
     let decoded=atob(go.replace(/-/g,'+').replace(/_/g,'/'));
-    // a veces viene con caracteres raros, limpiamos
     decoded=decodeURIComponent(escape(decoded));
     let u=params.get('u')||'NASETLINKOFC';
     let ad=parseInt(params.get('ad')||'2');
@@ -490,7 +494,6 @@ function showWaiterFor(ownerName,level){
   renderDots();updateWaitTitle();
 }
 async function initSlug(){
-  // 1. Links viejos ?go=... - ARREGLO: sí los leemos, no decimos que no sirven
   if(params.has('go')){
     let legacy=decodeLegacyGo();
     if(legacy){
@@ -504,26 +507,25 @@ async function initSlug(){
   isVisitor=true;currentSlugForClicks=cleanSlug(slugParam);
   document.getElementById('authBox').style.display='none';
   document.getElementById('panel').style.display='none';
+  // CORREGIDO: primero buscamos en la nube el nivel real, no ponemos 2 de una
+  let cloudFound=await dbGetLinkWithRetry(currentSlugForClicks);
+  if(cloudFound){
+    targetUrl=cloudFound.target;owner=cloudFound.owner||'NASETLINKOFC';totalAds=parseInt(cloudFound.adLevel||2);
+    showWaiterFor(owner,totalAds);
+    return true;
+  }
   let local=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
   let localKey=Object.keys(local).find(k=>k.toLowerCase()===currentSlugForClicks.toLowerCase());
-  if(localKey) slugData=local[localKey];
-  if(slugData){
+  if(localKey){
+    slugData=local[localKey];
     targetUrl=slugData.target;owner=slugData.owner||'NASETLINKOFC';totalAds=parseInt(slugData.adLevel||2);
     showWaiterFor(owner,totalAds);
-  } else {
-    targetUrl='';owner='NASETLINKOFC';totalAds=2;
-    showWaiterFor(owner,2);
-    dbGetLinkWithRetry(currentSlugForClicks).then(found=>{
-      if(found){
-        targetUrl=found.target;owner=found.owner||owner;totalAds=parseInt(found.adLevel||2);originalTotalAds=totalAds;
-        renderDots();updateWaitTitle();
-        document.getElementById('adLevelShow').innerText='Nivel '+totalAds+' • '+totalAds+' anuncios';
-        document.getElementById('doneMsg').innerText='';
-      } else {
-        document.getElementById('doneMsg').innerText='';
-      }
-    });
+    return true;
   }
+  // Si no existe en ningún lado, mostramos waiter en 2 pero ya no decimos que no abre
+  targetUrl='';owner='NASETLINKOFC';totalAds=2;
+  showWaiterFor(owner,2);
+  document.getElementById('doneMsg').innerText='';
   return true;
 }
 function isAdBot(){if(!humanInteracted)return true;if(Date.now()-pageLoadTime<1500)return true;return false}
@@ -580,7 +582,6 @@ function renderDotsFinal(){
   document.getElementById('waitTitle').innerText='¡Completaste!';
 }
 async function goToLink(){
-  // ARREGLO: si es link viejo ?go=, targetUrl ya viene decodificado, sí debe abrir
   if(!targetUrl && params.has('go')){
     let legacy=decodeLegacyGo();
     if(legacy) targetUrl=legacy.target;
@@ -588,23 +589,54 @@ async function goToLink(){
   if(!targetUrl && currentSlugForClicks && !String(currentSlugForClicks).startsWith('legacy-')){
     let f=await dbGetLinkWithRetry(currentSlugForClicks);
     if(f) targetUrl=f.target;
+    // Si sigue sin destino, buscamos en local
+    if(!targetUrl){
+      let local=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
+      let k=Object.keys(local).find(k=>k.toLowerCase()===String(currentSlugForClicks).toLowerCase());
+      if(k) targetUrl=local[k].target;
+    }
   }
   if(!targetUrl){alert('No se pudo abrir el destino, vuelve a intentarlo');return}
   location.href=targetUrl.startsWith('http')?targetUrl:'https://'+targetUrl
 }
 function getAdInfo(level){return AD_LEVELS.find(x=>x.level===level)||AD_LEVELS[0]}
-// ARREGLO PRINCIPAL: al tocar 6, se guarda de una, no hay que darle a GUARDAR
+// CORREGIDO PARA 2-4-6-8-10: al tocar el número, se aplica a TODOS tus links
+function applyLevelToAllMyLinks(level){
+  level=parseInt(level);
+  if(!currentUser) return;
+  let changed=false;
+  links.forEach(l=>{
+    if(l.user===currentUser && parseInt(l.adLevel)!==level){ l.adLevel=level; changed=true; }
+  });
+  if(changed) localStorage.setItem('naset_links',JSON.stringify(links));
+  try{
+    let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
+    let cChanged=false;
+    Object.keys(custom).forEach(k=>{
+      if(custom[k].owner===currentUser && parseInt(custom[k].adLevel)!==level){ custom[k].adLevel=level; cChanged=true; }
+    });
+    if(cChanged) localStorage.setItem('naset_custom_links',JSON.stringify(custom));
+  }catch(e){}
+  // Actualiza en la nube todos tus links
+  links.forEach(l=>{
+    if(l.user===currentUser && l.slug && l.slug!=='undefined'){
+      dbUpdateLinkLevel(l.slug, level);
+    }
+  });
+}
 function changeAdLevel(v){
   v=parseInt(v);
   tempAdLevel=v;
   myAdLevel=v;
   localStorage.setItem('naset_my_adlevel',String(v));
+  // ESTO ES LO NUEVO: cambia TODOS tus links viejos a ese nivel
+  applyLevelToAllMyLinks(v);
   updateAdUI();
-  // Actualiza también el contador de arriba
   let ml=document.getElementById('myLevel'); if(ml) ml.innerText='Nivel '+v;
+  render();
 }
-function updateAdUI(){let info=getAdInfo(tempAdLevel);document.getElementById('adLevelInfo').innerText='Nivel '+info.level+' • '+info.ads+' anuncios • Ganas $'+info.price.toFixed(2)+' por 1000 clics • ✅ Guardado';document.querySelectorAll('.level-btn').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.lv)===tempAdLevel))}
-function saveAdLevel(){myAdLevel=tempAdLevel;localStorage.setItem('naset_my_adlevel',myAdLevel);render();alert('✅ Nivel '+myAdLevel+' guardado - Tus próximos links saldrán con '+myAdLevel+' anuncios')}
+function updateAdUI(){let info=getAdInfo(tempAdLevel);document.getElementById('adLevelInfo').innerText='Nivel '+info.level+' • '+info.ads+' anuncios • Ganas $'+info.price.toFixed(2)+' por 1000 clics • ✅ Aplicado a todos tus links';document.querySelectorAll('.level-btn').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.lv)===tempAdLevel))}
+function saveAdLevel(){myAdLevel=tempAdLevel;localStorage.setItem('naset_my_adlevel',myAdLevel);applyLevelToAllMyLinks(myAdLevel);render();alert('✅ Nivel '+myAdLevel+' guardado - TODOS tus links ahora son de '+myAdLevel+' anuncios')}
 function updateProfileUI(){
   if(!currentUser)return;let p=getProfile(currentUser);let av=document.getElementById('myAvatar');if(av){av.innerHTML=p.avatar?'<img src="'+p.avatar+'">':currentUser.charAt(0).toUpperCase()}
   let wn=document.getElementById('welcomeName');if(wn)wn.innerHTML=(p.displayName||currentUser)+verifiedIcon(currentUser);
@@ -675,7 +707,6 @@ async function borrarLink(slug){
   return borrarLinkPorIndice(idx);
 }
 async function crear(){
-  // ARREGLO: usa el nivel que tienes seleccionado AHORA MISMO, no el viejo
   let nivelUsar=parseInt(tempAdLevel||myAdLevel||2);
   myAdLevel=nivelUsar; localStorage.setItem('naset_my_adlevel',String(nivelUsar));
   let v=document.getElementById('longUrl').value.trim();let slug=cleanSlug(document.getElementById('linkName').value||'');
