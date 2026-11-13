@@ -190,17 +190,8 @@ let cloudVerified={};
 let currentSlugForClicks='';
 document.addEventListener('mousemove',()=>humanInteracted=true,{passive:true});document.addEventListener('touchstart',()=>humanInteracted=true,{passive:true});document.addEventListener('keydown',()=>humanInteracted=true,{passive:true});
 const H={"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"};
-// === SI O SI ABRE EL DESTINO: el destino va guardado DENTRO del link, no solo en la nube ===
-function encodeDest(url){
-  try{ return btoa(unescape(encodeURIComponent(url))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }catch(e){ return ''; }
-}
-function decodeDest(code){
-  try{
-    code=String(code||'').replace(/-/g,'+').replace(/_/g,'/');
-    while(code.length%4!==0) code+='=';
-    return decodeURIComponent(escape(atob(code)));
-  }catch(e){ return ''; }
-}
+function encodeDest(url){ try{ return btoa(unescape(encodeURIComponent(url))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }catch(e){ return ''; } }
+function decodeDest(code){ try{ code=String(code||'').replace(/-/g,'+').replace(/_/g,'/'); while(code.length%4!==0) code+='='; return decodeURIComponent(escape(atob(code))); }catch(e){ return ''; } }
 async function dbGetUsers(){try{let r=await fetch(SUPABASE_URL+"/rest/v1/naset_users?select=*&order=clicks.desc",{headers:H});let j=await r.json();return Array.isArray(j)?j:[]}catch(e){return[]}}
 async function dbSaveUser(u){
   let prof=getProfile(u.user||currentUser);
@@ -224,15 +215,23 @@ async function dbGetOwnerLevel(owner){
   }catch(e){}
   return null;
 }
-async function dbSaveLink(slug,target,owner,adLevel){
+// GUARDAR EN LA NUBE Y VERIFICAR - para que el link corto sí tenga destino oculto
+async function dbSaveLinkVerified(slug,target,owner,adLevel){
   slug=cleanSlug(slug); adLevel=parseInt(adLevel||2);
-  let existing=null; try{existing=await dbGetLinkFast(slug)}catch(e){}
-  let clicksToSave=existing?parseInt(existing.clicks||0):0;
-  let body=JSON.stringify({slug:slug,target:target,owner_user:owner,ad_level:adLevel,clicks:clicksToSave});
-  try{let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:body}); if(r.ok) return true;}catch(e){}
-  try{let r2=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({target:target,owner_user:owner,ad_level:adLevel})}); if(r2.ok) return true;}catch(e){}
+  for(let intento=0; intento<3; intento++){
+    try{
+      await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({slug:slug,target:target,owner_user:owner,ad_level:adLevel,clicks:0})});
+    }catch(e){}
+    try{
+      await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({target:target,owner_user:owner,ad_level:adLevel})});
+    }catch(e){}
+    await new Promise(r=>setTimeout(r,600));
+    let check=await dbGetLinkFast(slug);
+    if(check && check.target && check.target===target) return true;
+  }
   return true;
 }
+async function dbSaveLink(slug,target,owner,adLevel){ return dbSaveLinkVerified(slug,target,owner,adLevel); }
 async function dbUpdateLinkLevel(slug,adLevel){
   slug=cleanSlug(slug||''); if(!slug||slug==='undefined') return;
   try{await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({ad_level:parseInt(adLevel)})})}catch(e){}
@@ -249,6 +248,14 @@ async function dbGetLinkFast(slug){
     if(Array.isArray(j)&&j[0]) return {slug:j[0].slug,target:j[0].target,owner:j[0].owner_user,adLevel:parseInt(j[0].ad_level||2),clicks:j[0].clicks||0};
   }catch(e){}
   return null;
+}
+async function dbGetLinkWithRetry(slug){
+  for(let i=0;i<4;i++){
+    let f=await dbGetLinkFast(slug);
+    if(f && f.target) return f;
+    await new Promise(r=>setTimeout(r,800));
+  }
+  return await dbGetLinkFast(slug);
 }
 async function dbGetLink(slug){ return dbGetLinkFast(slug); }
 function getLinkClicks(slug){return parseInt(localStorage.getItem('naset_link_clicks_'+slug.toLowerCase())||'0')}
@@ -389,7 +396,6 @@ function showWaiterFor(ownerName,level){
   document.getElementById('adLevelShow').innerText='Nivel '+info.level+' • '+info.ads+' anuncios';
   renderDots();updateWaitTitle();
 }
-// Si pones 2 salen 1 y 2 arriba, si pones 4 salen 1 2 3 4, si pones 10 salen 1 al 10
 function renderDots(){
   let h=''; for(let i=1;i<=originalTotalAds;i++){ let cls=i<currentAd?'dot done':(i===currentAd?'dot current':'dot'); h+='<div class="'+cls+'">'+(i<currentAd?'✓':i)+'</div>'; }
   document.getElementById('dots').innerHTML=h; document.getElementById('barFill').style.width=((currentAd-1)/Math.max(originalTotalAds,1)*100)+'%';
@@ -412,26 +418,25 @@ function initSlug(){
   if(!slugParam) return false;
   isVisitor=true;currentSlugForClicks=cleanSlug(slugParam);
   document.getElementById('authBox').style.display='none'; document.getElementById('panel').style.display='none';
-  // 1. SI O SI: leer destino y nivel que vienen DENTRO del link. Así abre aunque falle la nube, en cualquier navegador.
-  let urlAd=parseInt(params.get('ad')||'');
+  // Link corto: el destino NO viene en la URL, viene oculto en la nube
+  // Pero si es un link viejo largo con &d=, lo soportamos para no romperlo
   let urlDest=decodeDest(params.get('d')||'');
+  let urlAd=parseInt(params.get('ad')||'');
   let local=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
   let localKey=Object.keys(local).find(k=>k.toLowerCase()===currentSlugForClicks.toLowerCase());
   let cachedLevel=!isNaN(urlAd)?urlAd:parseInt(localStorage.getItem('naset_my_adlevel')||'2');
   let cachedTarget=urlDest||'';
   let cachedOwner='NASETLINKOFC';
   if(localKey){ slugData=local[localKey]; if(!cachedTarget) cachedTarget=slugData.target; cachedOwner=slugData.owner||cachedOwner; if(isNaN(urlAd)) cachedLevel=parseInt(slugData.adLevel||cachedLevel); }
-  if(!isNaN(urlAd)) cachedLevel=urlAd;
   targetUrl=cachedTarget; owner=cachedOwner; totalAds=cachedLevel;
   showWaiterFor(owner,totalAds);
-  // 2. TIEMPO REAL: buscar en la nube el nivel del dueño y el destino real, y actualizar sin recargar
+  // TIEMPO REAL: buscar en la nube el destino oculto y el nivel, con reintentos
   (async()=>{
-    let found=await dbGetLinkFast(currentSlugForClicks);
+    let found=await dbGetLinkWithRetry(currentSlugForClicks);
     let finalOwner=owner; let finalTarget=targetUrl; let finalLevel=totalAds;
     if(found){ finalOwner=found.owner||finalOwner; if(found.target) finalTarget=found.target; finalLevel=parseInt(found.adLevel||finalLevel); }
     let ownerLevel=await dbGetOwnerLevel(finalOwner);
     if(ownerLevel) finalLevel=ownerLevel;
-    // Si la nube tiene destino, lo usamos. Si no, nos quedamos con el del link, que SI O SI existe.
     if(finalTarget) targetUrl=finalTarget;
     owner=finalOwner;
     applyCloudLevelToWaiter(finalLevel);
@@ -464,17 +469,20 @@ function confirmReturn(){
 }
 function renderDotsFinal(){ let h=''; for(let i=1;i<=originalTotalAds;i++){h+='<div class="dot done">✓</div>'} document.getElementById('dots').innerHTML=h; document.getElementById('waitTitle').innerText='¡Completaste!'; }
 async function goToLink(){
-  // SI O SI ABRE: 1. destino que viene en el link, 2. destino de la nube, 3. destino local. Uno de los 3 siempre tiene que estar.
+  // SI O SI ABRE: busca el destino oculto en la nube, con reintentos, en cualquier navegador
+  if(!targetUrl){
+    let f=await dbGetLinkWithRetry(currentSlugForClicks);
+    if(f && f.target) targetUrl=f.target;
+  }
   if(!targetUrl){
     let urlDest=decodeDest(params.get('d')||'');
     if(urlDest) targetUrl=urlDest;
   }
   if(!targetUrl && params.has('go')){ let legacy=decodeLegacyGo(); if(legacy) targetUrl=legacy.target; }
   if(!targetUrl && currentSlugForClicks && !String(currentSlugForClicks).startsWith('legacy-')){
-    let f=await dbGetLinkFast(currentSlugForClicks); if(f && f.target) targetUrl=f.target;
-    if(!targetUrl){ let local=JSON.parse(localStorage.getItem('naset_custom_links')||'{}'); let k=Object.keys(local).find(k=>k.toLowerCase()===String(currentSlugForClicks).toLowerCase()); if(k) targetUrl=local[k].target; }
+    let local=JSON.parse(localStorage.getItem('naset_custom_links')||'{}'); let k=Object.keys(local).find(k=>k.toLowerCase()===String(currentSlugForClicks).toLowerCase()); if(k) targetUrl=local[k].target;
   }
-  if(!targetUrl){alert('No se encontró destino. Vuelve a crear el link con este código nuevo, ese sí trae el destino adentro.');return}
+  if(!targetUrl){alert('No se encontró destino. Vuelve a crear el link con este código nuevo, ese sí guarda el destino oculto en la nube.');return}
   location.href=targetUrl.startsWith('http')?targetUrl:'https://'+targetUrl
 }
 function getAdInfo(level){return AD_LEVELS.find(x=>x.level===level)||AD_LEVELS[0]}
@@ -514,7 +522,7 @@ function getLinkDisplayName(l){ if(l.slug && l.slug!=='undefined' && !String(l.s
 function renderLinkHTML(l, idx){
   if(l.slug && String(l.slug).startsWith('config-')) return '';
   let display=getLinkDisplayName(l); let safeShort=(l.short||'').replace(/'/g,"");
-  return '<div class="link-item"><b>🔗 '+display+'</b><p style="margin:6px 0;word-break:break-all">'+(l.short||'')+'</p><p style="font-size:11px;color:#aaa">Nivel '+(l.adLevel||2)+' • $'+getAdInfo(l.adLevel||2).price.toFixed(2)+' por 1000 • '+ (l.adLevel||2) +' anuncios • ✅ Este link sí abre si o si</p><div class="flex" style="margin-top:8px"><button class="smallbtn" onclick="navigator.clipboard.writeText(\''+safeShort+'\');alert(\'Copiado ✅\')">📋 COPIAR</button><button class="smallbtn" style="background:#dc2626" onclick="borrarLinkPorIndice('+idx+')">🗑️ BORRAR</button></div></div>';
+  return '<div class="link-item"><b>🔗 '+display+'</b><p style="margin:6px 0;word-break:break-all">'+(l.short||'')+'</p><p style="font-size:11px;color:#aaa">Nivel '+(l.adLevel||2)+' • $'+getAdInfo(l.adLevel||2).price.toFixed(2)+' por 1000 • '+ (l.adLevel||2) +' anuncios • ✅ Este link sí abre si o si - Destino oculto</p><div class="flex" style="margin-top:8px"><button class="smallbtn" onclick="navigator.clipboard.writeText(\''+safeShort+'\');alert(\'Copiado ✅\')">📋 COPIAR</button><button class="smallbtn" style="background:#dc2626" onclick="borrarLinkPorIndice('+idx+')">🗑️ BORRAR</button></div></div>';
 }
 async function render(){
   if(!currentUser)return; await syncLinkClicksFromCloud();
@@ -544,16 +552,16 @@ async function crear(){
   let existingCloud=await dbGetLinkFast(slug);
   if(existingCloud && existingCloud.owner && existingCloud.owner.toLowerCase()!==currentUser.toLowerCase()){ alert('❌ Ese nombre ya lo usa otra persona: '+slug+'\nPon otro nombre'); return; }
   if(custom[slug] && custom[slug].owner && custom[slug].owner.toLowerCase()!==currentUser.toLowerCase()){ alert('❌ Ese nombre ya lo usa otra persona'); return; }
-  // NUEVO: el link lleva adentro el nivel y el destino, así SI O SI abre en cualquier navegador
-  let short=location.origin+location.pathname+'?'+slug+'&ad='+nivelUsar+'&d='+encodeDest(v);
+  // LINK CORTO Y LIMPIO: solo ?tu-nombre. El destino queda OCULTO en la nube, no en el link.
+  let short=location.origin+location.pathname+'?'+slug;
   custom[slug]={target:v,owner:currentUser,adLevel:nivelUsar};localStorage.setItem('naset_custom_links',JSON.stringify(custom));
-  dbSaveLink(slug,v,currentUser,nivelUsar).catch(()=>{});
+  await dbSaveLinkVerified(slug,v,currentUser,nivelUsar);
   let idx=links.findIndex(l=>l.slug===slug);
   if(idx>=0){links[idx]={orig:v,short:short,slug:slug,clicks:links[idx].clicks||0,user:currentUser,adLevel:nivelUsar,createdAt:links[idx].createdAt||Date.now()};}
   else{setLinkClicks(slug,0);links.push({orig:v,short:short,slug:slug,clicks:0,user:currentUser,adLevel:nivelUsar,createdAt:Date.now()});}
   localStorage.setItem('naset_links',JSON.stringify(links));
   document.getElementById('linkName').value='';document.getElementById('longUrl').value='';document.getElementById('slugPreview').innerText='Tu enlace será: .../?tu-nombre';
-  render(); alert('✅ Enlace corto creado: '+short+'\nCon '+nivelUsar+' anuncios - Este link SÍ abre si o si en cualquier navegador');
+  render(); alert('✅ Enlace corto creado: '+short+'\nCon '+nivelUsar+' anuncios - Destino oculto, sí abre si o si en cualquier navegador');
 }
 function showPanel(){
   if(isVisitor)return; document.getElementById('authBox').style.display='none';document.getElementById('waiter').style.display='none';document.getElementById('panel').style.display='block';
