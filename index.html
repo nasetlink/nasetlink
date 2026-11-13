@@ -60,33 +60,119 @@ button.adbtn{background:#f59e0b;color:#000;font-size:17px;padding:18px}button.re
 .step-dots{display:flex;gap:6px;justify-content:center;margin:10px 0;flex-wrap:wrap}.dot{width:30px;height:30px;border-radius:99px;background:#222;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0}.dot.done{background:#16a34a}.dot.current{background:#f59e0b;color:#000}
 table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid #222}
 .top-sub{color:#aaa;text-align:center;font-size:13px;margin:5px 0 14px;white-space:normal;word-break:break-word;padding:0 4px}
+
+:root{
+  --bg:#090a12;--surface:#121421;--surface-2:#191b2b;--line:#292c40;
+  --brand:#a855f7;--brand-light:#c084fc;--text-muted:#a4a7bd;
+}
+body{
+  min-height:100vh;
+  background:radial-gradient(ellipse at 50% -15%,rgba(168,85,247,.18),transparent 55%),var(--bg);
+  color:#f7f7fb;
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+}
+.card{max-width:500px}
+.header{
+  padding:12px 4px;background:rgba(9,10,18,.88);
+  border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(14px);
+}
+.logo{letter-spacing:-1px}.logo span{color:var(--brand-light)}
+.hamburger{
+  border:1px solid rgba(255,255,255,.14);
+  background:linear-gradient(135deg,#8b5cf6,#c026d3);
+  box-shadow:0 6px 22px rgba(168,85,247,.25);
+}
+.header-avatar{background:var(--surface-2);border-color:var(--brand)}
+.sidebar{
+  width:min(310px,88vw);height:100dvh;padding:22px 16px;background:#10111b;
+  border-right:1px solid var(--line);box-shadow:18px 0 50px rgba(0,0,0,.35);
+}
+.sidebar-brand{display:flex;align-items:center;gap:11px;padding:4px 42px 18px 4px}
+.sidebar-mark{
+  width:42px;height:42px;display:grid;place-items:center;border-radius:14px;
+  background:linear-gradient(135deg,#8b5cf6,#c026d3);font-weight:900;
+}
+.sidebar-brand small,.sidebar-profile small{display:block;margin-top:3px;color:var(--text-muted);font-size:12px}
+.sidebar-profile{display:flex;align-items:center;gap:12px;padding:14px 8px;margin-bottom:14px;border-bottom:1px solid var(--line)}
+.sidebar nav{display:flex;flex-direction:column}
+.menu-item{
+  width:100%;align-items:center;min-height:48px;padding:12px;margin-bottom:7px;
+  color:#e9e9f2;background:transparent;border:1px solid transparent;border-radius:13px;
+  text-align:left;transition:background .18s ease,border-color .18s ease,transform .18s ease;
+}
+.menu-item:hover{background:var(--surface-2);border-color:var(--line);transform:translateX(2px)}
+.menu-item.active{color:#fff;background:rgba(168,85,247,.16);border-color:rgba(168,85,247,.35)}
+.menu-icon{width:24px;text-align:center}
+.menu-item.logout{
+  min-height:46px;margin-top:auto;color:#ff8b98;background:rgba(220,38,38,.09);
+  border-color:rgba(220,38,38,.2);
+}
+.close-menu{background:var(--surface-2);border-color:var(--line)}
+.box{background:rgba(18,20,33,.94);border-color:var(--line);box-shadow:0 10px 28px rgba(0,0,0,.16)}
+.stat{background:var(--surface-2);border-color:var(--line)}
+input,select{background:#0b0c14;border-color:var(--line)}
+input:focus,select:focus{outline:2px solid rgba(168,85,247,.55);border-color:var(--brand)}
+button:not(.menu-item):not(.close-menu):not(.hamburger){transition:filter .18s ease,transform .18s ease}
+button:not(:disabled):active{transform:scale(.98)}
+@media(max-width:380px){
+  .stats{gap:6px}.stat{padding:10px 6px}.stat b{font-size:17px}
+  .logo{font-size:22px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}
+}
+
 </style>
 </head>
 <body>
 <div class="card">
-<div class="header" id="headerBar" style="display:none"><button class="hamburger" onclick="toggleMenu()"><span class="bars"><span></span><span></span><span></span></span></button><div class="logo" onclick="closeView()">NASET<span>LINK</span></div><div class="header-avatar" id="topAvatar" onclick="openProfileFromAvatar(event)">?</div></div>
+<div class="header" id="headerBar" style="display:none">
+  <button class="hamburger" type="button" aria-label="Abrir menú" onclick="toggleMenu()">
+    <span class="bars"><span></span><span></span><span></span></span>
+  </button>
+  <div class="logo" onclick="closeView()">NASET<span>LINK</span></div>
+  <div class="header-avatar" id="topAvatar" onclick="openProfileFromAvatar(event)">?</div>
+</div>
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-<div class="sidebar" id="sidebar"><button class="close-menu" onclick="toggleMenu()">✕</button><div style="display:flex;gap:12px;padding-bottom:16px;border-bottom:1px solid #333;margin-bottom:16px"><div class="avatar-small" id="sideAvatar" style="width:52px;height:52px;font-size:20px">?</div><div><b id="sideName">Mi Perfil</b><p id="sideUser" style="font-size:12px;color:#aaa"></p><span id="sideBadge"></span></div></div><div class="menu-item" id="menuAdmin" style="display:none" onclick="toggleMenu();openView('admin')"><span>👑</span> Panel Admin</div><div class="menu-item" id="menuStats" style="display:none" onclick="toggleMenu();openView('stats')"><span>📊</span> Estadísticas</div><div class="menu-item" style="background:#fff;color:#000" onclick="toggleMenu();openView('chat')"><span>💬</span> Chat Mundial</div><div class="menu-item" onclick="toggleMenu();openView('profile')"><span>👤</span> Mi Perfil</div><div class="menu-item" onclick="toggleMenu();closeView()"><span>🏠</span> Inicio / Mis Links</div><div class="menu-item logout" onclick="logout()"><span>🚪</span> Cerrar Sesión</div></div>
+<div class="sidebar" id="sidebar">
+  <button class="close-menu" type="button" aria-label="Cerrar menú" onclick="toggleMenu()">✕</button>
+  <div class="sidebar-brand">
+    <div class="sidebar-mark">NL</div>
+    <div><b>NasetLink</b><small>Tu espacio de enlaces</small></div>
+  </div>
+  <div class="sidebar-profile">
+    <div class="avatar-small" id="sideAvatar" style="width:52px;height:52px;font-size:20px">?</div>
+    <div><b id="sideName">Mi perfil</b><small id="sideUser"></small><span id="sideBadge"></span></div>
+  </div>
+  <nav aria-label="Menú principal">
+    <div class="menu-item" id="menuAdmin" style="display:none" onclick="toggleMenu();openView('admin')"><span class="menu-icon">👑</span><span>Administración</span></div>
+    <div class="menu-item" id="menuStats" style="display:none" onclick="toggleMenu();openView('stats')"><span class="menu-icon">📊</span><span>Estadísticas</span></div>
+    <div class="menu-item" onclick="toggleMenu();openView('chat')"><span class="menu-icon">💬</span><span>Chat de la comunidad</span></div>
+    <div class="menu-item" onclick="toggleMenu();openView('profile')"><span class="menu-icon">👤</span><span>Mi perfil</span></div>
+    <div class="menu-item" onclick="toggleMenu();closeView()"><span class="menu-icon">🔗</span><span>Inicio y mis enlaces</span></div>
+  </nav>
+  <div class="menu-item logout" onclick="logout()"><span class="menu-icon">↪</span><span>Cerrar sesión</span></div>
+</div>
 
 <div id="logoBig" style="text-align:center;padding:18px 0 4px"><div class="logo" style="font-size:34px">NASET<span>LINK</span></div></div>
-<p class="top-sub">📢 Dale clic al anuncio • Espera 5 seg • Regresa</p>
+<p class="top-sub">📢 Sigue las instrucciones para continuar a tu enlace</p>
 
 <div id="viewProfile" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">✏️ Mi Perfil</p><div class="box" id="profileBoxSolo"></div></div>
-<div id="viewChat" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">💬 Chat Mundial - TODOS</p><div class="box" style="padding:0;overflow:hidden"><div class="chat-box"><div class="chat-header">CHAT MUNDIAL 💬</div><div class="chat-messages full" id="chatMessages"></div><div class="chat-input-row"><input id="chatInput" placeholder="Escribe algo..." maxlength="200"><button onclick="sendChat()">➤</button></div></div></div></div>
+<div id="viewChat" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">💬 Chat de la comunidad</p><div class="box" style="padding:0;overflow:hidden"><div class="chat-box"><div class="chat-header">CHAT DE LA COMUNIDAD 💬</div><div class="chat-messages full" id="chatMessages"></div><div class="chat-input-row"><input id="chatInput" placeholder="Escribe algo..." maxlength="200"><button onclick="sendChat()">➤</button></div></div></div></div>
 <div id="viewAdmin" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">👑 Solo Admin</p><div class="box gold" id="adminPanelSolo"></div></div>
 <div id="viewStats" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">📊 Estadísticas</p><div class="box"><div class="stats"><div class="stat"><b id="statsTotalUsers">0</b><span>USUARIOS</span></div><div class="stat"><b id="statsTotalClicks">0</b><span>CLICS</span></div><div class="stat"><b id="statsTotalPay" style="color:#25D366">$0.00</b><span>POR PAGAR</span></div></div><label>🔍 Buscar:</label><input id="statsSearch" placeholder="Nombre..." oninput="renderStats()"><div id="statsList"></div></div></div>
 
 <div id="mainView">
 <div class="box" id="waiter" style="display:none"><p id="waitTitle">Anuncio 1</p><div class="step-dots" id="dots"></div><div class="bar"><div id="barFill"></div></div><p class="small" id="adLevelShow"></p><div id="stateClick"><div class="ad-preview"><p>📢 ANUNCIO <span id="adNum1">1</span></p><a class="real-ad" href="https://uplcm.com/4/12244247" target="_blank" onclick="empezarEspera()"><img id="adImg" src="" alt="Anuncio"><div class="real-ad-text" id="adText">Cargando...</div></a></div><a href="https://uplcm.com/4/12244247" target="_blank" onclick="empezarEspera()" style="text-decoration:none"><button class="adbtn">👉 DARLE CLIC AL ANUNCIO</button></a></div><div id="stateWait" style="display:none"><p style="text-align:center">⏳ Viendo anuncio...</p><div id="count">5</div><button disabled id="returnBtn" onclick="confirmReturn()">🔒 ESPERA 5 SEGUNDOS...</button></div><div id="stateDone" style="display:none"><p style="text-align:center;font-size:22px">✅ ¡Completaste!</p><button class="green" onclick="goToLink()">🔗 IR AL LINK DIRECTO</button><p class="small" id="doneMsg"></p></div></div>
 
-<div class="box" id="authBox"><h3 style="text-align:center;margin-bottom:14px">👋 Bienvenido a NasetLink</h3><div class="auth-tabs"><button id="btnTabLogin" class="active" onclick="setMode('login')">Iniciar Sesión</button><button id="btnTabRegister" onclick="setMode('register')">Registrarme</button></div><input id="user" placeholder="Usuario:"><input id="pass" type="password" placeholder="Contraseña:"><button id="mainAuthBtn" onclick="submitAuth()">ENTRAR</button><button class="sec" onclick="joinWhatsApp()" style="background:#25D366;color:#fff">💬 Unirse al Grupo de WhatsApp</button></div>
+<div class="box" id="authBox"><h3 style="text-align:center;margin-bottom:14px">👋 Bienvenido a NasetLink</h3><div class="auth-tabs"><button id="btnTabLogin" class="active" onclick="setMode('login')">Iniciar Sesión</button><button id="btnTabRegister" onclick="setMode('register')">Registrarme</button></div><input id="user" placeholder="Usuario:"><input id="pass" type="password" placeholder="Contraseña:"><button id="mainAuthBtn" onclick="submitAuth()">ENTRAR</button><button class="sec" onclick="joinWhatsApp()" style="background:#25D366;color:#fff">💬 Unirme a la comunidad</button></div>
 
 <div id="panel" style="display:none">
 <div class="box" id="profileBox"><div style="display:flex;gap:14px;align-items:center"><div class="avatar" id="myAvatar" onclick="openView('profile')" style="cursor:pointer">?</div><div><h3 id="welcomeName">Hola 👋</h3><p id="profileUserShow" style="color:#aaa;font-size:12px"></p><p id="profileBioShow" style="color:#aaa;font-size:12px"></p><div style="margin-top:6px"><span id="rankBadge" class="badge bronce">🥉 BRONCE</span></div><p id="rankProgressText" style="font-size:12px;margin-top:8px;font-weight:bold"></p><div class="rank-bar"><div id="rankProgressBar" style="width:0%"></div></div><p id="rankProgressSub" style="font-size:11px;color:#aaa;margin-top:4px"></p></div></div></div>
 <div class="stats"><div class="stat"><b id="totalClicks">0</b><span>MIS CLICS TOTALES</span></div><div class="stat"><b id="totalEarn">$0.00</b><span>MI GANADO</span></div><div class="stat"><b id="myLevel">Nivel 2</b><span>ANUNCIOS</span></div></div>
 <div class="box"><h3>🏆 Mis Rangos - Suben solos</h3><div id="rankTableLive"></div><p class="small" id="rankMsg"></p></div>
 <div class="box"><h3>📢 Tu Nivel de Anuncios</h3><div class="grid5"><button class="level-btn" data-lv="2" onclick="changeAdLevel(2)">2</button><button class="level-btn" data-lv="4" onclick="changeAdLevel(4)">4</button><button class="level-btn" data-lv="6" onclick="changeAdLevel(6)">6</button><button class="level-btn" data-lv="8" onclick="changeAdLevel(8)">8</button><button class="level-btn" data-lv="10" onclick="changeAdLevel(10)">10</button></div><p class="small" id="adLevelInfo"></p><button class="green" onclick="saveAdLevel()">💾 GUARDAR MI NIVEL</button></div>
-<div class="box"><h3>✨ Crear Link con Nombre</h3><label>📝 Nombre:</label><input id="linkName" placeholder="Ej: aimbot-head" oninput="updateSlugPreview()"><div class="slug-preview" id="slugPreview">Tu link será: .../?tu-nombre</div><label>🔗 Link de MediaFire:</label><input id="longUrl" placeholder="Pega tu link..."><button onclick="crear()">✨ GENERAR MI LINK</button><div id="myLinks"></div></div>
+<div class="box"><h3>✨ Crea un enlace personalizado</h3><label>📝 Nombre:</label><input id="linkName" placeholder="Ej: aimbot-head" oninput="updateSlugPreview()"><div class="slug-preview" id="slugPreview">Tu enlace será: .../?tu-nombre</div><label>🔗 Enlace de destino:</label><input id="longUrl" placeholder="Pega tu enlace de destino aquí..."><button onclick="crear()">✨ GENERAR MI LINK</button><div id="myLinks"></div></div>
 <div class="box"><h3>💰 Pagos por 1000 clics</h3><table><tr><th>Nivel</th><th>Variantes</th><th>Tiempo</th><th>Pago</th></tr><tbody id="adTable"></tbody></table></div>
 <button class="sec" onclick="logout()">Cerrar Sesión</button>
 </div>
@@ -96,7 +182,8 @@ table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;borde
 <script>
 const SUPABASE_URL="https://laponfeqxxspxcasxecg.supabase.co";
 const SUPABASE_KEY="sb_publishable_TBu_vM0xOlQsLX4aQvMmrQ_Nsp9Fv00";
-const ADMIN_USER="NASETLINKOFC", ADMIN_PASS="NASET12CLICKS", MOD_USER="DANYXITERS", MOD_PASS="12345689";
+// IMPORTANTE: configura el acceso admin/mod en autenticación segura del servidor; no guardes claves aquí.
+const ADMIN_USER="NASETLINKOFC", ADMIN_PASS="", MOD_USER="DANYXITERS", MOD_PASS="";
 const MONETAG_LINK="https://uplcm.com/4/12244247";
 const WHATSAPP_GROUP="https://chat.whatsapp.com/JAqf2gVEFlz59saw6MVveK?s=cl&p=i&mlr=4&ilr=4&iam=2";
 function joinWhatsApp(){window.open(WHATSAPP_GROUP,'_blank')}
@@ -105,7 +192,7 @@ function cleanSlug(t){return t.toLowerCase().trim().replace(/\s+/g,'-').replace(
 function updateSlugPreview(){
   let v=cleanSlug(document.getElementById('linkName').value||'');
   document.getElementById('linkName').value=v;
-  document.getElementById('slugPreview').innerText=!v?'Tu link será: .../?tu-nombre':'Tu link será: '+location.origin+location.pathname+'?'+v;
+  document.getElementById('slugPreview').innerText=!v?'Tu enlace será: .../?tu-nombre':'Tu enlace será: '+location.origin+location.pathname+'?'+v;
 }
 function verPass(id){let i=document.getElementById(id);i.type=i.type==="password"?"text":"password"}
 let authMode='login';
@@ -539,7 +626,7 @@ async function render(){
   updateProfileUI();
   let myLinks=links.filter(l=>l.user===currentUser);
   let html='';
-  if(myLinks.length===0) html='<p class="small">Aún no tienes links. Crea uno arriba.</p>';
+  if(myLinks.length===0) html='<p class="small">Aún no tienes enlaces. Crea uno arriba.</p>';
   else myLinks.forEach(l=>{
     html+='<div class="link-item"><b>🔗 '+l.slug+'</b><p style="margin:6px 0">'+l.short+'</p><p style="font-size:11px;color:#aaa">Nivel '+l.adLevel+' • $'+getAdInfo(l.adLevel).price.toFixed(2)+' por 1000</p><div class="flex" style="margin-top:8px"><button class="smallbtn" onclick="navigator.clipboard.writeText(\''+l.short+'\');alert(\'Copiado ✅\')">📋 COPIAR</button><button class="smallbtn" style="background:#dc2626" onclick="borrarLink(\''+l.slug+'\')">🗑️ BORRAR</button></div></div>';
   });
@@ -555,7 +642,7 @@ function borrarLink(slug){
 async function crear(){
   let v=document.getElementById('longUrl').value.trim();let slug=cleanSlug(document.getElementById('linkName').value||'');
   if(!slug||slug.length<3){alert('Pon un nombre mínimo 3 letras');return}
-  if(!v){alert('Pega tu link de MediaFire');return}
+  if(!v){alert('Pega tu enlace de destino');return}
   if(!v.startsWith('http'))v='https://'+v;
   let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
   // Solo bloquea si el nombre es de OTRA persona, no si es tuyo
@@ -578,9 +665,9 @@ async function crear(){
   if(idx>=0){links[idx]={orig:v,short:short,slug:slug,clicks:links[idx].clicks||0,user:currentUser,adLevel:myAdLevel,createdAt:links[idx].createdAt||Date.now()};}
   else{setLinkClicks(slug,0);links.push({orig:v,short:short,slug:slug,clicks:0,user:currentUser,adLevel:myAdLevel,createdAt:Date.now()});}
   localStorage.setItem('naset_links',JSON.stringify(links));
-  document.getElementById('linkName').value='';document.getElementById('longUrl').value='';document.getElementById('slugPreview').innerText='Tu link será: .../?tu-nombre';
+  document.getElementById('linkName').value='';document.getElementById('longUrl').value='';document.getElementById('slugPreview').innerText='Tu enlace será: .../?tu-nombre';
   render();
-  alert('✅ Link creado cortito: '+short+'\nYa lo puedes copiar y compartir');
+  alert('✅ Enlace corto creado: '+short+'\nYa puedes copiarlo y compartirlo');
 }
 function showPanel(){
   if(isVisitor)return;
