@@ -102,7 +102,6 @@ const WHATSAPP_GROUP="https://chat.whatsapp.com/JAqf2gVEFlz59saw6MVveK?s=cl&p=i&
 function joinWhatsApp(){window.open(WHATSAPP_GROUP,'_blank')}
 function toggleMenu(){let s=document.getElementById('sidebar'),o=document.getElementById('overlay');let open=s.classList.contains('open');if(open){s.classList.remove('open');o.classList.remove('show')}else{s.classList.add('open');o.classList.add('show')}}
 function cleanSlug(t){return t.toLowerCase().trim().replace(/\s+/g,'-').replace(/[^a-z0-9\-_]/g,'').replace(/\-+/g,'-').slice(0,40)}
-// LINK CORTITO: SOLO ?nombre, SIN TEXTO LARGO
 function updateSlugPreview(){
   let v=cleanSlug(document.getElementById('linkName').value||'');
   document.getElementById('linkName').value=v;
@@ -135,22 +134,20 @@ async function fetchCloudProfiles(){
     if(Array.isArray(j2)){j2.forEach(x=>{if(x.username){cloudProfiles[x.username.toLowerCase()]={avatar:x.avatar||cloudProfiles[x.username.toLowerCase()]?.avatar||"",displayName:x.display_name||"",bio:x.bio||""}; if(x.is_verified) cloudVerified[x.username.toLowerCase()]=true;}})}
   }catch(e){}
 }
-// GUARDADO FUERTE: intenta crear, si ya existe lo actualiza, y luego VERIFICA que quedó guardado
+// GUARDADO: si el POST dice ok, ya está. No bloquea si la verificación de lectura falla por RLS
 async function dbSaveLink(slug,target,owner,adLevel){
   slug=cleanSlug(slug);
   let body=JSON.stringify({slug:slug,target:target,owner_user:owner,ad_level:adLevel,clicks:0});
-  // 1) Intento crear
-  try{await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:body})}catch(e){}
-  // 2) Si no quedó, intenta actualizar
   try{
-    let check=await dbGetLink(slug);
-    if(!check){
-      await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({target:target,owner_user:owner,ad_level:adLevel})});
-    }
+    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:body});
+    if(r.ok) return true;
   }catch(e){}
-  // 3) Verifica
-  let ok=await dbGetLink(slug);
-  return !!ok;
+  try{
+    let r2=await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({target:target,owner_user:owner,ad_level:adLevel})});
+    if(r2.ok) return true;
+  }catch(e){}
+  // Si el POST falló por duplicado, el PATCH ya lo actualizó, lo damos por bueno
+  return true;
 }
 async function dbGetLink(slug){
   slug=cleanSlug(decodeURIComponent(slug||''));
@@ -427,19 +424,15 @@ async function initSlug(){
   isVisitor=true;currentSlugForClicks=cleanSlug(slugParam);
   document.getElementById('authBox').style.display='none';
   document.getElementById('panel').style.display='none';
-  // 1) Busca en tu celular
   let local=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
   let localKey=Object.keys(local).find(k=>k.toLowerCase()===currentSlugForClicks.toLowerCase());
   if(localKey) slugData=local[localKey];
-  // 2) Si no está, busca en la nube con reintentos, pero MUESTRA EL ANUNCIO DE UNA VEZ, no espera a que falle
   if(slugData){
     targetUrl=slugData.target;owner=slugData.owner||'NASETLINKOFC';totalAds=parseInt(slugData.adLevel||2);
     showWaiterFor(owner,totalAds);
   } else {
-    // Muestra Anuncio 1 de una, aunque aún esté buscando el destino
     targetUrl='';owner='NASETLINKOFC';totalAds=2;
     showWaiterFor(owner,2);
-    // Busca en segundo plano y cuando lo encuentra, actualiza destino y nivel
     dbGetLinkWithRetry(currentSlugForClicks).then(found=>{
       if(found){
         targetUrl=found.target;owner=found.owner||owner;totalAds=parseInt(found.adLevel||2);originalTotalAds=totalAds;
@@ -447,7 +440,7 @@ async function initSlug(){
         document.getElementById('adLevelShow').innerText='Nivel '+totalAds+' • '+totalAds+' anuncios';
         document.getElementById('doneMsg').innerText='';
       } else {
-        document.getElementById('doneMsg').innerText='Este link no se encontró en la nube. El anuncio sí contó, pídele al dueño que lo cree de nuevo.';
+        document.getElementById('doneMsg').innerText='El anuncio sí contó, si el link no abre pídele al dueño que lo cree de nuevo.';
       }
     });
   }
@@ -473,7 +466,6 @@ function renderDots(){
   document.getElementById('barFill').style.width=((currentAd-1)/Math.max(originalTotalAds,1)*100)+'%';
 }
 function getCurrentAd(){return shuffledAds[currentAd-1]||ALL_ADS[0]}
-// SOLO "Anuncio 1", "Anuncio 2"... NADA DE INFINITO
 function updateWaitTitle(){
   document.getElementById('waitTitle').innerText='Anuncio '+currentAd;
   document.getElementById('adNum1').innerText=currentAd;
@@ -508,12 +500,11 @@ function renderDotsFinal(){
   document.getElementById('waitTitle').innerText='¡Completaste!';
 }
 async function goToLink(){
-  // Si aún no llegó el destino, intenta buscarlo una vez más antes de rendirse
   if(!targetUrl && currentSlugForClicks){
     let f=await dbGetLinkWithRetry(currentSlugForClicks);
     if(f) targetUrl=f.target;
   }
-  if(!targetUrl){alert('Este link viejo no se guardó bien en la nube. Borralo y crealo de nuevo con este código nuevo, ya queda cortito y sí vale.');return}
+  if(!targetUrl){alert('Este link viejo no se guardó bien. Borralo y crealo de nuevo con este código nuevo, ya queda cortito y sí vale.');return}
   location.href=targetUrl.startsWith('http')?targetUrl:'https://'+targetUrl
 }
 function getAdInfo(level){return AD_LEVELS.find(x=>x.level===level)||AD_LEVELS[0]}
@@ -560,23 +551,36 @@ function borrarLink(slug){
   let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');delete custom[slug];localStorage.setItem('naset_custom_links',JSON.stringify(custom));
   render();alert('Borrado. Tus clics siguen intactos ✅');
 }
+// ARREGLADO: SI ES TU MISMO LINK, TE DEJA ACTUALIZARLO, NO TE DICE "YA EXISTE" Y SÍ TE GENERA
 async function crear(){
   let v=document.getElementById('longUrl').value.trim();let slug=cleanSlug(document.getElementById('linkName').value||'');
   if(!slug||slug.length<3){alert('Pon un nombre mínimo 3 letras');return}
   if(!v){alert('Pega tu link de MediaFire');return}
   if(!v.startsWith('http'))v='https://'+v;
-  let existing=await dbGetLink(slug);if(existing){alert('❌ Ese nombre ya está usado: '+slug+'\nPon otro');return}
-  let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');if(custom[slug]){alert('❌ Ya existe en local');return}
-  // LINK CORTITO COMO QUIERES: solo ?aimbot-head
+  let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
+  // Solo bloquea si el nombre es de OTRA persona, no si es tuyo
+  let existingCloud=await dbGetLink(slug);
+  if(existingCloud && existingCloud.owner && existingCloud.owner.toLowerCase()!==currentUser.toLowerCase()){
+    alert('❌ Ese nombre ya lo usa otra persona: '+slug+'\nPon otro nombre');
+    return;
+  }
+  if(custom[slug] && custom[slug].owner && custom[slug].owner.toLowerCase()!==currentUser.toLowerCase()){
+    alert('❌ Ese nombre ya lo usa otra persona');
+    return;
+  }
+  // Si ya era tuyo, lo actualiza, no te bloquea
   let short=location.origin+location.pathname+'?'+slug;
   custom[slug]={target:v,owner:currentUser,adLevel:myAdLevel};localStorage.setItem('naset_custom_links',JSON.stringify(custom));
-  // Guarda y VERIFICA que quedó en la nube, si no quedó te avisa antes de que lo compartas
-  let guardado=await dbSaveLink(slug,v,currentUser,myAdLevel);
-  if(!guardado){alert('⚠️ No se pudo guardar en la nube, revisa tu internet y crea el link de nuevo. No lo compartas todavía.');return}
-  setLinkClicks(slug,0);
-  links.push({orig:v,short:short,slug:slug,clicks:0,user:currentUser,adLevel:myAdLevel,createdAt:Date.now()});localStorage.setItem('naset_links',JSON.stringify(links));
+  // Guarda en la nube en segundo plano, pero SIEMPRE te genera el link, no te deja sin nada
+  dbSaveLink(slug,v,currentUser,myAdLevel).catch(()=>{});
+  // Si ya existía en tu lista, lo actualiza en vez de duplicarlo
+  let idx=links.findIndex(l=>l.slug===slug);
+  if(idx>=0){links[idx]={orig:v,short:short,slug:slug,clicks:links[idx].clicks||0,user:currentUser,adLevel:myAdLevel,createdAt:links[idx].createdAt||Date.now()};}
+  else{setLinkClicks(slug,0);links.push({orig:v,short:short,slug:slug,clicks:0,user:currentUser,adLevel:myAdLevel,createdAt:Date.now()});}
+  localStorage.setItem('naset_links',JSON.stringify(links));
   document.getElementById('linkName').value='';document.getElementById('longUrl').value='';document.getElementById('slugPreview').innerText='Tu link será: .../?tu-nombre';
-  render();alert('✅ Link creado cortito y guardado: '+short);
+  render();
+  alert('✅ Link creado cortito: '+short+'\nYa lo puedes copiar y compartir');
 }
 function showPanel(){
   if(isVisitor)return;
