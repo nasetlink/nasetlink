@@ -86,7 +86,7 @@ table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;borde
 <div class="stats"><div class="stat"><b id="totalClicks">0</b><span>MIS CLICS TOTALES</span></div><div class="stat"><b id="totalEarn">$0.00</b><span>MI GANADO</span></div><div class="stat"><b id="myLevel">Nivel 2</b><span>ANUNCIOS</span></div></div>
 <div class="box"><h3>🏆 Mis Rangos - Suben solos</h3><div id="rankTableLive"></div><p class="small" id="rankMsg"></p></div>
 <div class="box"><h3>📢 Tu Nivel de Anuncios</h3><div class="grid5"><button class="level-btn" data-lv="2" onclick="changeAdLevel(2)">2</button><button class="level-btn" data-lv="4" onclick="changeAdLevel(4)">4</button><button class="level-btn" data-lv="6" onclick="changeAdLevel(6)">6</button><button class="level-btn" data-lv="8" onclick="changeAdLevel(8)">8</button><button class="level-btn" data-lv="10" onclick="changeAdLevel(10)">10</button></div><p class="small" id="adLevelInfo"></p><button class="green" onclick="saveAdLevel()">💾 GUARDAR MI NIVEL</button></div>
-<div class="box"><h3>✨ Crear Link con Nombre</h3><label>📝 Nombre:</label><input id="linkName" placeholder="Ej: cuenta-free" oninput="updateSlugPreview()"><div class="slug-preview" id="slugPreview">Tu link será: .../?tu-nombre</div><label>🔗 Link de MediaFire:</label><input id="longUrl" placeholder="Pega tu link..."><button onclick="crear()">✨ GENERAR MI LINK</button><div id="myLinks"></div></div>
+<div class="box"><h3>✨ Crear Link con Nombre</h3><label>📝 Nombre:</label><input id="linkName" placeholder="Ej: aimbot-head" oninput="updateSlugPreview()"><div class="slug-preview" id="slugPreview">Tu link será: .../?tu-nombre</div><label>🔗 Link de MediaFire:</label><input id="longUrl" placeholder="Pega tu link..."><button onclick="crear()">✨ GENERAR MI LINK</button><div id="myLinks"></div></div>
 <div class="box"><h3>💰 Pagos por 1000 clics</h3><table><tr><th>Nivel</th><th>Variantes</th><th>Tiempo</th><th>Pago</th></tr><tbody id="adTable"></tbody></table></div>
 <button class="sec" onclick="logout()">Cerrar Sesión</button>
 </div>
@@ -102,15 +102,11 @@ const WHATSAPP_GROUP="https://chat.whatsapp.com/JAqf2gVEFlz59saw6MVveK?s=cl&p=i&
 function joinWhatsApp(){window.open(WHATSAPP_GROUP,'_blank')}
 function toggleMenu(){let s=document.getElementById('sidebar'),o=document.getElementById('overlay');let open=s.classList.contains('open');if(open){s.classList.remove('open');o.classList.remove('show')}else{s.classList.add('open');o.classList.add('show')}}
 function cleanSlug(t){return t.toLowerCase().trim().replace(/\s+/g,'-').replace(/[^a-z0-9\-_]/g,'').replace(/\-+/g,'-').slice(0,40)}
+// LINK CORTITO: SOLO ?nombre, SIN TEXTO LARGO
 function updateSlugPreview(){
   let v=cleanSlug(document.getElementById('linkName').value||'');
   document.getElementById('linkName').value=v;
-  // El link nuevo ya lleva todo adentro, por eso nunca dice que no existe
-  let long=document.getElementById('longUrl').value.trim();
-  if(!v){document.getElementById('slugPreview').innerText='Tu link será: .../?tu-nombre';return}
-  if(!long){document.getElementById('slugPreview').innerText='Tu link será: '+location.origin+location.pathname+'?'+v+' (pon tu link de MediaFire para que quede completo)';return}
-  let go=btoa(unescape(encodeURIComponent(long))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-  document.getElementById('slugPreview').innerText='Tu link será: '+location.origin+location.pathname+'?go='+go+'&u='+currentUser+'&ad='+myAdLevel+'&s='+v;
+  document.getElementById('slugPreview').innerText=!v?'Tu link será: .../?tu-nombre':'Tu link será: '+location.origin+location.pathname+'?'+v;
 }
 function verPass(id){let i=document.getElementById(id);i.type=i.type==="password"?"text":"password"}
 let authMode='login';
@@ -139,9 +135,22 @@ async function fetchCloudProfiles(){
     if(Array.isArray(j2)){j2.forEach(x=>{if(x.username){cloudProfiles[x.username.toLowerCase()]={avatar:x.avatar||cloudProfiles[x.username.toLowerCase()]?.avatar||"",displayName:x.display_name||"",bio:x.bio||""}; if(x.is_verified) cloudVerified[x.username.toLowerCase()]=true;}})}
   }catch(e){}
 }
+// GUARDADO FUERTE: intenta crear, si ya existe lo actualiza, y luego VERIFICA que quedó guardado
 async function dbSaveLink(slug,target,owner,adLevel){
   slug=cleanSlug(slug);
-  try{await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({slug:slug,target:target,owner_user:owner,ad_level:adLevel,clicks:0})})}catch(e){}
+  let body=JSON.stringify({slug:slug,target:target,owner_user:owner,ad_level:adLevel,clicks:0});
+  // 1) Intento crear
+  try{await fetch(SUPABASE_URL+"/rest/v1/naset_links",{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:body})}catch(e){}
+  // 2) Si no quedó, intenta actualizar
+  try{
+    let check=await dbGetLink(slug);
+    if(!check){
+      await fetch(SUPABASE_URL+"/rest/v1/naset_links?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({target:target,owner_user:owner,ad_level:adLevel})});
+    }
+  }catch(e){}
+  // 3) Verifica
+  let ok=await dbGetLink(slug);
+  return !!ok;
 }
 async function dbGetLink(slug){
   slug=cleanSlug(decodeURIComponent(slug||''));
@@ -161,15 +170,13 @@ async function dbGetLink(slug){
   }catch(e){}
   return null;
 }
-function decodeGo(go){
-  try{
-    let s=go.replace(/-/g,'+').replace(/_/g,'/');
-    while(s.length%4!==0) s+='=';
-    return decodeURIComponent(escape(atob(s)));
-  }catch(e){return ''}
-}
-function encodeGo(url){
-  try{return btoa(unescape(encodeURIComponent(url))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}catch(e){return ''}
+async function dbGetLinkWithRetry(slug){
+  for(let i=0;i<5;i++){
+    let f=await dbGetLink(slug);
+    if(f) return f;
+    await new Promise(r=>setTimeout(r,700));
+  }
+  return null;
 }
 function getLinkClicks(slug){return parseInt(localStorage.getItem('naset_link_clicks_'+slug.toLowerCase())||'0')}
 function setLinkClicks(slug,v){localStorage.setItem('naset_link_clicks_'+slug.toLowerCase(),String(v))}
@@ -400,10 +407,9 @@ function logout(){localStorage.removeItem('naset_user');localStorage.removeItem(
 const ALL_ADS=[{type:"💰 Dinero",bg:"#f59e0b",img:"https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=300&fit=crop",text:"🔥 ¡GANA $5 DIARIOS! 👉 TOCA AQUÍ"},{type:"🎮 Juegos",bg:"#22c55e",img:"https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=600&h=300&fit=crop",text:"🎮 ¡JUEGA Y GANA! 👉 TOCA AQUÍ"},{type:"📱 App",bg:"#3b82f6",img:"https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=300&fit=crop",text:"📱 APP QUE PAGA 👉 TOCA AQUÍ"},{type:"🎁 Premio",bg:"#a855f7",img:"https://images.unsplash.com/photo-1513151233558-d860c5398176?w=600&h=300&fit=crop",text:"🎁 ¡GANASTE PREMIO! 👉 TOCA AQUÍ"}];
 let AD_LEVELS=JSON.parse(localStorage.getItem('naset_ad_levels')||JSON.stringify([{level:2,ads:2,price:1},{level:4,ads:4,price:2.5},{level:6,ads:6,price:4},{level:8,ads:8,price:6},{level:10,ads:10,price:10}]));
 let currentUser=localStorage.getItem('naset_user');let links=JSON.parse(localStorage.getItem('naset_links')||'[]');let users=getAllUsers();let isAdmin=localStorage.getItem('naset_is_admin')==='1';let isMod=localStorage.getItem('naset_is_mod')==='1';let myAdLevel=parseInt(localStorage.getItem('naset_my_adlevel')||'2');let tempAdLevel=myAdLevel;let targetUrl='';let totalAds=2,currentAd=1,timerInt=null,shuffledAds=[],adStartTime=0,originalTotalAds=2;
-const params=new URLSearchParams(location.search);const go=params.get('go');const ownerParam=params.get('u')||'';const adParam=params.get('ad');const slugParamQ=params.get('s')||'';
-let slugParam='';for(let k of params.keys()){if(k!=='go'&&k!=='u'&&k!=='ad'&&k!=='s'){slugParam=k;break}}
+const params=new URLSearchParams(location.search);let slugParam='';for(let k of params.keys()){slugParam=k;break}
 let slugData=null,isVisitor=false,owner='';
-function showWaiterFor(ownerName,level,slugForClicks){
+function showWaiterFor(ownerName,level){
   isVisitor=true;owner=ownerName||'NASETLINKOFC';totalAds=parseInt(level||2);originalTotalAds=totalAds;currentAd=1;
   document.getElementById('authBox').style.display='none';
   document.getElementById('panel').style.display='none';
@@ -417,41 +423,35 @@ function showWaiterFor(ownerName,level,slugForClicks){
   renderDots();updateWaitTitle();
 }
 async function initSlug(){
-  // CASO NUEVO: link completo ?go=...&u=...&ad=...&s=... -> SI O SI SALE EL ANUNCIO, NO DEPENDE DE LA NUBE
-  if(go){
-    isVisitor=true;currentSlugForClicks=cleanSlug(slugParamQ||slugParam||'link');
-    let decoded=decodeGo(go);
-    targetUrl=decoded||'';
-    owner=ownerParam||'NASETLINKOFC';
-    showWaiterFor(owner,adParam||2,currentSlugForClicks);
-    return true;
+  if(!slugParam) return false;
+  isVisitor=true;currentSlugForClicks=cleanSlug(slugParam);
+  document.getElementById('authBox').style.display='none';
+  document.getElementById('panel').style.display='none';
+  // 1) Busca en tu celular
+  let local=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
+  let localKey=Object.keys(local).find(k=>k.toLowerCase()===currentSlugForClicks.toLowerCase());
+  if(localKey) slugData=local[localKey];
+  // 2) Si no está, busca en la nube con reintentos, pero MUESTRA EL ANUNCIO DE UNA VEZ, no espera a que falle
+  if(slugData){
+    targetUrl=slugData.target;owner=slugData.owner||'NASETLINKOFC';totalAds=parseInt(slugData.adLevel||2);
+    showWaiterFor(owner,totalAds);
+  } else {
+    // Muestra Anuncio 1 de una, aunque aún esté buscando el destino
+    targetUrl='';owner='NASETLINKOFC';totalAds=2;
+    showWaiterFor(owner,2);
+    // Busca en segundo plano y cuando lo encuentra, actualiza destino y nivel
+    dbGetLinkWithRetry(currentSlugForClicks).then(found=>{
+      if(found){
+        targetUrl=found.target;owner=found.owner||owner;totalAds=parseInt(found.adLevel||2);originalTotalAds=totalAds;
+        renderDots();updateWaitTitle();
+        document.getElementById('adLevelShow').innerText='Nivel '+totalAds+' • '+totalAds+' anuncios';
+        document.getElementById('doneMsg').innerText='';
+      } else {
+        document.getElementById('doneMsg').innerText='Este link no se encontró en la nube. El anuncio sí contó, pídele al dueño que lo cree de nuevo.';
+      }
+    });
   }
-  // CASO VIEJO: solo ?bbb -> TAMBIÉN SALE EL ANUNCIO SI O SI, busca en la nube pero si no lo encuentra igual muestra anuncios
-  if(slugParam){
-    isVisitor=true;currentSlugForClicks=cleanSlug(slugParam);
-    document.getElementById('authBox').style.display='none';
-    document.getElementById('panel').style.display='none';
-    // Intenta buscar rápido, pero NO bloquea el anuncio
-    let local=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');
-    let localKey=Object.keys(local).find(k=>k.toLowerCase()===currentSlugForClicks.toLowerCase());
-    if(localKey) slugData=local[localKey];
-    if(!slugData){
-      // Busca en nube en segundo plano, sin esperar a que falle
-      dbGetLink(currentSlugForClicks).then(found=>{
-        if(found && !targetUrl){targetUrl=found.target;owner=found.owner||owner;totalAds=parseInt(found.adLevel||2);originalTotalAds=totalAds;renderDots();updateWaitTitle();}
-      });
-    }
-    if(slugData){targetUrl=slugData.target;owner=slugData.owner||'NASETLINKOFC';totalAds=parseInt(slugData.adLevel||2);}
-    else{targetUrl='';owner='NASETLINKOFC';totalAds=2;}
-    // SI NO SE ENCONTRÓ, IGUAL MUESTRA EL ANUNCIO, NO EL ERROR
-    showWaiterFor(owner,totalAds,currentSlugForClicks);
-    if(!slugData){
-      // Si al final no hay destino, al terminar se le avisa, pero el anuncio ya salió y ya contó
-      document.getElementById('doneMsg').innerText='Si el dueño borró este link, pídele el link nuevo. El anuncio ya contó.';
-    }
-    return true;
-  }
-  return false;
+  return true;
 }
 function isAdBot(){if(!humanInteracted)return true;if(Date.now()-pageLoadTime<1500)return true;return false}
 async function addClickToOwner(ownerName){
@@ -473,7 +473,7 @@ function renderDots(){
   document.getElementById('barFill').style.width=((currentAd-1)/Math.max(originalTotalAds,1)*100)+'%';
 }
 function getCurrentAd(){return shuffledAds[currentAd-1]||ALL_ADS[0]}
-// ARREGLADO: SOLO DICE "Anuncio 1", "Anuncio 2"... NADA DE INFINITO, NADA DE "de 2"
+// SOLO "Anuncio 1", "Anuncio 2"... NADA DE INFINITO
 function updateWaitTitle(){
   document.getElementById('waitTitle').innerText='Anuncio '+currentAd;
   document.getElementById('adNum1').innerText=currentAd;
@@ -507,11 +507,13 @@ function renderDotsFinal(){
   document.getElementById('dots').innerHTML=h;
   document.getElementById('waitTitle').innerText='¡Completaste!';
 }
-function goToLink(){
-  if(!targetUrl){
-    alert('Este link viejo ya no tiene destino guardado. Pídele al dueño que te pase el link nuevo (el que lleva ?go=...). El anuncio ya contó.');
-    return;
+async function goToLink(){
+  // Si aún no llegó el destino, intenta buscarlo una vez más antes de rendirse
+  if(!targetUrl && currentSlugForClicks){
+    let f=await dbGetLinkWithRetry(currentSlugForClicks);
+    if(f) targetUrl=f.target;
   }
+  if(!targetUrl){alert('Este link viejo no se guardó bien en la nube. Borralo y crealo de nuevo con este código nuevo, ya queda cortito y sí vale.');return}
   location.href=targetUrl.startsWith('http')?targetUrl:'https://'+targetUrl
 }
 function getAdInfo(level){return AD_LEVELS.find(x=>x.level===level)||AD_LEVELS[0]}
@@ -565,15 +567,16 @@ async function crear(){
   if(!v.startsWith('http'))v='https://'+v;
   let existing=await dbGetLink(slug);if(existing){alert('❌ Ese nombre ya está usado: '+slug+'\nPon otro');return}
   let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');if(custom[slug]){alert('❌ Ya existe en local');return}
-  // LINK NUEVO: LLEVA TODO ADENTRO, POR ESO NUNCA DICE QUE NO EXISTE
-  let goCode=encodeGo(v);
-  let short=location.origin+location.pathname+'?go='+goCode+'&u='+currentUser+'&ad='+myAdLevel+'&s='+slug;
+  // LINK CORTITO COMO QUIERES: solo ?aimbot-head
+  let short=location.origin+location.pathname+'?'+slug;
   custom[slug]={target:v,owner:currentUser,adLevel:myAdLevel};localStorage.setItem('naset_custom_links',JSON.stringify(custom));
-  await dbSaveLink(slug,v,currentUser,myAdLevel);
+  // Guarda y VERIFICA que quedó en la nube, si no quedó te avisa antes de que lo compartas
+  let guardado=await dbSaveLink(slug,v,currentUser,myAdLevel);
+  if(!guardado){alert('⚠️ No se pudo guardar en la nube, revisa tu internet y crea el link de nuevo. No lo compartas todavía.');return}
   setLinkClicks(slug,0);
   links.push({orig:v,short:short,slug:slug,clicks:0,user:currentUser,adLevel:myAdLevel,createdAt:Date.now()});localStorage.setItem('naset_links',JSON.stringify(links));
   document.getElementById('linkName').value='';document.getElementById('longUrl').value='';document.getElementById('slugPreview').innerText='Tu link será: .../?tu-nombre';
-  render();alert('✅ Link creado, este sí vale sí o sí: '+short);
+  render();alert('✅ Link creado cortito y guardado: '+short);
 }
 function showPanel(){
   if(isVisitor)return;
