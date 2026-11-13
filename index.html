@@ -7,17 +7,14 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
 body{background:#000;color:#fff;display:flex;justify-content:center;padding:0 14px 20px;overscroll-behavior:none}
-.card{width:100%;max-width:480px}
-.header{display:flex;align-items:center;justify-content:space-between;padding:14px 4px;position:sticky;top:0;background:#000;z-index:50}
-.logo{font-size:28px;font-weight:900}.logo span{color:#a855f7}
-/* HAMBURGUESA MEJORADA */
-.hamburger{width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,#a855f7,#ec4899);border:none;color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(168,85,247,.5);transition:transform .15s, box-shadow .15s;position:relative}
-.hamburger:active{transform:scale(.92);box-shadow:0 2px 8px rgba(168,85,247,.4)}
+.card{width:100%;max-width:480px;overflow:hidden}
+.header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 2px;position:sticky;top:0;background:#000;z-index:50;width:100%}
+.logo{font-size:26px;font-weight:900;white-space:nowrap;flex-shrink:1;text-align:center;cursor:pointer}.logo span{color:#a855f7}
+.hamburger{width:44px;height:44px;min-width:44px;border-radius:14px;background:linear-gradient(135deg,#a855f7,#ec4899);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(168,85,247,.5);flex-shrink:0}
+.hamburger:active{transform:scale(.92)}
 .hamburger .bars{display:flex;flex-direction:column;gap:5px}
-.hamburger .bars span{display:block;width:22px;height:3px;background:#fff;border-radius:99px;transition:.2s}
-.hamburger:hover .bars span:nth-child(1){width:16px}
-.hamburger:hover .bars span:nth-child(3){width:16px}
-.header-avatar{width:42px;height:42px;border-radius:99px;background:#a855f7;display:flex;align-items:center;justify-content:center;font-weight:900;border:2px solid #a855f7;cursor:pointer;overflow:hidden}
+.hamburger .bars span{display:block;width:20px;height:3px;background:#fff;border-radius:99px}
+.header-avatar{width:44px;height:44px;min-width:44px;border-radius:99px;background:#a855f7;display:flex;align-items:center;justify-content:center;font-weight:900;border:2px solid #a855f7;cursor:pointer;overflow:hidden;flex-shrink:0}
 .header-avatar img{width:100%;height:100%;object-fit:cover}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:99;display:none}.overlay.show{display:block}
 .sidebar{position:fixed;top:0;left:-300px;width:280px;height:100%;background:#111;border-right:1px solid #333;z-index:100;transition:left .3s;padding:20px;display:flex;flex-direction:column}
@@ -25,7 +22,7 @@ body{background:#000;color:#fff;display:flex;justify-content:center;padding:0 14
 .menu-item{display:flex;gap:12px;padding:14px 12px;border-radius:14px;background:#1a1a1a;border:1px solid #222;margin-bottom:10px;cursor:pointer;font-weight:bold}
 .menu-item.logout{background:#2a0a0a;border-color:#dc2626;color:#ff6b6b;margin-top:auto}
 .close-menu{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:99px;background:#222;border:1px solid #444;color:#fff;cursor:pointer}
-.box{background:#111;border:1px solid #333;border-radius:18px;padding:18px;margin-bottom:14px}
+.box{background:#111;border:1px solid #333;border-radius:18px;padding:18px;margin-bottom:14px;overflow:hidden}
 .gold{border:2px solid gold!important}
 input,select{width:100%;padding:13px;border-radius:12px;border:1px solid #333;background:#000;color:#fff;margin-bottom:10px}
 button{width:100%;padding:14px;border:none;border-radius:14px;background:#a855f7;color:#fff;font-weight:bold;cursor:pointer;margin-bottom:8px}
@@ -35,7 +32,12 @@ button.adbtn{background:#f59e0b;color:#000;font-size:17px;padding:18px}button.re
 .stats{display:flex;gap:10px;margin-bottom:14px}.stat{flex:1;background:#111;border:1px solid #333;border-radius:14px;padding:12px;text-align:center}.stat b{font-size:19px;display:block}.stat span{font-size:11px;color:#aaa}
 .badge{display:inline-block;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:bold;background:#a855f7}.badge.bronce{background:#cd7f32}.badge.plata{background:#c0c0c0;color:#000}.badge.oro{background:#FFD700;color:#000}.badge.diamante{background:#00e5ff;color:#000}.badge.elite{background:linear-gradient(90deg,#a855f7,#FFD700)}.badge.leyenda{background:linear-gradient(90deg,#ff6b00,#ff0000)}.badge.mitico{background:linear-gradient(90deg,#00ff88,#00e5ff);color:#000}.badge.maestro{background:linear-gradient(90deg,#FFD700,#fff);color:#000}.badge.dios{background:linear-gradient(90deg,#ff00ff,#00ffff,#FFD700)}
 .small{color:#888;font-size:12px;text-align:center;margin-top:10px}label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px}
-#count{font-size:70px;font-weight:900;text-align:center}.bar{height:10px;background:#222;border-radius:99px;overflow:hidden}.bar div{height:100%;background:#f59e0b;width:100%}
+#waitTitle{font-size:19px;font-weight:900;text-align:center;white-space:normal;word-break:break-word;line-height:1.3;padding:0 6px}
+#count{font-size:56px;font-weight:900;text-align:center;line-height:1.1;height:68px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#stateWait{margin-top:10px}
+#stateWait button{margin-top:10px}
+#stateDone{margin-top:16px;border-top:1px solid #333;padding-top:14px}
+.bar{height:10px;background:#222;border-radius:99px;overflow:hidden}.bar div{height:100%;background:#f59e0b;width:100%}
 .flex{display:flex;gap:8px}.level-btn{padding:14px 0;background:#222;border:1px solid #444}.level-btn.active{background:#a855f7}
 .grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0}
 .ad-preview{background:#000;border:1px dashed #f59e0b;border-radius:14px;padding:12px;text-align:center;margin:12px 0}
@@ -55,18 +57,19 @@ button.adbtn{background:#f59e0b;color:#000;font-size:17px;padding:18px}button.re
 .view-title{font-size:20px;font-weight:900;margin-bottom:12px;text-align:center}.rank-bar{height:12px;background:#222;border-radius:99px;overflow:hidden;margin-top:6px}.rank-bar div{height:100%;background:linear-gradient(90deg,#22c55e,#4ade80)}
 .link-item{background:#000;border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:10px;font-size:12px;word-break:break-all}
 .slug-preview{background:#000;border:1px dashed #a855f7;border-radius:12px;padding:10px;text-align:center;color:#a855f7;margin-bottom:10px;word-break:break-all}
-.step-dots{display:flex;gap:6px;justify-content:center;margin:10px 0}.dot{width:30px;height:30px;border-radius:99px;background:#222;display:flex;align-items:center;justify-content:center;font-weight:bold}.dot.done{background:#16a34a}.dot.current{background:#f59e0b;color:#000}
+.step-dots{display:flex;gap:6px;justify-content:center;margin:10px 0;flex-wrap:wrap}.dot{width:30px;height:30px;border-radius:99px;background:#222;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0}.dot.done{background:#16a34a}.dot.current{background:#f59e0b;color:#000}
 table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid #222}
+.top-sub{color:#aaa;text-align:center;font-size:13px;margin:5px 0 14px;white-space:normal;word-break:break-word;padding:0 4px}
 </style>
 </head>
 <body>
 <div class="card">
-<div class="header" id="headerBar" style="display:none"><button class="hamburger" onclick="toggleMenu()"><span class="bars"><span></span><span></span><span></span></span></button><div class="logo">NASET<span>LINK</span></div><div class="header-avatar" id="topAvatar" onclick="openView('profile')">?</div></div>
+<div class="header" id="headerBar" style="display:none"><button class="hamburger" onclick="toggleMenu()"><span class="bars"><span></span><span></span><span></span></span></button><div class="logo" onclick="closeView()">NASET<span>LINK</span></div><div class="header-avatar" id="topAvatar" onclick="openProfileFromAvatar(event)">?</div></div>
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 <div class="sidebar" id="sidebar"><button class="close-menu" onclick="toggleMenu()">✕</button><div style="display:flex;gap:12px;padding-bottom:16px;border-bottom:1px solid #333;margin-bottom:16px"><div class="avatar-small" id="sideAvatar" style="width:52px;height:52px;font-size:20px">?</div><div><b id="sideName">Mi Perfil</b><p id="sideUser" style="font-size:12px;color:#aaa"></p><span id="sideBadge"></span></div></div><div class="menu-item" id="menuAdmin" style="display:none" onclick="toggleMenu();openView('admin')"><span>👑</span> Panel Admin</div><div class="menu-item" id="menuStats" style="display:none" onclick="toggleMenu();openView('stats')"><span>📊</span> Estadísticas</div><div class="menu-item" style="background:#fff;color:#000" onclick="toggleMenu();openView('chat')"><span>💬</span> Chat Mundial</div><div class="menu-item" onclick="toggleMenu();openView('profile')"><span>👤</span> Mi Perfil</div><div class="menu-item" onclick="toggleMenu();closeView()"><span>🏠</span> Inicio / Mis Links</div><div class="menu-item logout" onclick="logout()"><span>🚪</span> Cerrar Sesión</div></div>
 
 <div id="logoBig" style="text-align:center;padding:18px 0 4px"><div class="logo" style="font-size:34px">NASET<span>LINK</span></div></div>
-<p style="color:#aaa;text-align:center;font-size:13px;margin:5px 0 14px">📢 Dale clic al anuncio • Espera 5 seg • Regresa</p>
+<p class="top-sub">📢 Dale clic al anuncio • Espera 5 seg • Regresa</p>
 
 <div id="viewProfile" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">✏️ Mi Perfil</p><div class="box" id="profileBoxSolo"></div></div>
 <div id="viewChat" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">💬 Chat Mundial - TODOS</p><div class="box" style="padding:0;overflow:hidden"><div class="chat-box"><div class="chat-header">CHAT MUNDIAL 💬</div><div class="chat-messages full" id="chatMessages"></div><div class="chat-input-row"><input id="chatInput" placeholder="Escribe algo..." maxlength="200"><button onclick="sendChat()">➤</button></div></div></div></div>
@@ -103,7 +106,7 @@ function updateSlugPreview(){let v=cleanSlug(document.getElementById('linkName')
 function verPass(id){let i=document.getElementById(id);i.type=i.type==="password"?"text":"password"}
 let authMode='login';
 const PRESET_AVATARS=["https://i.pravatar.cc/150?img=12","https://i.pravatar.cc/150?img=32","https://i.pravatar.cc/150?img=5","https://i.pravatar.cc/150?img=47","https://i.pravatar.cc/150?img=68","https://i.pravatar.cc/150?img=15","https://i.pravatar.cc/150?img=8","https://i.pravatar.cc/150?img=60"];
-let selectedAvatar='',currentView='home',humanInteracted=false,pageLoadTime=Date.now(),lastClickTime=0,lastChatTime=0;
+let selectedAvatar='',currentView='home',prevView='home',humanInteracted=false,pageLoadTime=Date.now(),lastClickTime=0,lastChatTime=0;
 let cloudProfiles={};
 let cloudVerified={};
 let currentSlugForClicks='';
@@ -191,13 +194,55 @@ function getProfile(user){
 }
 function getDisplayName(user){let p=getProfile(user);return p.displayName||user}
 function getTag(user){
-  // Solo el dueño puede dar verificado, y se guarda en nube para que todos lo vean
   if(cloudVerified[(user||'').toLowerCase()]) return 'verified';
   try{let s=localStorage.getItem('naset_tag_'+(user||'').toLowerCase());if(s==='verified'||s==='influencer')return s} catch(e){} return ''
 }
 function verifiedIcon(user){return getTag(user)==='verified'?' <span style="background:#1d9bf0;color:#fff;border-radius:99px;padding:1px 5px;font-size:10px">✓</span>':''}
-function openView(view){currentView=view;document.getElementById('mainView').style.display='none';document.getElementById('viewProfile').style.display='none';document.getElementById('viewChat').style.display='none';document.getElementById('viewAdmin').style.display='none';document.getElementById('viewStats').style.display='none';if(view==='profile'){document.getElementById('viewProfile').style.display='block';document.getElementById('profileBoxSolo').innerHTML=buildProfileHTML();let p=getProfile(currentUser);renderAvatarOptionsSolo(p.avatar||'');document.getElementById('editDisplayNameSolo').value=p.displayName||'';document.getElementById('editBioSolo').value=p.bio||'';window.scrollTo(0,0)}if(view==='chat'){document.getElementById('viewChat').style.display='block';renderChat();fetchCloudProfiles().then(()=>renderChat());window.scrollTo(0,0)}if(view==='admin'){if(!isAdmin&&!isMod)return;document.getElementById('viewAdmin').style.display='block';document.getElementById('adminPanelSolo').innerHTML=buildAdminHTML();showAdminSolo();window.scrollTo(0,0)}if(view==='stats'){if(!isAdmin&&!isMod)return;document.getElementById('viewStats').style.display='block';renderStats();window.scrollTo(0,0)}}
-function closeView(){currentView='home';document.getElementById('viewProfile').style.display='none';document.getElementById('viewChat').style.display='none';document.getElementById('viewAdmin').style.display='none';document.getElementById('viewStats').style.display='none';document.getElementById('mainView').style.display='block';window.scrollTo(0,0);render();updateProfileUI()}
+// ARREGLO 1: LA FOTO YA NO TE MANDA A TU MISMO LUGAR, TE ABRE OTRA PESTAÑA DIFERENTE (Mi Perfil)
+function openProfileFromAvatar(e){
+  if(e) e.stopPropagation();
+  if(!currentUser){alert('Inicia sesión');return}
+  prevView=currentView;
+  // Cierra el menú si está abierto y abre la vista de perfil como pestaña aparte
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+  openView('profile');
+}
+function openView(view){
+  if(currentView!=='profile' && currentView!=='chat' && currentView!=='admin' && currentView!=='stats'){
+    prevView = isVisitor ? 'waiter' : 'home';
+  } else if(view!==currentView){
+    prevView=currentView;
+  }
+  currentView=view;
+  document.getElementById('mainView').style.display='none';
+  document.getElementById('viewProfile').style.display='none';
+  document.getElementById('viewChat').style.display='none';
+  document.getElementById('viewAdmin').style.display='none';
+  document.getElementById('viewStats').style.display='none';
+  if(view==='profile'){document.getElementById('viewProfile').style.display='block';document.getElementById('profileBoxSolo').innerHTML=buildProfileHTML();let p=getProfile(currentUser);renderAvatarOptionsSolo(p.avatar||'');document.getElementById('editDisplayNameSolo').value=p.displayName||'';document.getElementById('editBioSolo').value=p.bio||'';window.scrollTo(0,0)}
+  if(view==='chat'){document.getElementById('viewChat').style.display='block';renderChat();fetchCloudProfiles().then(()=>renderChat());window.scrollTo(0,0)}
+  if(view==='admin'){if(!isAdmin&&!isMod)return;document.getElementById('viewAdmin').style.display='block';document.getElementById('adminPanelSolo').innerHTML=buildAdminHTML();showAdminSolo();window.scrollTo(0,0)}
+  if(view==='stats'){if(!isAdmin&&!isMod)return;document.getElementById('viewStats').style.display='block';renderStats();window.scrollTo(0,0)}
+}
+function closeView(){
+  document.getElementById('viewProfile').style.display='none';
+  document.getElementById('viewChat').style.display='none';
+  document.getElementById('viewAdmin').style.display='none';
+  document.getElementById('viewStats').style.display='none';
+  document.getElementById('mainView').style.display='block';
+  // Si venías de estar viendo un anuncio (waiter), vuelve ahí, no a tu propio panel
+  if(prevView==='waiter' || isVisitor){
+    currentView='waiter';
+    document.getElementById('authBox').style.display='none';
+    document.getElementById('panel').style.display='none';
+    document.getElementById('waiter').style.display='block';
+  } else {
+    currentView='home';
+    if(currentUser) showPanel();
+  }
+  window.scrollTo(0,0);render();updateProfileUI();
+}
 function buildProfileHTML(){
   let myClicks=getClicksOf(currentUser);let r=getRank(myClicks,currentUser);
   return `<div style="display:flex;gap:14px;align-items:center"><div class="avatar">${getAvatarInner(currentUser)}</div><div><h3>${getDisplayName(currentUser)}${verifiedIcon(currentUser)}</h3><p style="color:#aaa;font-size:12px">Usuario: ${currentUser}</p><p style="color:#aaa;font-size:12px">${getProfile(currentUser).bio||''}</p><div style="margin-top:6px">${rankBadgeHTML(myClicks,currentUser)}</div><p style="font-size:11px;color:#aaa">${myClicks} clics ${r.next?'• Faltan '+(r.nextAt-myClicks)+' para '+r.nextEmoji+' '+r.next:''}</p></div></div>
@@ -257,7 +302,6 @@ async function renderChat(){
   await fetchCloudProfiles();
   let chat=await fetchChatCloud();
   if(chat.length===0){box.innerHTML='<p class="small">Sé el primero en hablar 👋</p>';return}
-  // EN CHAT YA NO SALE RANGO DE NADIE, SOLO NOMBRE + FOTO + VERIFICADO SI EL DUEÑO SE LO DIO
   box.innerHTML=chat.map(m=>{
     let isMine=m.user===currentUser;
     let p=getProfile(m.user);
@@ -319,12 +363,12 @@ async function register(){
 function logout(){localStorage.removeItem('naset_user');localStorage.removeItem('naset_is_admin');localStorage.removeItem('naset_is_mod');location.href='/'}
 const ALL_ADS=[{type:"💰 Dinero",bg:"#f59e0b",img:"https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=300&fit=crop",text:"🔥 ¡GANA $5 DIARIOS! 👉 TOCA AQUÍ"},{type:"🎮 Juegos",bg:"#22c55e",img:"https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=600&h=300&fit=crop",text:"🎮 ¡JUEGA Y GANA! 👉 TOCA AQUÍ"},{type:"📱 App",bg:"#3b82f6",img:"https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=300&fit=crop",text:"📱 APP QUE PAGA 👉 TOCA AQUÍ"},{type:"🎁 Premio",bg:"#a855f7",img:"https://images.unsplash.com/photo-1513151233558-d860c5398176?w=600&h=300&fit=crop",text:"🎁 ¡GANASTE PREMIO! 👉 TOCA AQUÍ"}];
 let AD_LEVELS=JSON.parse(localStorage.getItem('naset_ad_levels')||JSON.stringify([{level:2,ads:2,price:1},{level:4,ads:4,price:2.5},{level:6,ads:6,price:4},{level:8,ads:8,price:6},{level:10,ads:10,price:10}]));
-let currentUser=localStorage.getItem('naset_user');let links=JSON.parse(localStorage.getItem('naset_links')||'[]');let users=getAllUsers();let isAdmin=localStorage.getItem('naset_is_admin')==='1';let isMod=localStorage.getItem('naset_is_mod')==='1';let myAdLevel=parseInt(localStorage.getItem('naset_my_adlevel')||'2');let tempAdLevel=myAdLevel;let targetUrl='';let totalAds=2,currentAd=1,timerInt=null,shuffledAds=[],adStartTime=0;
+let currentUser=localStorage.getItem('naset_user');let links=JSON.parse(localStorage.getItem('naset_links')||'[]');let users=getAllUsers();let isAdmin=localStorage.getItem('naset_is_admin')==='1';let isMod=localStorage.getItem('naset_is_mod')==='1';let myAdLevel=parseInt(localStorage.getItem('naset_my_adlevel')||'2');let tempAdLevel=myAdLevel;let targetUrl='';let totalAds=2,currentAd=1,timerInt=null,shuffledAds=[],adStartTime=0,originalTotalAds=2;
 const params=new URLSearchParams(location.search);const go=params.get('go');const ownerParam=params.get('u')||'';let slugParam='';for(let k of params.keys()){if(k!=='go'&&k!=='u'&&k!=='ad'){slugParam=k;break}}
 let slugData=null,isVisitor=false,owner='';
 async function initSlug(){
-  if(slugParam){isVisitor=true;currentSlugForClicks=slugParam;let local=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');if(local[slugParam])slugData=local[slugParam];else slugData=await dbGetLink(slugParam);if(!slugData){document.body.innerHTML='<div style="padding:40px;text-align:center"><h2>😕 Link no encontrado</h2><p>'+slugParam+' no existe</p><p><a href="/" style="color:#a855f7">Ir a NASET LINK</a></p></div>';return false}targetUrl=slugData.target;owner=slugData.owner||'NASETLINKOFC';totalAds=parseInt(slugData.adLevel||2);document.getElementById('authBox').style.display='none';document.getElementById('panel').style.display='none';document.getElementById('waiter').style.display='block';shuffledAds=[...ALL_ADS].sort(()=>Math.random()-0.5).slice(0,totalAds);let info=AD_LEVELS.find(x=>x.level===totalAds)||AD_LEVELS[0];document.getElementById('adLevelShow').innerText='Nivel '+info.level+' • '+info.ads+' variantes • Espera 5 seg';renderDots();updateWaitTitle();return true}
-  if(go){isVisitor=true;owner=ownerParam;try{targetUrl=atob(go)}catch(e){targetUrl=''}totalAds=parseInt(params.get('ad')||'2');document.getElementById('authBox').style.display='none';document.getElementById('panel').style.display='none';document.getElementById('waiter').style.display='block';shuffledAds=[...ALL_ADS].sort(()=>Math.random()-0.5).slice(0,totalAds);renderDots();updateWaitTitle();return true}
+  if(slugParam){isVisitor=true;currentSlugForClicks=slugParam;let local=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');if(local[slugParam])slugData=local[slugParam];else slugData=await dbGetLink(slugParam);if(!slugData){document.body.innerHTML='<div style="padding:40px;text-align:center"><h2>😕 Link no encontrado</h2><p>'+slugParam+' no existe</p><p><a href="/" style="color:#a855f7">Ir a NASET LINK</a></p></div>';return false}targetUrl=slugData.target;owner=slugData.owner||'NASETLINKOFC';totalAds=parseInt(slugData.adLevel||2);originalTotalAds=totalAds;document.getElementById('authBox').style.display='none';document.getElementById('panel').style.display='none';document.getElementById('waiter').style.display='block';shuffledAds=[...ALL_ADS].sort(()=>Math.random()-0.5).slice(0,totalAds);let info=AD_LEVELS.find(x=>x.level===totalAds)||AD_LEVELS[0];document.getElementById('adLevelShow').innerText='Nivel '+info.level+' • '+info.ads+' anuncios • Espera 5 seg';renderDots();updateWaitTitle();return true}
+  if(go){isVisitor=true;owner=ownerParam;try{targetUrl=atob(go)}catch(e){targetUrl=''}totalAds=parseInt(params.get('ad')||'2');originalTotalAds=totalAds;document.getElementById('authBox').style.display='none';document.getElementById('panel').style.display='none';document.getElementById('waiter').style.display='block';shuffledAds=[...ALL_ADS].sort(()=>Math.random()-0.5).slice(0,totalAds);renderDots();updateWaitTitle();return true}
   return false;
 }
 function isAdBot(){if(!humanInteracted)return true;if(Date.now()-pageLoadTime<1500)return true;return false}
@@ -337,15 +381,59 @@ async function addClickToOwner(ownerName){
   if(currentSlugForClicks) await addClickToThisLink(currentSlugForClicks,ownerName);
   render();
 }
-function renderDots(){let h='';for(let i=1;i<=Math.min(totalAds,8);i++){let cls=i<currentAd?'dot done':(i===currentAd?'dot current':'dot');h+='<div class="'+cls+'">'+(i<currentAd?'✓':i)+'</div>'}document.getElementById('dots').innerHTML=h;document.getElementById('barFill').style.width=((currentAd-1)/Math.max(totalAds,1)*100)+'%'}
+// ARREGLO 2: YA NO SALEN 8 PUNTOS, SALEN EXACTOS LOS QUE PUSISTE (2 = 2, 4 = 4)
+function renderDots(){
+  let h='';
+  for(let i=1;i<=originalTotalAds;i++){
+    let cls=i<currentAd?'dot done':(i===currentAd?'dot current':'dot');
+    h+='<div class="'+cls+'">'+(i<currentAd?'✓':i)+'</div>';
+  }
+  document.getElementById('dots').innerHTML=h;
+  document.getElementById('barFill').style.width=((currentAd-1)/Math.max(originalTotalAds,1)*100)+'%';
+}
 function getCurrentAd(){return shuffledAds[currentAd-1]||ALL_ADS[0]}
-function updateWaitTitle(){document.getElementById('waitTitle').innerText='Anuncio '+currentAd+' • Infinito 🔥';document.getElementById('adNum1').innerText=currentAd;let ad=getCurrentAd();document.getElementById('adImg').src=ad.img;document.getElementById('adText').innerText=ad.text;document.getElementById('adText').style.background=ad.bg}
-function empezarEspera(){adStartTime=Date.now();document.getElementById('stateClick').style.display='none';document.getElementById('stateWait').style.display='block';let t=5,c=document.getElementById('count');c.innerText=t;let btn=document.getElementById('returnBtn');btn.disabled=true;btn.className='';btn.innerText='🔒 ESPERA 5 SEGUNDOS...';clearInterval(timerInt);timerInt=setInterval(()=>{t--;c.innerText=t>0?t:'¡Listo!';if(t<=0){clearInterval(timerInt);btn.disabled=false;btn.className='returnbtn';btn.innerText='✅ YA VI EL ANUNCIO, VER OTRO'}},1000)}
-function confirmReturn(){if(Date.now()-adStartTime<4000){alert('🛡️ Espera los 5 seg completos');return}addClickToOwner(owner);currentAd++;if(currentAd>shuffledAds.length){shuffledAds=[...ALL_ADS].sort(()=>Math.random()-0.5);currentAd=1}totalAds=999;renderDots();updateWaitTitle();document.getElementById('stateWait').style.display='none';document.getElementById('stateClick').style.display='block';document.getElementById('stateDone').style.display='block'}
+// ARREGLO 3: YA NO DICE • INFINITO
+function updateWaitTitle(){
+  document.getElementById('waitTitle').innerText='Anuncio '+currentAd+' de '+originalTotalAds;
+  document.getElementById('adNum1').innerText=currentAd;
+  let ad=getCurrentAd();document.getElementById('adImg').src=ad.img;document.getElementById('adText').innerText=ad.text;document.getElementById('adText').style.background=ad.bg
+}
+function empezarEspera(){
+  if(currentAd>originalTotalAds) return;
+  adStartTime=Date.now();document.getElementById('stateClick').style.display='none';document.getElementById('stateWait').style.display='block';document.getElementById('stateDone').style.display='none';
+  let t=5,c=document.getElementById('count');c.innerText=t;let btn=document.getElementById('returnBtn');btn.disabled=true;btn.className='';btn.innerText='🔒 ESPERA 5 SEGUNDOS...';clearInterval(timerInt);timerInt=setInterval(()=>{t--;c.innerText=t>0?t:'¡Listo!';if(t<=0){clearInterval(timerInt);btn.disabled=false;btn.className='returnbtn';btn.innerText=(currentAd>=originalTotalAds?'✅ YA VI EL ANUNCIO, IR AL LINK':'✅ YA VI EL ANUNCIO, VER SIGUIENTE')}},1000)
+}
+// ARREGLO 3: CUANDO ACABAS LOS 2, YA NO SALE "VER OTRO", SOLO "IR AL LINK DIRECTO"
+function confirmReturn(){
+  if(Date.now()-adStartTime<4000){alert('🛡️ Espera los 5 seg completos');return}
+  addClickToOwner(owner);
+  // Si ya era el último anuncio, TERMINA AQUÍ, no sigue en bucle
+  if(currentAd>=originalTotalAds){
+    document.getElementById('stateWait').style.display='none';
+    document.getElementById('stateClick').style.display='none';
+    document.getElementById('stateDone').style.display='block';
+    document.getElementById('barFill').style.width='100%';
+    // Marca todos los puntos como hechos
+    currentAd=originalTotalAds+1; renderDotsFinal();
+    return;
+  }
+  // Si aún falta, pasa al siguiente
+  currentAd++;
+  renderDots();updateWaitTitle();
+  document.getElementById('stateWait').style.display='none';
+  document.getElementById('stateClick').style.display='block';
+  document.getElementById('stateDone').style.display='none';
+}
+function renderDotsFinal(){
+  let h='';
+  for(let i=1;i<=originalTotalAds;i++){h+='<div class="dot done">✓</div>'}
+  document.getElementById('dots').innerHTML=h;
+  document.getElementById('waitTitle').innerText='¡Completaste los '+originalTotalAds+' anuncios!';
+}
 function goToLink(){if(!targetUrl){alert('Link no válido');return}location.href=targetUrl.startsWith('http')?targetUrl:'https://'+targetUrl}
 function getAdInfo(level){return AD_LEVELS.find(x=>x.level===level)||AD_LEVELS[0]}
 function changeAdLevel(v){tempAdLevel=v;updateAdUI()}
-function updateAdUI(){let info=getAdInfo(tempAdLevel);document.getElementById('adLevelInfo').innerText='Nivel '+info.level+' • '+info.ads+' variantes • Ganas $'+info.price.toFixed(2)+' por 1000 clics';document.querySelectorAll('.level-btn').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.lv)===tempAdLevel))}
+function updateAdUI(){let info=getAdInfo(tempAdLevel);document.getElementById('adLevelInfo').innerText='Nivel '+info.level+' • '+info.ads+' anuncios • Ganas $'+info.price.toFixed(2)+' por 1000 clics';document.querySelectorAll('.level-btn').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.lv)===tempAdLevel))}
 function saveAdLevel(){myAdLevel=tempAdLevel;localStorage.setItem('naset_my_adlevel',myAdLevel);render()}
 function updateProfileUI(){
   if(!currentUser)return;let p=getProfile(currentUser);let av=document.getElementById('myAvatar');if(av){av.innerHTML=p.avatar?'<img src="'+p.avatar+'">':currentUser.charAt(0).toUpperCase()}
@@ -410,7 +498,11 @@ function showPanel(){
 }
 (async()=>{
   let isLink=await initSlug();
-  if(isLink) return;
+  if(isLink){
+    // Si eres visitante y estás logueado, muestra tu foto arriba para que puedas ir a tu perfil en otra pestaña
+    if(currentUser){document.getElementById('headerBar').style.display='flex';updateProfileUI();}
+    return;
+  }
   if(currentUser){
     let all=getAllUsers();let me=all.find(x=>x.user.toLowerCase()===currentUser.toLowerCase());
     if(me){isAdmin=currentUser.toLowerCase()===ADMIN_USER.toLowerCase();isMod=currentUser.toLowerCase()===MOD_USER.toLowerCase();showPanel()}
