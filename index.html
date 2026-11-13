@@ -366,9 +366,8 @@ async function render(){
   let html='';
   if(myLinks.length===0) html='<p class="small">Aún no tienes links. Crea uno arriba.</p>';
   else myLinks.forEach(l=>{
-    html+='<div class="link-item"><div class="flex" style="justify-content:space-between"><b>🔗 '+l.slug+'</b><input type="checkbox" data-slug="'+l.slug+'" style="width:20px;margin:0"></div><p style="margin:6px 0">'+l.short+'</p><p style="font-size:11px;color:#aaa">Nivel '+l.adLevel+' • $'+getAdInfo(l.adLevel).price.toFixed(2)+' por 1000</p><div class="flex" style="margin-top:8px"><button class="smallbtn" onclick="navigator.clipboard.writeText(\''+l.short+'\');alert(\'Copiado ✅\')">📋 COPIAR</button><button class="smallbtn" style="background:#dc2626" onclick="borrarLink(\''+l.slug+'\')">🗑️ BORRAR</button></div></div>';
+    html+='<div class="link-item"><b>🔗 '+l.slug+'</b><p style="margin:6px 0">'+l.short+'</p><p style="font-size:11px;color:#aaa">Nivel '+l.adLevel+' • $'+getAdInfo(l.adLevel).price.toFixed(2)+' por 1000</p><div class="flex" style="margin-top:8px"><button class="smallbtn" onclick="navigator.clipboard.writeText(\''+l.short+'\');alert(\'Copiado ✅\')">📋 COPIAR</button><button class="smallbtn" style="background:#dc2626" onclick="borrarLink(\''+l.slug+'\')">🗑️ BORRAR</button></div></div>';
   });
-  html+='<button class="sec" style="margin-top:8px" onclick="borrarSeleccionados()">🗑️ BORRAR SELECCIONADOS (sin perder clics ni dinero)</button><p class="small">Al borrar un link, SOLO se borra ese link. Tus clics y tu dinero siguen guardados ✅</p>';
   document.getElementById('myLinks').innerHTML=html;
 }
 function borrarLink(slug){
@@ -376,15 +375,6 @@ function borrarLink(slug){
   links=links.filter(l=>l.slug!==slug);localStorage.setItem('naset_links',JSON.stringify(links));
   let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');delete custom[slug];localStorage.setItem('naset_custom_links',JSON.stringify(custom));
   render();alert('Borrado. Tus clics siguen intactos ✅');
-}
-function borrarSeleccionados(){
-  let checks=document.querySelectorAll('#myLinks input[type="checkbox"]:checked');
-  if(checks.length===0){alert('Selecciona al menos uno');return}
-  if(!confirm('¿Borrar '+checks.length+' links? No pierdes dinero ni clics.'))return;
-  let toDel=[...checks].map(c=>c.dataset.slug);
-  links=links.filter(l=>!toDel.includes(l.slug));localStorage.setItem('naset_links',JSON.stringify(links));
-  let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');toDel.forEach(s=>delete custom[s]);localStorage.setItem('naset_custom_links',JSON.stringify(custom));
-  render();
 }
 async function crear(){
   let v=document.getElementById('longUrl').value.trim();let slug=cleanSlug(document.getElementById('linkName').value||'');
