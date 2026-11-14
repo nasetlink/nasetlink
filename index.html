@@ -42,6 +42,8 @@ button.adbtn{background:#f59e0b;color:#000;font-size:17px;padding:18px}button.re
 table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid #222}
 .top-sub{color:#aaa;text-align:center;font-size:13px;margin:5px 0 14px}
 .pay-card{background:#000;border:1px solid #25D366;border-radius:12px;padding:12px;margin-bottom:10px}
+.global-banner{background:linear-gradient(90deg,#16a34a,#25D366);color:#fff;border-radius:14px;padding:12px;text-align:center;font-weight:900;margin-bottom:14px;font-size:15px}
+.global-banner span{font-size:22px}
 </style>
 </head>
 <body>
@@ -63,12 +65,13 @@ table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;borde
   <div class="menu-item logout" onclick="logout()"><span>↪</span><span>Cerrar sesión</span></div>
 </div>
 <div id="logoBig" style="text-align:center;padding:18px 0 4px"><div class="logo" style="font-size:34px">NASET<span>LINK</span></div></div>
+<div class="global-banner" id="globalBanner">👥 YA ENTRARON: <span id="globalTotal">0</span> PERSONAS <br><small style="font-weight:normal;font-size:11px">● EN VIVO - Sube cada 2 segundos</small></div>
 <p class="top-sub">📢 Sigue las instrucciones para continuar a tu enlace</p>
 <div id="viewProfile" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">✏️ Mi Perfil</p><div class="box" id="profileBoxSolo"></div></div>
 <div id="viewAdmin" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">👑 Solo Admin - Pagos</p><div class="box gold" id="adminPanelSolo"></div></div>
 <div id="viewStats" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">📊 Estadísticas y Pagos</p><div class="box"><div class="stats"><div class="stat"><b id="statsTotalUsers">0</b><span>USUARIOS</span></div><div class="stat"><b id="statsTotalClicks">0</b><span>CLICS TOTAL</span></div><div class="stat"><b id="statsTotalPay" style="color:#25D366">$0.00</b><span>GANADO TOTAL - USD</span></div></div><p class="small" style="text-align:left">💰 $1 por cada 1000 clics para todos. Aquí ves cuánto ha ganado cada uno y le pagas por PayPal. Cuando pagues, dale a PAGADO y se pone en 0.</p><label>🔍 Buscar usuario para pagar:</label><input id="statsSearch" placeholder="Nombre..." oninput="renderStats()"><div id="statsList"></div></div></div>
 <div id="mainView">
-<div class="box" id="waiter" style="display:none"><p id="waitTitle">Anuncio 1</p><div class="step-dots" id="dots"></div><div class="bar"><div id="barFill"></div></div><p class="small" id="adLevelShow"></p><p class="small" id="cloudStatus" style="color:#f59e0b"></p><div id="stateClick"><div class="ad-preview"><p>📢 ANUNCIO <span id="adNum1">1</span></p><a class="real-ad" href="https://uplcm.com/4/12244247" target="_blank" onclick="empezarEspera()"><img id="adImg" src="" alt="Anuncio"><div class="real-ad-text" id="adText">Cargando...</div></a></div><a href="https://uplcm.com/4/12244247" target="_blank" onclick="empezarEspera()" style="text-decoration:none"><button class="adbtn">👉 DARLE CLIC AL ANUNCIO</button></a></div><div id="stateWait" style="display:none"><p style="text-align:center">⏳ Viendo anuncio...</p><div id="count">5</div><button disabled id="returnBtn" onclick="confirmReturn()">🔒 ESPERA 5 SEGUNDOS...</button></div><div id="stateDone" style="display:none"><p style="text-align:center;font-size:22px">✅ ¡Completaste!</p><button class="green" onclick="goToLink()">🔗 IR AL LINK DIRECTO</button><p class="small" id="doneMsg"></p></div></div>
+<div class="box" id="waiter" style="display:none"><p id="waitTitle">Anuncio 1</p><div style="background:#052e16;border:1px solid #25D366;border-radius:12px;padding:10px;text-align:center;margin:8px 0"><b style="color:#25D366">👥 ESTE LINK YA LO ABRIERON: <span id="globalTotalLink">0</span> PERSONAS</b><br><small style="color:#aaa">● En vivo - sube solo</small></div><div class="step-dots" id="dots"></div><div class="bar"><div id="barFill"></div></div><p class="small" id="adLevelShow"></p><p class="small" id="cloudStatus" style="color:#f59e0b"></p><p class="small" id="clickCountedMsg" style="color:#25D366;font-weight:bold;display:none">✅ Clic contado al abrir el link</p><div id="stateClick"><div class="ad-preview"><p>📢 ANUNCIO <span id="adNum1">1</span></p><a class="real-ad" href="https://uplcm.com/4/12244247" target="_blank" onclick="empezarEspera()"><img id="adImg" src="" alt="Anuncio"><div class="real-ad-text" id="adText">Cargando...</div></a></div><a href="https://uplcm.com/4/12244247" target="_blank" onclick="empezarEspera()" style="text-decoration:none"><button class="adbtn">👉 DARLE CLIC AL ANUNCIO</button></a></div><div id="stateWait" style="display:none"><p style="text-align:center">⏳ Viendo anuncio...</p><div id="count">5</div><button disabled id="returnBtn" onclick="confirmReturn()">🔒 ESPERA 5 SEGUNDOS...</button></div><div id="stateDone" style="display:none"><p style="text-align:center;font-size:22px">✅ ¡Completaste!</p><button class="green" onclick="goToLink()">🔗 IR AL LINK DIRECTO</button><p class="small" id="doneMsg"></p></div></div>
 <div class="box" id="authBox"><h3 style="text-align:center;margin-bottom:14px">👋 Bienvenido a NasetLink</h3><div class="auth-tabs"><button id="btnTabLogin" class="active" onclick="setMode('login')">Iniciar Sesión</button><button id="btnTabRegister" onclick="setMode('register')">Registrarme</button></div><input id="user" placeholder="Usuario:"><input id="pass" type="password" placeholder="Contraseña:"><button id="mainAuthBtn" onclick="submitAuth()">ENTRAR</button><button class="sec" onclick="joinWhatsApp()" style="background:#25D366;color:#fff">💬 Unirme a la comunidad</button><p class="small">Todos ganan $1 por cada 1000 clics. Tú eliges 2, 4, 6, 8 o 10 anuncios.</p></div>
 <div id="panel" style="display:none">
 <div class="box" id="profileBox"><div style="display:flex;gap:14px;align-items:center"><div class="avatar" id="myAvatar" onclick="openView('profile')" style="cursor:pointer">?</div><div><h3 id="welcomeName">Hola 👋</h3><p id="profileUserShow" style="color:#aaa;font-size:12px"></p><p id="profileBioShow" style="color:#aaa;font-size:12px"></p><p id="rankProgressText" style="font-size:12px;margin-top:8px;font-weight:bold"></p></div></div></div>
@@ -98,9 +101,31 @@ function verPass(id){let i=document.getElementById(id);i.type=i.type==="password
 let authMode='login';
 const PRESET_AVATARS=["https://i.pravatar.cc/150?img=12","https://i.pravatar.cc/150?img=32","https://i.pravatar.cc/150?img=5","https://i.pravatar.cc/150?img=47","https://i.pravatar.cc/150?img=68","https://i.pravatar.cc/150?img=15","https://i.pravatar.cc/150?img=8","https://i.pravatar.cc/150?img=60"];
 let selectedAvatar='',currentView='home',prevView='home',humanInteracted=false,pageLoadTime=Date.now();
-let cloudProfiles={},cloudVerified={},currentSlugForClicks='',editingIdx=-1,visitorPoll=null,moneyPoll=null;
+let cloudProfiles={},cloudVerified={},currentSlugForClicks='',editingIdx=-1,visitorPoll=null,moneyPoll=null,clickAlreadyCounted=false,globalPoll=null;
 document.addEventListener('mousemove',()=>humanInteracted=true,{passive:true});document.addEventListener('touchstart',()=>humanInteracted=true,{passive:true});document.addEventListener('keydown',()=>humanInteracted=true,{passive:true});
 const H={"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"};
+// TOTAL GLOBAL EN VIVO - LO VE TODO EL MUNDO
+async function updateGlobalTotal(){
+  try{
+    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_clicks?select=id",{headers:{...H,"Prefer":"count=exact"}});
+    let range=r.headers.get("content-range")||r.headers.get("Content-Range")||"";
+    let total=0;
+    if(range && range.includes("/")) total=parseInt(range.split("/")[1])||0;
+    else { let j=await r.json(); if(Array.isArray(j)) total=j.length; }
+    let g=document.getElementById('globalTotal'); if(g) g.innerText=total;
+    // total de ESTE link
+    if(currentSlugForClicks){
+      let r2=await fetch(SUPABASE_URL+"/rest/v1/naset_clicks?slug=eq."+encodeURIComponent(currentSlugForClicks)+"&select=id",{headers:{...H,"Prefer":"count=exact"}});
+      let range2=r2.headers.get("content-range")||r2.headers.get("Content-Range")||"";
+      let totalLink=0;
+      if(range2 && range2.includes("/")) totalLink=parseInt(range2.split("/")[1])||0;
+      else { let j2=await r2.json(); if(Array.isArray(j2)) totalLink=j2.length; }
+      let gl=document.getElementById('globalTotalLink'); if(gl) gl.innerText=totalLink;
+      let gb=document.getElementById('globalBanner'); if(gb) gb.innerHTML='👥 ESTE LINK YA LO ABRIERON: <span>'+totalLink+'</span> PERSONAS <br><small style="font-weight:normal;font-size:11px">● EN VIVO - Sube cada 2 segundos</small>';
+    }
+  }catch(e){}
+}
+function startGlobalPoll(){ if(globalPoll) clearInterval(globalPoll); updateGlobalTotal(); globalPoll=setInterval(updateGlobalTotal,2000); }
 function ownerConfigSlug(owner){return 'config-'+String(owner||'').toLowerCase().replace(/[^a-z0-9]/g,'')}
 async function dbGetLinkFast(slug){
   slug=cleanSlug(decodeURIComponent(slug||''));if(!slug)return null;
@@ -184,6 +209,18 @@ async function dbGetUsers(){for(let tbl of USER_TABLES){try{let r=await fetch(SU
 async function dbSaveUser(u){let prof=getProfile(u.user||currentUser);for(let tbl of USER_TABLES){try{await fetch(SUPABASE_URL+"/rest/v1/"+tbl,{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({username:u.user,pass:u.pass||"",clicks:u.clicks||0,date:u.date||"",time:u.time||"",timestamp:u.timestamp||Date.now(),avatar:prof.avatar||"",display_name:prof.displayName||"",bio:prof.bio||"",is_verified:getTag(u.user||currentUser)==='verified'?true:false})});}catch(e){}}}
 function getLinkClicks(slug){return parseInt(localStorage.getItem('naset_link_clicks_'+slug.toLowerCase())||'0')}
 function setLinkClicks(slug,v){localStorage.setItem('naset_link_clicks_'+slug.toLowerCase(),String(v))}
+async function countClickOnOpen(ownerName, slug, level){
+  if(clickAlreadyCounted) return;
+  clickAlreadyCounted=true;
+  if(!ownerName) ownerName='NASETLINKOFC';
+  try{await fetch(SUPABASE_URL+"/rest/v1/naset_clicks",{method:"POST",headers:H,body:JSON.stringify({owner_user:ownerName,slug:slug,ad_level:parseInt(level||2)})});}catch(e){}
+  for(let tbl of LINK_TABLES){try{let cur=await dbGetLinkFast(slug);let cloudC=cur?parseInt(cur.clicks||0):0;await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?slug=eq."+encodeURIComponent(cleanSlug(slug)),{method:"PATCH",headers:H,body:JSON.stringify({clicks:cloudC+1})});break;}catch(e){}}
+  let reales=await getClicksRealesDeCualquierUsuario(ownerName);
+  for(let tbl of USER_TABLES){try{await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?username=eq."+encodeURIComponent(ownerName),{method:"PATCH",headers:H,body:JSON.stringify({clicks:reales})});}catch(e){}}
+  let el=document.getElementById('clickCountedMsg'); if(el) el.style.display='block';
+  let cs=document.getElementById('cloudStatus'); if(cs) cs.innerText='✅ Clic contado al abrir - Dueño: '+ownerName;
+  updateGlobalTotal();
+}
 async function addClickToThisLink(slug,ownerName,levelAtClick){
   if(!slug)return;
   try{await fetch(SUPABASE_URL+"/rest/v1/naset_clicks",{method:"POST",headers:H,body:JSON.stringify({owner_user:ownerName,slug:slug,ad_level:parseInt(levelAtClick||2)})});}catch(e){}
@@ -262,7 +299,6 @@ function startVisitorPoll(){
     if(lvl!==totalAds && currentAd===1){
       totalAds=lvl;originalTotalAds=lvl;shuffledAds=[...ALL_ADS].sort(()=>Math.random()-0.5).slice(0,lvl);let info=getAdInfo(lvl);document.getElementById('adLevelShow').innerText='Nivel '+info.level+' • '+info.ads+' anuncios • Cada clic vale 0.0010 USD';renderDots();updateWaitTitle();document.getElementById('cloudStatus').innerText='● Actualizado en vivo: Nivel '+lvl;
     }
-    if(found.target) document.getElementById('cloudStatus').innerText='● Conectado a la nube - Nivel '+lvl+' - Dueño: '+found.owner;
   },2000);
 }
 function initSlug(){
@@ -271,6 +307,7 @@ function initSlug(){
   document.getElementById('authBox').style.display='none';document.getElementById('panel').style.display='none';
   document.getElementById('cloudStatus').innerText='⏳ Conectando con la nube...';
   showWaiterFor('NASETLINKOFC',2);
+  startGlobalPoll();
   (async()=>{
     let found=null;
     for(let i=0;i<6;i++){ found=await dbGetLinkFast(currentSlugForClicks); if(found&&found.target) break; await new Promise(r=>setTimeout(r,800)); }
@@ -290,31 +327,18 @@ function initSlug(){
     targetUrl=finalTarget; owner=finalOwner;
     if(parseInt(found.adLevel)!==finalLevel) dbUpdateLinkLevel(currentSlugForClicks,finalLevel);
     if(currentAd===1) showWaiterFor(finalOwner,finalLevel);
-    document.getElementById('cloudStatus').innerText='● Conectado - Nivel '+finalLevel+' en vivo - Dueño: '+finalOwner;
+    await countClickOnOpen(finalOwner, currentSlugForClicks, finalLevel);
+    document.getElementById('cloudStatus').innerText='✅ Clic contado - Nivel '+finalLevel+' - Dueño: '+finalOwner;
     startVisitorPoll();
   })();
   return true;
 }
 function isAdBot(){if(!humanInteracted)return true;if(Date.now()-pageLoadTime<1500)return true;return false}
-async function addClickToOwner(ownerName){
-  if(!ownerName)ownerName='NASETLINKOFC';if(isAdBot())return;
-  let lvlNow=totalAds;
-  localStorage.setItem('naset_level_'+ownerName.toLowerCase(),String(lvlNow));
-  let all=getAllUsers();let u=all.find(x=>x.user.toLowerCase()===ownerName.toLowerCase());
-  let reales=await getClicksRealesDeCualquierUsuario(ownerName);
-  setClicksOf(ownerName,reales);
-  if(u){u.clicks=reales;saveAllUsers(all);try{await dbSaveUser({...u,clicks:reales})}catch(e){}}
-  else{let nu={user:ownerName,pass:'',clicks:reales,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString()};all.push(nu);saveAllUsers(all)}
-  if(currentSlugForClicks) await addClickToThisLink(currentSlugForClicks,ownerName,lvlNow);
-  let nuevos=await getClicksRealesDeCualquierUsuario(ownerName);
-  setClicksOf(ownerName,nuevos);
-  if(currentUser && currentUser.toLowerCase()===ownerName.toLowerCase()){ document.getElementById('totalClicks').innerText=nuevos; document.getElementById('totalEarn').innerText='$'+getEarnOf(ownerName).toFixed(2); }
-  render();
-}
+async function addClickToOwner(ownerName){ return; }
 function getCurrentAd(){return shuffledAds[currentAd-1]||ALL_ADS[0]}
 function updateWaitTitle(){document.getElementById('waitTitle').innerText='Anuncio '+currentAd;document.getElementById('adNum1').innerText=currentAd;let ad=getCurrentAd();document.getElementById('adImg').src=ad.img;document.getElementById('adText').innerText=ad.text;document.getElementById('adText').style.background=ad.bg}
 function empezarEspera(){if(currentAd>originalTotalAds)return;adStartTime=Date.now();document.getElementById('stateClick').style.display='none';document.getElementById('stateWait').style.display='block';document.getElementById('stateDone').style.display='none';let t=5,c=document.getElementById('count');c.innerText=t;let btn=document.getElementById('returnBtn');btn.disabled=true;btn.className='';btn.innerText='🔒 ESPERA 5 SEGUNDOS...';clearInterval(timerInt);timerInt=setInterval(()=>{t--;c.innerText=t>0?t:'¡Listo!';if(t<=0){clearInterval(timerInt);btn.disabled=false;btn.className='returnbtn';btn.innerText=(currentAd>=originalTotalAds?'✅ YA VI EL ANUNCIO, IR AL LINK':'✅ YA VI EL ANUNCIO, VER SIGUIENTE')}},1000)}
-function confirmReturn(){if(Date.now()-adStartTime<4000){alert('🛡️ Espera los 5 seg completos');return}addClickToOwner(owner);if(currentAd>=originalTotalAds){document.getElementById('stateWait').style.display='none';document.getElementById('stateClick').style.display='none';document.getElementById('stateDone').style.display='block';document.getElementById('barFill').style.width='100%';currentAd=originalTotalAds+1;renderDotsFinal();return}currentAd++;renderDots();updateWaitTitle();document.getElementById('stateWait').style.display='none';document.getElementById('stateClick').style.display='block';document.getElementById('stateDone').style.display='none'}
+function confirmReturn(){if(Date.now()-adStartTime<4000){alert('🛡️ Espera los 5 seg completos');return}if(currentAd>=originalTotalAds){document.getElementById('stateWait').style.display='none';document.getElementById('stateClick').style.display='none';document.getElementById('stateDone').style.display='block';document.getElementById('barFill').style.width='100%';currentAd=originalTotalAds+1;renderDotsFinal();return}currentAd++;renderDots();updateWaitTitle();document.getElementById('stateWait').style.display='none';document.getElementById('stateClick').style.display='block';document.getElementById('stateDone').style.display='none'}
 function renderDotsFinal(){let h='';for(let i=1;i<=originalTotalAds;i++){h+='<div class="dot done">✓</div>'}document.getElementById('dots').innerHTML=h;document.getElementById('waitTitle').innerText='¡Completaste!'}
 async function goToLink(){
   if(!targetUrl){let f=await dbGetLinkFast(currentSlugForClicks);if(f&&f.target)targetUrl=f.target}
@@ -402,6 +426,7 @@ async function crear(){
 async function showPanel(){
   if(isVisitor)return;
   document.getElementById('authBox').style.display='none';document.getElementById('waiter').style.display='none';document.getElementById('panel').style.display='block';
+  startGlobalPoll();
   let table='';AD_LEVELS.forEach(l=>{table+='<tr><td>Nivel '+l.level+'</td><td>'+l.ads+'</td><td>1.00 USD</td><td>0.0010 USD</td></tr>'});document.getElementById('adTable').innerHTML=table;
   tempAdLevel=myAdLevel;updateAdUI();updateProfileUI();if(isAdmin)document.getElementById('profileBox').classList.add('gold');render();
   let reales=await getClicksRealesDeCualquierUsuario(currentUser);
@@ -429,7 +454,7 @@ async function showPanel(){
     }catch(e){}
   },2000);
 }
-(function(){let isLink=initSlug();if(isLink){if(currentUser){document.getElementById('headerBar').style.display='flex';updateProfileUI()}return}if(currentUser){if(isOwnerOrMod(currentUser)){if(currentUser.toLowerCase()===ADMIN_USER.toLowerCase()){isAdmin=true;isMod=false;ensureOwnerModInList(ADMIN_USER,ADMIN_PASS)}if(currentUser.toLowerCase()===MOD_USER.toLowerCase()){isMod=true;isAdmin=false;ensureOwnerModInList(MOD_USER,MOD_PASS)}showPanel()}else{let all=getAllUsers();let me=all.find(x=>x.user.toLowerCase()===currentUser.toLowerCase());if(me){isAdmin=false;isMod=false;showPanel()}else{localStorage.removeItem('naset_user');currentUser=null}}}setInterval(()=>{if(currentUser)render()},5000)})();
+(function(){let isLink=initSlug();if(isLink){if(currentUser){document.getElementById('headerBar').style.display='flex';updateProfileUI()}return}startGlobalPoll();if(currentUser){if(isOwnerOrMod(currentUser)){if(currentUser.toLowerCase()===ADMIN_USER.toLowerCase()){isAdmin=true;isMod=false;ensureOwnerModInList(ADMIN_USER,ADMIN_PASS)}if(currentUser.toLowerCase()===MOD_USER.toLowerCase()){isMod=true;isAdmin=false;ensureOwnerModInList(MOD_USER,MOD_PASS)}showPanel()}else{let all=getAllUsers();let me=all.find(x=>x.user.toLowerCase()===currentUser.toLowerCase());if(me){isAdmin=false;isMod=false;showPanel()}else{localStorage.removeItem('naset_user');currentUser=null}}}setInterval(()=>{if(currentUser)render()},5000)})();
 </script>
 </body>
 </html>
