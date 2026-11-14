@@ -73,7 +73,7 @@ table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;borde
 <div class="box" id="authBox"><h3 style="text-align:center;margin-bottom:14px">👋 Bienvenido a NasetLink</h3><div class="auth-tabs"><button id="btnTabLogin" class="active" onclick="setMode('login')">Iniciar Sesión</button><button id="btnTabRegister" onclick="setMode('register')">Registrarme</button></div><input id="user" placeholder="Usuario:"><input id="pass" type="password" placeholder="Contraseña:"><button id="mainAuthBtn" onclick="submitAuth()">ENTRAR</button><button class="sec" onclick="joinWhatsApp()" style="background:#25D366;color:#fff">💬 Unirme a la comunidad</button><p class="small">Cada uno gana según su nivel. Tú eliges 2, 4, 6, 8 o 10 anuncios. El dueño te paga por PayPal.</p></div>
 <div id="panel" style="display:none">
 <div class="box" id="profileBox"><div style="display:flex;gap:14px;align-items:center"><div class="avatar" id="myAvatar" onclick="openView('profile')" style="cursor:pointer">?</div><div><h3 id="welcomeName">Hola 👋</h3><p id="profileUserShow" style="color:#aaa;font-size:12px"></p><p id="profileBioShow" style="color:#aaa;font-size:12px"></p><p id="rankProgressText" style="font-size:12px;margin-top:8px;font-weight:bold"></p></div></div></div>
-<div class="stats"><div class="stat"><b id="totalClicks">0</b><span>MIS CLICS</span></div><div class="stat"><b id="totalEarn">$0.00</b><span>LO QUE ME DEBE EL DUEÑO - USD REAL</span></div><div class="stat"><b id="myLevel">Nivel 2</b><span>MI NIVEL</span></div></div>
+<div class="stats"><div class="stat"><b id="totalClicks">0</b><span>MIS CLICS - NUNCA SE PIERDEN</span></div><div class="stat"><b id="totalEarn">$0.00</b><span>LO QUE ME DEBE EL DUEÑO - USD REAL</span></div><div class="stat"><b id="myLevel">Nivel 2</b><span>MI NIVEL</span></div></div>
 <p class="small" id="liveMoney" style="color:#25D366;font-weight:bold">● En vivo: esperando clics...</p>
 <div class="box"><h3>📢 Tu Nivel de Anuncios - Solo para TI, en tiempo real</h3><p class="small" style="text-align:left;margin:0 0 8px">Toca 2, 4, 6, 8 o 10. Solo cambia TUS links, no los de los demás. Más anuncios = más dinero para TI:</p><div class="grid5"><button class="level-btn" data-lv="2" onclick="changeAdLevel(2)">2</button><button class="level-btn" data-lv="4" onclick="changeAdLevel(4)">4</button><button class="level-btn" data-lv="6" onclick="changeAdLevel(6)">6</button><button class="level-btn" data-lv="8" onclick="changeAdLevel(8)">8</button><button class="level-btn" data-lv="10" onclick="changeAdLevel(10)">10</button></div><p class="small" id="adLevelInfo"></p><p class="small" id="saveStatus" style="color:#25D366"></p><button class="green" onclick="saveAdLevel()">💾 GUARDAR MI NIVEL EN LA NUBE</button></div>
 <div class="box"><h3>✨ Crea un enlace</h3><label>📝 Nombre:</label><input id="linkName" placeholder="Ej: aimbot-head" oninput="updateSlugPreview()"><div class="slug-preview" id="slugPreview">Tu enlace será: .../?tu-nombre</div><label>🔗 Enlace de destino:</label><input id="longUrl" placeholder="Pega tu enlace de destino aquí..."><button onclick="crear()">✨ GENERAR MI LINK</button><p class="small" id="createStatus"></p><div id="myLinks"></div><div id="editBox" style="display:none;border-top:1px solid #333;margin-top:12px;padding-top:12px"><p style="font-weight:bold">✏️ Editar link</p><label>Nombre nuevo:</label><input id="editSlug"><label>Destino nuevo:</label><input id="editDest"><div class="flex"><button class="green" onclick="confirmEdit()">💾 GUARDAR CAMBIOS</button><button class="sec" onclick="cancelEdit()">Cancelar</button></div></div></div>
@@ -89,7 +89,6 @@ const SUPABASE_KEY="sb_publishable_TBu_vM0xOlQsLX4aQvMmrQ_Nsp9Fv00";
 const ADMIN_USER="NASETLINKOFC", ADMIN_PASS="NASET12CLICKS", MOD_USER="DANYXITERS", MOD_PASS="12345689";
 const MONETAG_LINK="https://uplcm.com/4/12244247";
 const WHATSAPP_GROUP="https://chat.whatsapp.com/JAqf2gVEFlz59saw6MVveK?s=cl&p=i&mlr=4&ilr=4&iam=2";
-// PARA TODOS: cada usuario tiene su propio nivel, no es global. config-<usuario> guarda SU nivel.
 const LINK_TABLES=["naset_links","nasetlinks"];
 const USER_TABLES=["naset_users","nasetusers"];
 function joinWhatsApp(){window.open(WHATSAPP_GROUP,'_blank')}
@@ -104,7 +103,7 @@ let cloudProfiles={},cloudVerified={},currentSlugForClicks='',editingIdx=-1,visi
 document.addEventListener('mousemove',()=>humanInteracted=true,{passive:true});document.addEventListener('touchstart',()=>humanInteracted=true,{passive:true});document.addEventListener('keydown',()=>humanInteracted=true,{passive:true});
 const H={"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"};
 function ownerConfigSlug(owner){return 'config-'+String(owner||'').toLowerCase().replace(/[^a-z0-9]/g,'')}
-// --- PARA TODOS: busca el link de CUALQUIER usuario, no solo del dueño ---
+// --- PARA TODOS EN GENERAL: NIVEL POR USUARIO ---
 async function dbGetLinkFast(slug){
   slug=cleanSlug(decodeURIComponent(slug||''));if(!slug)return null;
   for(let tbl of LINK_TABLES){
@@ -116,7 +115,6 @@ async function dbGetLinkFast(slug){
   }
   return null;
 }
-// PARA TODOS: cada dueño tiene SU nivel. No se mezcla con otros.
 async function dbGetOwnerLevel(owner){
   if(!owner) return null;
   let slug=ownerConfigSlug(owner);
@@ -144,6 +142,25 @@ async function dbSaveOwnerLevel(owner,level){
   try{localStorage.setItem('naset_my_adlevel',String(level));}catch(e){}
   return true;
 }
+// --- PARA TODOS: CLICS DESDE HISTORIAL, NUNCA SE PIERDEN ---
+async function getClicksRealesDeCualquierUsuario(usuario){
+  if(!usuario) return 0;
+  try{
+    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_clicks?owner_user=eq."+encodeURIComponent(usuario)+"&select=id",{headers:{...H,"Prefer":"count=exact"},});
+    // Supabase devuelve array, contamos
+    let j=await r.json();
+    if(Array.isArray(j)) return j.length;
+  }catch(e){}
+  // Fallback: usa naset_users
+  try{
+    for(let tbl of USER_TABLES){
+      let r=await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?username=eq."+encodeURIComponent(usuario)+"&select=clicks",{headers:H});
+      let j=await r.json();
+      if(Array.isArray(j)&&j[0]) return parseInt(j[0].clicks||0);
+    }
+  }catch(e){}
+  return parseInt(localStorage.getItem('naset_clicks_'+usuario.toLowerCase())||'0');
+}
 async function dbSaveLinkVerified(slug,target,owner,adLevel){
   slug=cleanSlug(slug);adLevel=parseInt(adLevel||2);
   let ownerLvl=await dbGetOwnerLevel(owner);
@@ -168,35 +185,34 @@ async function dbSaveUser(u){let prof=getProfile(u.user||currentUser);for(let tb
 function getLinkClicks(slug){return parseInt(localStorage.getItem('naset_link_clicks_'+slug.toLowerCase())||'0')}
 function setLinkClicks(slug,v){localStorage.setItem('naset_link_clicks_'+slug.toLowerCase(),String(v))}
 async function addClickToThisLink(slug,ownerName,levelAtClick){
-  if(!slug)return;let c=getLinkClicks(slug)+1;setLinkClicks(slug,c);
-  for(let tbl of LINK_TABLES){try{let cur=await dbGetLinkFast(slug);let cloudC=cur?parseInt(cur.clicks||0):0;let finalC=Math.max(c,cloudC+1);await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?slug=eq."+encodeURIComponent(cleanSlug(slug)),{method:"PATCH",headers:H,body:JSON.stringify({clicks:finalC})});setLinkClicks(slug,finalC);break;}catch(e){}}
+  if(!slug)return;
+  // 1. Guarda en historial - ESTO NUNCA SE BORRA, PARA TODOS
   try{await fetch(SUPABASE_URL+"/rest/v1/naset_clicks",{method:"POST",headers:H,body:JSON.stringify({owner_user:ownerName,slug:slug,ad_level:parseInt(levelAtClick||2)})});}catch(e){}
-  // PARA TODOS: el dinero se suma al DUEÑO de ese link, no al dueño global
-  let price=getAdInfo(parseInt(levelAtClick||2)).price;let earn=price/1000;let key='naset_earn_'+ownerName.toLowerCase();let curEarn=parseFloat(localStorage.getItem(key)||'0');localStorage.setItem(key,String(curEarn+earn));
-  // Guardar pagado: si ya se pagó, no se suma de nuevo
-  let paid=parseFloat(localStorage.getItem('naset_paid_'+ownerName.toLowerCase())||'0');
-  let totalEarnForUser=parseFloat(localStorage.getItem('naset_earn_total_'+ownerName.toLowerCase())||'0')+earn;
-  localStorage.setItem('naset_earn_total_'+ownerName.toLowerCase(),String(totalEarnForUser));
+  // 2. Actualiza contador del link (solo visual, no es el total real)
+  for(let tbl of LINK_TABLES){try{let cur=await dbGetLinkFast(slug);let cloudC=cur?parseInt(cur.clicks||0):0;await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?slug=eq."+encodeURIComponent(cleanSlug(slug)),{method:"PATCH",headers:H,body:JSON.stringify({clicks:cloudC+1})});break;}catch(e){}}
+  // 3. Actualiza total del usuario en naset_users para que no se pierda
+  let reales=await getClicksRealesDeCualquierUsuario(ownerName);
+  for(let tbl of USER_TABLES){try{await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?username=eq."+encodeURIComponent(ownerName),{method:"PATCH",headers:H,body:JSON.stringify({clicks:reales})});}catch(e){}}
+  // 4. Dinero: se suma al dueño de ese link, según SU nivel
+  let price=getAdInfo(parseInt(levelAtClick||2)).price;let earn=price/1000;
+  let total=parseFloat(localStorage.getItem('naset_earn_total_'+ownerName.toLowerCase())||'0')+earn;
+  localStorage.setItem('naset_earn_total_'+ownerName.toLowerCase(),String(total));
 }
 function getAllUsers(){try{return JSON.parse(localStorage.getItem('naset_all_users')||'[]')}catch(e){return[]}}
 function saveAllUsers(arr){localStorage.setItem('naset_all_users',JSON.stringify(arr));users=arr}
 function getClicksOf(user){return parseInt(localStorage.getItem('naset_clicks_'+user.toLowerCase())||'0')}
 function setClicksOf(user,v){localStorage.setItem('naset_clicks_'+user.toLowerCase(),String(v))}
-// PARA TODOS: cada uno gana según SU nivel, no según el del dueño
 function getEarnOf(user){
   let paid=parseFloat(localStorage.getItem('naset_paid_'+user.toLowerCase())||'0');
   let saved=parseFloat(localStorage.getItem('naset_earn_total_'+user.toLowerCase())||'0');
   if(saved>0) return Math.max(0,saved-paid);
-  let savedOld=parseFloat(localStorage.getItem('naset_earn_'+user.toLowerCase())||'0');
-  if(savedOld>0) return Math.max(0,savedOld-paid);
-  let lvl=parseInt(localStorage.getItem('naset_my_adlevel')||'2');
-  if(user!==currentUser) lvl=2;
-  // Si es otro usuario, buscamos su nivel en su config
+  // Si no hay guardado local, calcula con clics reales x precio de SU nivel
+  let lvl=getUserLevelForPay(user);
   return getClicksOf(user)/1000*getAdInfo(lvl).price;
 }
 function getUserLevelForPay(user){
-  // Intenta leer el nivel guardado de ese usuario
   try{let l=localStorage.getItem('naset_level_'+user.toLowerCase());if(l) return parseInt(l);}catch(e){}
+  if(user===currentUser) return myAdLevel||2;
   return 2;
 }
 function isOwnerOrMod(u){return (u||'').toLowerCase()===ADMIN_USER.toLowerCase()||(u||'').toLowerCase()===MOD_USER.toLowerCase()}
@@ -215,26 +231,25 @@ function selectAvatar(url,el){selectedAvatar=url;document.querySelectorAll('.ava
 function uploadAvatarSolo(e){let f=e.target.files[0];if(!f)return;let rd=new FileReader();rd.onload=function(ev){let img=new Image();img.onload=function(){let c=document.createElement('canvas');let max=200,w=img.width,h=img.height;if(w>h){if(w>max){h=h*max/w;w=max}}else{if(h>max){w=w*max/h;h=max}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);selectedAvatar=c.toDataURL('image/jpeg',0.6)};img.src=ev.target.result};rd.readAsDataURL(f)}
 async function saveProfileSolo(){let dn=document.getElementById('editDisplayNameSolo').value.trim();let bio=document.getElementById('editBioSolo').value.trim();let p=getProfile(currentUser);if(selectedAvatar)p.avatar=selectedAvatar;if(dn)p.displayName=dn;p.bio=bio;try{localStorage.setItem('naset_profile_'+currentUser.toLowerCase(),JSON.stringify(p))}catch(e){alert('Foto muy pesada');return}selectedAvatar='';cloudProfiles[currentUser.toLowerCase()]=p;await dbSaveUser({user:currentUser,pass:getAllUsers().find(x=>x.user.toLowerCase()===currentUser.toLowerCase())?.pass||""});updateProfileUI();alert('✅ Foto guardada');closeView()}
 function cambiarPassSolo(){let actual=document.getElementById('passActualSolo').value.trim();let nueva=document.getElementById('passNuevaSolo').value.trim();if(!actual||!nueva){alert('Llena las 2 contraseñas');return}let all=getAllUsers();let u=all.find(x=>x.user.toLowerCase()===currentUser.toLowerCase());if(u&&u.pass&&u.pass!==actual){alert('❌ Contraseña actual incorrecta');return}if(u){u.pass=nueva;saveAllUsers(all)}if(u)dbSaveUser(u);alert('✅ Contraseña actualizada');closeView()}
-// ADMIN - AQUÍ TÚ VES CUÁNTO LE DEBES A CADA UNO Y LE PAGAS
-function buildAdminHTML(){return `<h3 style="text-align:center">👑 PANEL ADMIN - PAGOS</h3><p class="small" style="text-align:left">💰 La plata de Monetag te llega a TI. Aquí ves cuánto le debes a cada usuario según SU nivel. Cuando le pagues por PayPal, dale a PAGADO.</p><label>✅ Dar Verificado</label><input id="verifyUserSolo" placeholder="Usuario"><button class="smallbtn" style="background:#1d9bf0" onclick="giveVerifiedSolo('verified')">✓ DAR VERIFICADO</button><button class="sec" onclick="removeVerifiedSolo()">❌ QUITAR VERIFICADO</button><label>🚫 Banear</label><input id="banUserSolo" placeholder="Usuario a banear"><button class="danger" onclick="banUserSolo()">🚫 BANEAR</button><button class="sec" onclick="unbanUserSolo()">✅ DESBANEAR</button><label>👥 Miembros - Cuánto les debes</label><div id="allUsersSolo"></div>`}
+function buildAdminHTML(){return `<h3 style="text-align:center">👑 PANEL ADMIN - PAGOS PARA TODOS</h3><p class="small" style="text-align:left">💰 La plata de Monetag te llega a TI. Aquí ves cuánto le debes a cada usuario según SU nivel. Cuando le pagues por PayPal, dale a PAGADO.</p><label>✅ Dar Verificado</label><input id="verifyUserSolo" placeholder="Usuario"><button class="smallbtn" style="background:#1d9bf0" onclick="giveVerifiedSolo('verified')">✓ DAR VERIFICADO</button><button class="sec" onclick="removeVerifiedSolo()">❌ QUITAR VERIFICADO</button><label>🚫 Banear</label><input id="banUserSolo" placeholder="Usuario a banear"><button class="danger" onclick="banUserSolo()">🚫 BANEAR</button><button class="sec" onclick="unbanUserSolo()">✅ DESBANEAR</button><label>👥 Miembros - Cuánto les debes</label><div id="allUsersSolo"></div>`}
 async function giveVerifiedSolo(t){let n=document.getElementById('verifyUserSolo').value.trim();if(!n){alert('Pon usuario');return}if(!isAdmin){alert('Solo el dueño puede dar verificado');return}localStorage.setItem('naset_tag_'+n.toLowerCase(),t);cloudVerified[n.toLowerCase()]=true;let u=getAllUsers().find(x=>x.user.toLowerCase()===n.toLowerCase());if(u)await dbSaveUser(u);else await dbSaveUser({user:n,pass:""});showAdminSolo();updateProfileUI();alert('✅ '+n+' ahora tiene verificado ✓')}
 async function removeVerifiedSolo(){let n=document.getElementById('verifyUserSolo').value.trim();if(!n){alert('Pon usuario');return}if(!isAdmin){alert('Solo el dueño puede quitar verificado');return}localStorage.setItem('naset_tag_'+n.toLowerCase(),'none');delete cloudVerified[n.toLowerCase()];let u=getAllUsers().find(x=>x.user.toLowerCase()===n.toLowerCase());if(u)await dbSaveUser(u);showAdminSolo();alert('❌ Quitado')}
 function banUserSolo(){let n=document.getElementById('banUserSolo').value.trim();if(!n)return;if(n.toLowerCase()===ADMIN_USER.toLowerCase()){alert('No puedes banear al dueño');return}if(!confirm('¿Banear a '+n+'?'))return;localStorage.setItem('naset_banned_'+n.toLowerCase(),'1');showAdminSolo();alert('🚫 Baneado')}
 function unbanUserSolo(){let n=document.getElementById('banUserSolo').value.trim();if(!n)return;localStorage.removeItem('naset_banned_'+n.toLowerCase());showAdminSolo();alert('✅ Desbaneado')}
-async function showAdminSolo(){let el=document.getElementById('allUsersSolo');if(!el)return;let all=getAllUsers();if(all.length===0){el.innerHTML='<p class="small">Sin miembros aún</p>';return}let h='';all.forEach(u=>{let c=getClicksOf(u.user);let lvl=getUserLevelForPay(u.user);let earn=getEarnOf(u.user);h+='<div class="pay-card"><b>'+(getDisplayName(u.user))+'</b> <span style="color:#888;font-size:11px">('+u.user+')</span><br>👆 '+c+' clics • Nivel '+lvl+' • 💰 Le debes: '+earn.toFixed(4)+' USD REAL<br><button class="green smallbtn" style="margin-top:8px" onclick="markPaid(\''+u.user+'\')">✅ PAGADO - Poner en 0</button></div>'});el.innerHTML=h}
-// TÚ LE PAGAS Y SE PONE EN 0 - PARA TODOS
+async function showAdminSolo(){let el=document.getElementById('allUsersSolo');if(!el)return;let all=getAllUsers();if(all.length===0){el.innerHTML='<p class="small">Sin miembros aún</p>';return}let h='';for(let u of all){let c=await getClicksRealesDeCualquierUsuario(u.user);setClicksOf(u.user,c);let lvl=getUserLevelForPay(u.user);let earn=c/1000*getAdInfo(lvl).price;let paid=parseFloat(localStorage.getItem('naset_paid_'+u.user.toLowerCase())||'0');let debe=Math.max(0,earn-paid);h+='<div class="pay-card"><b>'+(getDisplayName(u.user))+'</b> <span style="color:#888;font-size:11px">('+u.user+')</span><br>👆 '+c+' clics • Nivel '+lvl+' • 💰 Le debes: '+debe.toFixed(4)+' USD REAL<br><button class="green smallbtn" style="margin-top:8px" onclick="markPaid(\''+u.user+'\')">✅ PAGADO - Poner en 0</button></div>'}el.innerHTML=h}
 function markPaid(user){
   if(!confirm('¿Ya le pagaste a '+user+' por PayPal? Se pondrá su deuda en 0.')) return;
   let total=parseFloat(localStorage.getItem('naset_earn_total_'+user.toLowerCase())||'0');
+  if(total===0){ // calcula desde clics si no hay total guardado
+    let c=getClicksOf(user); let lvl=getUserLevelForPay(user); total=c/1000*getAdInfo(lvl).price;
+  }
   let oldPaid=parseFloat(localStorage.getItem('naset_paid_'+user.toLowerCase())||'0');
   localStorage.setItem('naset_paid_'+user.toLowerCase(),String(oldPaid+total));
-  // También resetea el contador viejo para que no se duplique
   localStorage.setItem('naset_earn_total_'+user.toLowerCase(),'0');
-  localStorage.setItem('naset_earn_'+user.toLowerCase(),'0');
   showAdminSolo();renderStats();render();alert('✅ Pagado a '+user+' - Su deuda quedó en 0');
 }
 function getUserStats(u){let c=getClicksOf(u.user);return{user:u.user,displayName:getDisplayName(u.user),clicks:c,earn:getEarnOf(u.user),tag:getTag(u.user),banned:localStorage.getItem('naset_banned_'+u.user.toLowerCase())==='1'}}
-async function renderStats(){if(!isAdmin&&!isMod)return;let all=getAllUsers().map(getUserStats).sort((a,b)=>b.earn-a.earn);let search=(document.getElementById('statsSearch')?.value||'').toLowerCase();let f=search?all.filter(s=>s.displayName.toLowerCase().includes(search)||s.user.toLowerCase().includes(search)):all;let totalC=all.reduce((s,x)=>s+x.clicks,0),totalP=all.reduce((s,x)=>s+x.earn,0);document.getElementById('statsTotalUsers').innerText=all.length;document.getElementById('statsTotalClicks').innerText=totalC;document.getElementById('statsTotalPay').innerText='$'+totalP.toFixed(2);let list=document.getElementById('statsList');if(f.length===0){list.innerHTML='<p class="small">Sin usuarios</p>';return}list.innerHTML=f.map((s,i)=>'<div class="pay-card"><b>'+(i+1)+'. '+s.displayName+'</b> <span style="color:#888">'+s.user+'</span><br>👆 '+s.clicks+' clics • 💰 Le debes: '+s.earn.toFixed(4)+' USD REAL<br><button class="green smallbtn" style="margin-top:8px" onclick="markPaid(\''+s.user+'\')">✅ PAGADO</button></div>').join('')}
+async function renderStats(){if(!isAdmin&&!isMod)return;let all=getAllUsers();for(let u of all){let c=await getClicksRealesDeCualquierUsuario(u.user);setClicksOf(u.user,c)}let mapped=getAllUsers().map(getUserStats).sort((a,b)=>b.earn-a.earn);let search=(document.getElementById('statsSearch')?.value||'').toLowerCase();let f=search?mapped.filter(s=>s.displayName.toLowerCase().includes(search)||s.user.toLowerCase().includes(search)):mapped;let totalC=mapped.reduce((s,x)=>s+x.clicks,0),totalP=mapped.reduce((s,x)=>s+x.earn,0);document.getElementById('statsTotalUsers').innerText=mapped.length;document.getElementById('statsTotalClicks').innerText=totalC;document.getElementById('statsTotalPay').innerText='$'+totalP.toFixed(2);let list=document.getElementById('statsList');if(f.length===0){list.innerHTML='<p class="small">Sin usuarios</p>';return}list.innerHTML=f.map((s,i)=>'<div class="pay-card"><b>'+(i+1)+'. '+s.displayName+'</b> <span style="color:#888">'+s.user+'</span><br>👆 '+s.clicks+' clics • 💰 Le debes: '+s.earn.toFixed(4)+' USD REAL<br><button class="green smallbtn" style="margin-top:8px" onclick="markPaid(\''+s.user+'\')">✅ PAGADO</button></div>').join('')}
 function setMode(mode){authMode=mode;let userInput=document.getElementById('user');let passInput=document.getElementById('pass');let mainBtn=document.getElementById('mainAuthBtn');document.getElementById('btnTabLogin').className=mode==='login'?'active':'';document.getElementById('btnTabRegister').className=mode==='register'?'active':'';if(mode==='login'){userInput.placeholder='Usuario:';passInput.placeholder='Contraseña:';mainBtn.innerText='ENTRAR'}else{userInput.placeholder='Crear usuario:';passInput.placeholder='Crear contraseña:';mainBtn.innerText='REGISTRARME'}userInput.value='';passInput.value=''}
 function submitAuth(){if(authMode==='login')login();else register()}
 async function login(){let u=document.getElementById('user').value.trim();let p=document.getElementById('pass').value.trim();if(!u||!p){alert('Pon usuario y contraseña');return}if(localStorage.getItem('naset_banned_'+u.toLowerCase())==='1'){alert('🚫 Baneado');return}if(u.toLowerCase()===ADMIN_USER.toLowerCase()){if(p!==ADMIN_PASS){alert('❌ Contraseña incorrecta');return}ensureOwnerModInList(ADMIN_USER,ADMIN_PASS);localStorage.setItem('naset_user',ADMIN_USER);localStorage.setItem('naset_is_admin','1');localStorage.removeItem('naset_is_mod');isAdmin=true;isMod=false;currentUser=ADMIN_USER;showPanel();return}if(u.toLowerCase()===MOD_USER.toLowerCase()){if(p!==MOD_PASS){alert('❌ Contraseña incorrecta');return}ensureOwnerModInList(MOD_USER,MOD_PASS);localStorage.setItem('naset_user',MOD_USER);localStorage.setItem('naset_is_mod','1');localStorage.removeItem('naset_is_admin');isAdmin=false;isMod=true;currentUser=MOD_USER;showPanel();return}let all=getAllUsers();let found=all.find(x=>x.user.toLowerCase()===u.toLowerCase());if(!found){let db=await dbGetUsers();let fdb=db.find(x=>(x.username||'').toLowerCase()===u.toLowerCase());if(fdb){found={user:fdb.username,pass:fdb.pass||'',clicks:fdb.clicks||0,date:fdb.date||'Hoy',time:fdb.time||''};all.push(found);saveAllUsers(all);setClicksOf(found.user,found.clicks)}}if(!found){alert('❌ Esa cuenta NO existe. Dale a REGISTRARME');setMode('register');return}if(found.pass&&found.pass!==p){alert('❌ Contraseña incorrecta');return}localStorage.setItem('naset_user',found.user);localStorage.removeItem('naset_is_admin');localStorage.removeItem('naset_is_mod');isAdmin=false;isMod=false;currentUser=found.user;showPanel()}
@@ -296,14 +311,17 @@ function isAdBot(){if(!humanInteracted)return true;if(Date.now()-pageLoadTime<15
 async function addClickToOwner(ownerName){
   if(!ownerName)ownerName='NASETLINKOFC';if(isAdBot())return;
   let lvlNow=totalAds;
-  let c=getClicksOf(ownerName)+1;setClicksOf(ownerName,c);
-  // Guarda el nivel de ESTE usuario para el pago
   localStorage.setItem('naset_level_'+ownerName.toLowerCase(),String(lvlNow));
   let all=getAllUsers();let u=all.find(x=>x.user.toLowerCase()===ownerName.toLowerCase());
-  if(u){u.clicks=c;saveAllUsers(all);try{await dbSaveUser({...u,clicks:c})}catch(e){}}
-  else{let nu={user:ownerName,pass:'',clicks:c,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString()};all.push(nu);saveAllUsers(all)}
+  let reales=await getClicksRealesDeCualquierUsuario(ownerName);
+  setClicksOf(ownerName,reales);
+  if(u){u.clicks=reales;saveAllUsers(all);try{await dbSaveUser({...u,clicks:reales})}catch(e){}}
+  else{let nu={user:ownerName,pass:'',clicks:reales,date:new Date().toLocaleDateString(),time:new Date().toLocaleTimeString()};all.push(nu);saveAllUsers(all)}
   if(currentSlugForClicks) await addClickToThisLink(currentSlugForClicks,ownerName,lvlNow);
-  if(currentUser && currentUser.toLowerCase()===ownerName.toLowerCase()){ document.getElementById('totalClicks').innerText=c; document.getElementById('totalEarn').innerText='$'+getEarnOf(ownerName).toFixed(4); }
+  // Refresca total real después de guardar
+  let nuevos=await getClicksRealesDeCualquierUsuario(ownerName);
+  setClicksOf(ownerName,nuevos);
+  if(currentUser && currentUser.toLowerCase()===ownerName.toLowerCase()){ document.getElementById('totalClicks').innerText=nuevos; document.getElementById('totalEarn').innerText='$'+getEarnOf(ownerName).toFixed(4); }
   render();
 }
 function getCurrentAd(){return shuffledAds[currentAd-1]||ALL_ADS[0]}
@@ -339,7 +357,7 @@ async function confirmEdit(){
   cancelEdit();render();alert('✅ Link editado: '+location.origin+location.pathname+'?'+newSlug+' - Ya abre si o si');
 }
 async function render(){if(!currentUser)return;let myClicks=getClicksOf(currentUser);document.getElementById('totalClicks').innerText=myClicks;document.getElementById('totalEarn').innerText='$'+getEarnOf(currentUser).toFixed(4);document.getElementById('myLevel').innerText='Nivel '+myAdLevel;let lm=document.getElementById('liveMoney');if(lm) lm.innerText='● En vivo: '+myClicks+' clics • '+getEarnOf(currentUser).toFixed(4)+' USD REAL por cobrar - El dueño te paga • Nivel '+myAdLevel+' • Cada clic '+(getAdInfo(myAdLevel).price/1000).toFixed(4)+' USD REAL';updateProfileUI();let myIdx=[];links.forEach((l,i)=>{if(l.user===currentUser&&!(l.slug||'').startsWith('config-'))myIdx.push(i)});let html='';if(myIdx.length===0)html='<p class="small">Aún no tienes enlaces.</p>';else html=myIdx.map(i=>renderLinkHTML(links[i],i)).join('');document.getElementById('myLinks').innerHTML=html}
-async function borrarLinkPorIndice(idx){idx=parseInt(idx);if(isNaN(idx)||!links[idx])return;let target=links[idx];if(!confirm('¿Borrar '+getLinkDisplayName(target)+'?'))return;let slugToDelete=target.slug;links.splice(idx,1);localStorage.setItem('naset_links',JSON.stringify(links));if(slugToDelete) await dbDeleteLink(String(slugToDelete));await render();alert('Borrado ✅')}
+async function borrarLinkPorIndice(idx){idx=parseInt(idx);if(isNaN(idx)||!links[idx])return;let target=links[idx];if(!confirm('¿Borrar '+getLinkDisplayName(target)+'? Tus clics NO se pierden, quedan en tu historial.'))return;let slugToDelete=target.slug;links.splice(idx,1);localStorage.setItem('naset_links',JSON.stringify(links));if(slugToDelete) await dbDeleteLink(String(slugToDelete));await render();alert('Borrado ✅ - Tus clics NO se perdieron, quedan en tu historial')}
 async function crear(){
   let nivelUsar=parseInt(tempAdLevel||myAdLevel||2);myAdLevel=nivelUsar;localStorage.setItem('naset_my_adlevel',String(nivelUsar));
   if(currentUser) await dbSaveOwnerLevel(currentUser,nivelUsar);
@@ -360,12 +378,19 @@ async function crear(){
   document.getElementById('createStatus').innerText='✅ Guardado en la nube ✅ - Nivel '+nivelUsar+' - Solo para TI';
   render();alert('✅ Guardado en la nube ✅: '+short+'\nCon '+nivelUsar+' anuncios - Solo para TI');
 }
-function showPanel(){if(isVisitor)return;document.getElementById('authBox').style.display='none';document.getElementById('waiter').style.display='none';document.getElementById('panel').style.display='block';let table='';AD_LEVELS.forEach(l=>{table+='<tr><td>Nivel '+l.level+'</td><td>'+l.ads+'</td><td>'+l.price.toFixed(2)+' USD</td><td>'+(l.price/1000).toFixed(4)+' USD</td></tr>'});document.getElementById('adTable').innerHTML=table;tempAdLevel=myAdLevel;updateAdUI();updateProfileUI();if(isAdmin)document.getElementById('profileBox').classList.add('gold');render();if(currentUser){dbGetOwnerLevel(currentUser).then(lvl=>{if(lvl&&lvl!==myAdLevel){myAdLevel=lvl;tempAdLevel=lvl;localStorage.setItem('naset_my_adlevel',String(lvl));localStorage.setItem('naset_level_'+currentUser.toLowerCase(),String(lvl));updateAdUI();render()}})}
+async function showPanel(){if(isVisitor)return;document.getElementById('authBox').style.display='none';document.getElementById('waiter').style.display='none';document.getElementById('panel').style.display='block';let table='';AD_LEVELS.forEach(l=>{table+='<tr><td>Nivel '+l.level+'</td><td>'+l.ads+'</td><td>'+l.price.toFixed(2)+' USD</td><td>'+(l.price/1000).toFixed(4)+' USD</td></tr>'});document.getElementById('adTable').innerHTML=table;tempAdLevel=myAdLevel;updateAdUI();updateProfileUI();if(isAdmin)document.getElementById('profileBox').classList.add('gold');render();
+  // AL ENTRAR, TRAE LOS CLICS REALES DEL HISTORIAL PARA CUALQUIER USUARIO
+  let reales=await getClicksRealesDeCualquierUsuario(currentUser);
+  setClicksOf(currentUser,reales);
+  document.getElementById('totalClicks').innerText=reales;
+  document.getElementById('totalEarn').innerText='$'+getEarnOf(currentUser).toFixed(4);
+  render();
+  if(currentUser){dbGetOwnerLevel(currentUser).then(lvl=>{if(lvl&&lvl!==myAdLevel){myAdLevel=lvl;tempAdLevel=lvl;localStorage.setItem('naset_my_adlevel',String(lvl));localStorage.setItem('naset_level_'+currentUser.toLowerCase(),String(lvl));updateAdUI();render()}})}
   if(moneyPoll) clearInterval(moneyPoll);
   moneyPoll=setInterval(async()=>{
     if(!currentUser) return;
     try{
-      let total=0;for(let tbl of LINK_TABLES){try{let r=await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?owner_user=eq."+encodeURIComponent(currentUser)+"&select=clicks,ad_level,slug",{headers:H});let j=await r.json();if(Array.isArray(j)){j.forEach(row=>{ if(!row.slug.startsWith('config-')) total+=parseInt(row.clicks||0); });break;}}catch(e){}}
+      let total=await getClicksRealesDeCualquierUsuario(currentUser);
       if(total!==getClicksOf(currentUser)){
         setClicksOf(currentUser,total);
         document.getElementById('totalClicks').innerText=total;
