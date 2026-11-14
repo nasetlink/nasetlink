@@ -42,8 +42,6 @@ button.adbtn{background:#f59e0b;color:#000;font-size:17px;padding:18px}button.re
 table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid #222}
 .top-sub{color:#aaa;text-align:center;font-size:13px;margin:5px 0 14px}
 .pay-card{background:#000;border:1px solid #25D366;border-radius:12px;padding:12px;margin-bottom:10px}
-.global-banner{background:linear-gradient(90deg,#16a34a,#25D366);color:#fff;border-radius:14px;padding:12px;text-align:center;font-weight:900;margin-bottom:14px;font-size:15px}
-.global-banner span{font-size:22px}
 </style>
 </head>
 <body>
@@ -65,13 +63,12 @@ table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;borde
   <div class="menu-item logout" onclick="logout()"><span>↪</span><span>Cerrar sesión</span></div>
 </div>
 <div id="logoBig" style="text-align:center;padding:18px 0 4px"><div class="logo" style="font-size:34px">NASET<span>LINK</span></div></div>
-<div class="global-banner" id="globalBanner">👥 TUS CLICS: <span id="globalTotal">0</span> <br><small style="font-weight:normal;font-size:11px">● EN VIVO - Sube cada 2 segundos</small></div>
 <p class="top-sub">📢 Sigue las instrucciones para continuar a tu enlace</p>
 <div id="viewProfile" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">✏️ Mi Perfil</p><div class="box" id="profileBoxSolo"></div></div>
 <div id="viewAdmin" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">👑 Solo Admin - Pagos</p><div class="box gold" id="adminPanelSolo"></div></div>
 <div id="viewStats" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">📊 Estadísticas y Pagos</p><div class="box"><div class="stats"><div class="stat"><b id="statsTotalUsers">0</b><span>USUARIOS</span></div><div class="stat"><b id="statsTotalClicks">0</b><span>CLICS TOTAL</span></div><div class="stat"><b id="statsTotalPay" style="color:#25D366">$0.00</b><span>GANADO TOTAL - USD</span></div></div><p class="small" style="text-align:left">💰 $1 por cada 1000 clics para todos. Aquí ves cuánto ha ganado cada uno y le pagas por PayPal. Cuando pagues, dale a PAGADO y se pone en 0.</p><label>🔍 Buscar usuario para pagar:</label><input id="statsSearch" placeholder="Nombre..." oninput="renderStats()"><div id="statsList"></div></div></div>
 <div id="mainView">
-<div class="box" id="waiter" style="display:none"><p id="waitTitle">Anuncio 1</p><div style="background:#052e16;border:1px solid #25D366;border-radius:12px;padding:10px;text-align:center;margin:8px 0"><b style="color:#25D366">👥 ESTE LINK YA LO ABRIERON: <span id="globalTotalLink">0</span> PERSONAS</b><br><small style="color:#aaa">● En vivo - sube solo</small></div><div class="step-dots" id="dots"></div><div class="bar"><div id="barFill"></div></div><p class="small" id="adLevelShow"></p><p class="small" id="cloudStatus" style="color:#f59e0b"></p><p class="small" id="clickCountedMsg" style="color:#25D366;font-weight:bold;display:none">✅ Clic contado al abrir el link</p><div id="stateClick"><div class="ad-preview"><p>📢 ANUNCIO <span id="adNum1">1</span></p><a class="real-ad" href="https://uplcm.com/4/12244247" target="_blank" onclick="empezarEspera()"><img id="adImg" src="" alt="Anuncio"><div class="real-ad-text" id="adText">Cargando...</div></a></div><a href="https://uplcm.com/4/12244247" target="_blank" onclick="empezarEspera()" style="text-decoration:none"><button class="adbtn">👉 DARLE CLIC AL ANUNCIO</button></a></div><div id="stateWait" style="display:none"><p style="text-align:center">⏳ Viendo anuncio...</p><div id="count">5</div><button disabled id="returnBtn" onclick="confirmReturn()">🔒 ESPERA 5 SEGUNDOS...</button></div><div id="stateDone" style="display:none"><p style="text-align:center;font-size:22px">✅ ¡Completaste!</p><button class="green" onclick="goToLink()">🔗 IR AL LINK DIRECTO</button><p class="small" id="doneMsg"></p></div></div>
+<div class="box" id="waiter" style="display:none"><p id="waitTitle">Anuncio 1</p><div class="step-dots" id="dots"></div><div class="bar"><div id="barFill"></div></div><p class="small" id="adLevelShow"></p><p class="small" id="cloudStatus" style="color:#f59e0b"></p><p class="small" id="clickCountedMsg" style="color:#25D366;font-weight:bold;display:none">✅ Clic contado - Ya sumó en tus clics</p><div id="stateClick"><div class="ad-preview"><p>📢 ANUNCIO <span id="adNum1">1</span></p><a class="real-ad" href="https://uplcm.com/4/12244247" target="_blank" onclick="empezarEspera()"><img id="adImg" src="" alt="Anuncio"><div class="real-ad-text" id="adText">Cargando...</div></a></div><a href="https://uplcm.com/4/12244247" target="_blank" onclick="empezarEspera()" style="text-decoration:none"><button class="adbtn">👉 DARLE CLIC AL ANUNCIO</button></a></div><div id="stateWait" style="display:none"><p style="text-align:center">⏳ Viendo anuncio...</p><div id="count">5</div><button disabled id="returnBtn" onclick="confirmReturn()">🔒 ESPERA 5 SEGUNDOS...</button></div><div id="stateDone" style="display:none"><p style="text-align:center;font-size:22px">✅ ¡Completaste!</p><button class="green" onclick="goToLink()">🔗 IR AL LINK DIRECTO</button><p class="small" id="doneMsg"></p></div></div>
 <div class="box" id="authBox"><h3 style="text-align:center;margin-bottom:14px">👋 Bienvenido a NasetLink</h3><div class="auth-tabs"><button id="btnTabLogin" class="active" onclick="setMode('login')">Iniciar Sesión</button><button id="btnTabRegister" onclick="setMode('register')">Registrarme</button></div><input id="user" placeholder="Usuario:"><input id="pass" type="password" placeholder="Contraseña:"><button id="mainAuthBtn" onclick="submitAuth()">ENTRAR</button><button class="sec" onclick="joinWhatsApp()" style="background:#25D366;color:#fff">💬 Unirme a la comunidad</button><p class="small">Todos ganan $1 por cada 1000 clics. Tú eliges 2, 4, 6, 8 o 10 anuncios.</p></div>
 <div id="panel" style="display:none">
 <div class="box" id="profileBox"><div style="display:flex;gap:14px;align-items:center"><div class="avatar" id="myAvatar" onclick="openView('profile')" style="cursor:pointer">?</div><div><h3 id="welcomeName">Hola 👋</h3><p id="profileUserShow" style="color:#aaa;font-size:12px"></p><p id="profileBioShow" style="color:#aaa;font-size:12px"></p><p id="rankProgressText" style="font-size:12px;margin-top:8px;font-weight:bold"></p></div></div></div>
@@ -79,17 +76,16 @@ table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;borde
 <p class="small" id="liveMoney" style="color:#25D366;font-weight:bold">● En vivo: esperando clics...</p>
 <div class="box"><h3>📢 Tu Nivel de Anuncios - Solo para TI, en tiempo real</h3><p class="small" style="text-align:left;margin:0 0 8px">Toca 2, 4, 6, 8 o 10. Solo cambia cuántos anuncios ven en TUS links. El pago es el mismo para todos: $1 por 1000 clics.</p><div class="grid5"><button class="level-btn" data-lv="2" onclick="changeAdLevel(2)">2</button><button class="level-btn" data-lv="4" onclick="changeAdLevel(4)">4</button><button class="level-btn" data-lv="6" onclick="changeAdLevel(6)">6</button><button class="level-btn" data-lv="8" onclick="changeAdLevel(8)">8</button><button class="level-btn" data-lv="10" onclick="changeAdLevel(10)">10</button></div><p class="small" id="adLevelInfo"></p><p class="small" id="saveStatus" style="color:#25D366"></p><button class="green" onclick="saveAdLevel()">💾 GUARDAR MI NIVEL EN LA NUBE</button></div>
 <div class="box"><h3>✨ Crea un enlace</h3><label>📝 Nombre:</label><input id="linkName" placeholder="Ej: aimbot-head" oninput="updateSlugPreview()"><div class="slug-preview" id="slugPreview">Tu enlace será: .../?tu-nombre</div><label>🔗 Enlace de destino:</label><input id="longUrl" placeholder="Pega tu enlace de destino aquí..."><button onclick="crear()">✨ GENERAR MI LINK</button><p class="small" id="createStatus"></p><div id="myLinks"></div><div id="editBox" style="display:none;border-top:1px solid #333;margin-top:12px;padding-top:12px"><p style="font-weight:bold">✏️ Editar link</p><label>Nombre nuevo:</label><input id="editSlug"><label>Destino nuevo:</label><input id="editDest"><div class="flex"><button class="green" onclick="confirmEdit()">💾 GUARDAR CAMBIOS</button><button class="sec" onclick="cancelEdit()">Cancelar</button></div></div></div>
-<div class="box"><h3>💰 Pago para TODOS - $1 por 1000 clics - USD</h3><table><tr><th>Nivel</th><th>Anuncios</th><th>Pago USD</th><th>Por 1 clic</th></tr><tbody id="adTable"></tbody></table><p class="small">Igual para todos: 1000 clics = $1.00. 1384 clics = $1.38. 1500 clics = $1.50.</p></div>
+<div class="box"><h3>💰 Pago para TODOS - $1 por cada 1000 clics - USD</h3><table><tr><th>Nivel</th><th>Anuncios</th><th>Pago USD</th><th>Por 1 clic</th></tr><tbody id="adTable"></tbody></table><p class="small">Igual para todos: 1000 clics = $1.00. 1384 clics = $1.38. 1500 clics = $1.50.</p></div>
 <button class="sec" onclick="logout()">Cerrar Sesión</button>
 </div>
-<p class="small">Pago mínimo 5.00 USD por PayPal. 🛡️ Protegido Anti-Bot.</p>
+<p class="small">Pago mínimo 5.00 USD por PayPal.</p>
 </div>
 </div>
 <script>
 const SUPABASE_URL="https://laponfeqxxspxcasxecg.supabase.co";
 const SUPABASE_KEY="sb_publishable_TBu_vM0xOlQsLX4aQvMmrQ_Nsp9Fv00";
 const ADMIN_USER="NASETLINKOFC", ADMIN_PASS="NASET12CLICKS", MOD_USER="DANYXITERS", MOD_PASS="12345689";
-const MONETAG_LINK="https://uplcm.com/4/12244247";
 const WHATSAPP_GROUP="https://chat.whatsapp.com/JAqf2gVEFlz59saw6MVveK?s=cl&p=i&mlr=4&ilr=4&iam=2";
 const LINK_TABLES=["naset_links","nasetlinks"];
 const USER_TABLES=["naset_users","nasetusers"];
@@ -101,47 +97,9 @@ function verPass(id){let i=document.getElementById(id);i.type=i.type==="password
 let authMode='login';
 const PRESET_AVATARS=["https://i.pravatar.cc/150?img=12","https://i.pravatar.cc/150?img=32","https://i.pravatar.cc/150?img=5","https://i.pravatar.cc/150?img=47","https://i.pravatar.cc/150?img=68","https://i.pravatar.cc/150?img=15","https://i.pravatar.cc/150?img=8","https://i.pravatar.cc/150?img=60"];
 let selectedAvatar='',currentView='home',prevView='home',humanInteracted=false,pageLoadTime=Date.now();
-let cloudProfiles={},cloudVerified={},currentSlugForClicks='',editingIdx=-1,visitorPoll=null,moneyPoll=null,clickAlreadyCounted=false,globalPoll=null;
+let cloudProfiles={},cloudVerified={},currentSlugForClicks='',editingIdx=-1,visitorPoll=null,moneyPoll=null,clickAlreadyCounted=false;
 document.addEventListener('mousemove',()=>humanInteracted=true,{passive:true});document.addEventListener('touchstart',()=>humanInteracted=true,{passive:true});document.addEventListener('keydown',()=>humanInteracted=true,{passive:true});
 const H={"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"};
-// ARREGLO: EL CARTEL AHORA ES TUS CLICS, NO EL TOTAL GLOBAL
-async function getCountFromUrl(url){
-  try{
-    let r=await fetch(url,{headers:{...H,"Prefer":"count=exact"}});
-    let range=r.headers.get("content-range")||r.headers.get("Content-Range")||"";
-    if(range && range.includes("/")) return parseInt(range.split("/")[1])||0;
-    let j=await r.json(); if(Array.isArray(j)) return j.length;
-  }catch(e){}
-  return 0;
-}
-async function updateGlobalTotal(){
-  try{
-    // Si estoy logueado, el cartel = MIS CLICS
-    if(currentUser && !isVisitor){
-      let myTotal=await getCountFromUrl(SUPABASE_URL+"/rest/v1/naset_clicks?owner_user=eq."+encodeURIComponent(currentUser)+"&select=id");
-      let g=document.getElementById('globalTotal'); if(g) g.innerText=myTotal;
-      let gb=document.getElementById('globalBanner'); if(gb) gb.innerHTML='👥 TUS CLICS: <span>'+myTotal+'</span> <br><small style="font-weight:normal;font-size:11px">● EN VIVO - Sube cada 2 segundos • $'+(myTotal/1000).toFixed(2)+' USD</small>';
-      // Y TAMBIEN actualiza MIS CLICS y GANADO al mismo tiempo, para que no se quede pegado en 1384
-      let tc=document.getElementById('totalClicks'); if(tc) tc.innerText=myTotal;
-      let te=document.getElementById('totalEarn'); if(te) te.innerText='$'+(myTotal/1000).toFixed(2);
-      let lm=document.getElementById('liveMoney'); if(lm) lm.innerText='● En vivo: '+myTotal+' clics • $'+(myTotal/1000).toFixed(2)+' GANADO • Nivel '+myAdLevel;
-      setClicksOf(currentUser,myTotal);
-      return;
-    }
-    // Si soy visitante, el cartel = clics de ESTE link
-    if(currentSlugForClicks){
-      let totalLink=await getCountFromUrl(SUPABASE_URL+"/rest/v1/naset_clicks?slug=eq."+encodeURIComponent(currentSlugForClicks)+"&select=id");
-      let g=document.getElementById('globalTotal'); if(g) g.innerText=totalLink;
-      let gb=document.getElementById('globalBanner'); if(gb) gb.innerHTML='👥 ESTE LINK YA LO ABRIERON: <span>'+totalLink+'</span> PERSONAS <br><small style="font-weight:normal;font-size:11px">● EN VIVO - Sube cada 2 segundos</small>';
-      let gl=document.getElementById('globalTotalLink'); if(gl) gl.innerText=totalLink;
-      return;
-    }
-    // Si no estoy logueado y no soy visitante, mostrar total global
-    let total=await getCountFromUrl(SUPABASE_URL+"/rest/v1/naset_clicks?select=id");
-    let g=document.getElementById('globalTotal'); if(g) g.innerText=total;
-  }catch(e){}
-}
-function startGlobalPoll(){ if(globalPoll) clearInterval(globalPoll); updateGlobalTotal(); globalPoll=setInterval(updateGlobalTotal,2000); }
 function ownerConfigSlug(owner){return 'config-'+String(owner||'').toLowerCase().replace(/[^a-z0-9]/g,'')}
 async function dbGetLinkFast(slug){
   slug=cleanSlug(decodeURIComponent(slug||''));if(!slug)return null;
@@ -181,37 +139,46 @@ async function dbSaveOwnerLevel(owner,level){
   try{localStorage.setItem('naset_my_adlevel',String(level));}catch(e){}
   return true;
 }
+// NUEVO: clics reales = suma de clics de TUS links + tabla naset_clicks, el que sea mayor
 async function getClicksRealesDeCualquierUsuario(usuario){
   if(!usuario) return 0;
+  let totalLinks=0, totalClicksTabla=0;
+  // 1) Suma de la columna clicks en naset_links
+  for(let tbl of LINK_TABLES){
+    try{
+      let r=await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?owner_user=eq."+encodeURIComponent(usuario)+"&select=clicks,slug",{headers:H});
+      let j=await r.json();
+      if(Array.isArray(j)){
+        for(let row of j){ if(row.slug && !String(row.slug).startsWith('config-')) totalLinks+=parseInt(row.clicks||0); }
+        if(totalLinks>0) break;
+      }
+    }catch(e){}
+  }
+  // 2) Conteo en naset_clicks
   try{
     let r=await fetch(SUPABASE_URL+"/rest/v1/naset_clicks?owner_user=eq."+encodeURIComponent(usuario)+"&select=id",{headers:{...H,"Prefer":"count=exact"}});
     let range=r.headers.get("content-range")||r.headers.get("Content-Range");
-    if(range && range.includes("/")){
-      let total=parseInt(range.split("/")[1]);
-      if(!isNaN(total)) return total;
-    }
-    let j=await r.json();
-    if(Array.isArray(j)) return j.length;
+    if(range && range.includes("/")) totalClicksTabla=parseInt(range.split("/")[1])||0;
+    else { let j=await r.json(); if(Array.isArray(j)) totalClicksTabla=j.length; }
   }catch(e){}
-  try{
-    for(let tbl of USER_TABLES){
-      let r=await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?username=eq."+encodeURIComponent(usuario)+"&select=clicks",{headers:H});
-      let j=await r.json();
-      if(Array.isArray(j)&&j[0]) return parseInt(j[0].clicks||0);
-    }
-  }catch(e){}
-  return parseInt(localStorage.getItem('naset_clicks_'+usuario.toLowerCase())||'0');
+  // Si tu cuenta ya tenia 1384 antes y la suma nueva es menor, respetar el mayor para no bajar
+  let guardado=parseInt(localStorage.getItem('naset_clicks_'+usuario.toLowerCase())||'0');
+  let mejor=Math.max(totalLinks, totalClicksTabla, guardado);
+  return mejor;
 }
 async function dbSaveLinkVerified(slug,target,owner,adLevel){
   slug=cleanSlug(slug);adLevel=parseInt(adLevel||2);
   let ownerLvl=await dbGetOwnerLevel(owner);
   if(ownerLvl) adLevel=ownerLvl;
+  // Guardar clics viejos para no perderlos al editar
+  let viejo=await dbGetLinkFast(slug);
+  let clicsViejos=viejo?parseInt(viejo.clicks||0):0;
   for(let tbl of LINK_TABLES){ try{await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?slug=eq."+encodeURIComponent(slug),{method:"DELETE",headers:H});}catch(e){} }
   await new Promise(r=>setTimeout(r,400));
   for(let intento=0;intento<3;intento++){
     for(let tbl of LINK_TABLES){
-      try{await fetch(SUPABASE_URL+"/rest/v1/"+tbl,{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({slug:slug,target:target,owner_user:owner,ad_level:adLevel,clicks:0})});}catch(e){}
-      try{await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({target:target,owner_user:owner,ad_level:adLevel})});}catch(e){}
+      try{await fetch(SUPABASE_URL+"/rest/v1/"+tbl,{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({slug:slug,target:target,owner_user:owner,ad_level:adLevel,clicks:clicsViejos})});}catch(e){}
+      try{await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?slug=eq."+encodeURIComponent(slug),{method:"PATCH",headers:H,body:JSON.stringify({target:target,owner_user:owner,ad_level:adLevel,clicks:clicsViejos})});}catch(e){}
     }
     await new Promise(r=>setTimeout(r,800));
     let check=await dbGetLinkFast(slug);
@@ -225,17 +192,22 @@ async function dbGetUsers(){for(let tbl of USER_TABLES){try{let r=await fetch(SU
 async function dbSaveUser(u){let prof=getProfile(u.user||currentUser);for(let tbl of USER_TABLES){try{await fetch(SUPABASE_URL+"/rest/v1/"+tbl,{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({username:u.user,pass:u.pass||"",clicks:u.clicks||0,date:u.date||"",time:u.time||"",timestamp:u.timestamp||Date.now(),avatar:prof.avatar||"",display_name:prof.displayName||"",bio:prof.bio||"",is_verified:getTag(u.user||currentUser)==='verified'?true:false})});}catch(e){}}}
 function getLinkClicks(slug){return parseInt(localStorage.getItem('naset_link_clicks_'+slug.toLowerCase())||'0')}
 function setLinkClicks(slug,v){localStorage.setItem('naset_link_clicks_'+slug.toLowerCase(),String(v))}
+// CONTEO NUEVO: al abrir el link, +1 directo en la columna clicks del link. Sin esperar 5 seg, sin anti-bot.
 async function countClickOnOpen(ownerName, slug, level){
   if(clickAlreadyCounted) return;
   clickAlreadyCounted=true;
   if(!ownerName) ownerName='NASETLINKOFC';
+  let cur=null;
+  try{ cur=await dbGetLinkFast(slug); }catch(e){}
+  let nuevoClicks=(cur?parseInt(cur.clicks||0):0)+1;
+  // 1) Sumar en naset_links / nasetlinks
+  for(let tbl of LINK_TABLES){
+    try{ await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?slug=eq."+encodeURIComponent(cleanSlug(slug)),{method:"PATCH",headers:H,body:JSON.stringify({clicks:nuevoClicks})}); }catch(e){}
+  }
+  // 2) Intentar tambien en naset_clicks (si tiene RLS no importa, ya sumo arriba)
   try{await fetch(SUPABASE_URL+"/rest/v1/naset_clicks",{method:"POST",headers:H,body:JSON.stringify({owner_user:ownerName,slug:slug,ad_level:parseInt(level||2)})});}catch(e){}
-  for(let tbl of LINK_TABLES){try{let cur=await dbGetLinkFast(slug);let cloudC=cur?parseInt(cur.clicks||0):0;await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?slug=eq."+encodeURIComponent(cleanSlug(slug)),{method:"PATCH",headers:H,body:JSON.stringify({clicks:cloudC+1})});break;}catch(e){}}
-  let reales=await getClicksRealesDeCualquierUsuario(ownerName);
-  for(let tbl of USER_TABLES){try{await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?username=eq."+encodeURIComponent(ownerName),{method:"PATCH",headers:H,body:JSON.stringify({clicks:reales})});}catch(e){}}
   let el=document.getElementById('clickCountedMsg'); if(el) el.style.display='block';
-  let cs=document.getElementById('cloudStatus'); if(cs) cs.innerText='✅ Clic contado al abrir - Dueño: '+ownerName;
-  updateGlobalTotal();
+  let cs=document.getElementById('cloudStatus'); if(cs) cs.innerText='✅ Clic contado - Van '+nuevoClicks+' en este link - Dueño: '+ownerName;
 }
 function getAllUsers(){try{return JSON.parse(localStorage.getItem('naset_all_users')||'[]')}catch(e){return[]}}
 function saveAllUsers(arr){localStorage.setItem('naset_all_users',JSON.stringify(arr));users=arr}
@@ -316,7 +288,6 @@ function initSlug(){
   document.getElementById('authBox').style.display='none';document.getElementById('panel').style.display='none';
   document.getElementById('cloudStatus').innerText='⏳ Conectando con la nube...';
   showWaiterFor('NASETLINKOFC',2);
-  startGlobalPoll();
   (async()=>{
     let found=null;
     for(let i=0;i<6;i++){ found=await dbGetLinkFast(currentSlugForClicks); if(found&&found.target) break; await new Promise(r=>setTimeout(r,800)); }
@@ -336,13 +307,13 @@ function initSlug(){
     targetUrl=finalTarget; owner=finalOwner;
     if(parseInt(found.adLevel)!==finalLevel) dbUpdateLinkLevel(currentSlugForClicks,finalLevel);
     if(currentAd===1) showWaiterFor(finalOwner,finalLevel);
+    // CONTAR AL ABRIR, SIN 5 SEG
     await countClickOnOpen(finalOwner, currentSlugForClicks, finalLevel);
-    document.getElementById('cloudStatus').innerText='✅ Clic contado - Nivel '+finalLevel+' - Dueño: '+finalOwner;
+    document.getElementById('cloudStatus').innerText='✅ Clic contado - Dueño: '+finalOwner;
     startVisitorPoll();
   })();
   return true;
 }
-function isAdBot(){if(!humanInteracted)return true;if(Date.now()-pageLoadTime<1500)return true;return false}
 function getCurrentAd(){return shuffledAds[currentAd-1]||ALL_ADS[0]}
 function updateWaitTitle(){document.getElementById('waitTitle').innerText='Anuncio '+currentAd;document.getElementById('adNum1').innerText=currentAd;let ad=getCurrentAd();document.getElementById('adImg').src=ad.img;document.getElementById('adText').innerText=ad.text;document.getElementById('adText').style.background=ad.bg}
 function empezarEspera(){if(currentAd>originalTotalAds)return;adStartTime=Date.now();document.getElementById('stateClick').style.display='none';document.getElementById('stateWait').style.display='block';document.getElementById('stateDone').style.display='none';let t=5,c=document.getElementById('count');c.innerText=t;let btn=document.getElementById('returnBtn');btn.disabled=true;btn.className='';btn.innerText='🔒 ESPERA 5 SEGUNDOS...';clearInterval(timerInt);timerInt=setInterval(()=>{t--;c.innerText=t>0?t:'¡Listo!';if(t<=0){clearInterval(timerInt);btn.disabled=false;btn.className='returnbtn';btn.innerText=(currentAd>=originalTotalAds?'✅ YA VI EL ANUNCIO, IR AL LINK':'✅ YA VI EL ANUNCIO, VER SIGUIENTE')}},1000)}
@@ -434,7 +405,6 @@ async function crear(){
 async function showPanel(){
   if(isVisitor)return;
   document.getElementById('authBox').style.display='none';document.getElementById('waiter').style.display='none';document.getElementById('panel').style.display='block';
-  startGlobalPoll();
   let table='';AD_LEVELS.forEach(l=>{table+='<tr><td>Nivel '+l.level+'</td><td>'+l.ads+'</td><td>1.00 USD</td><td>0.0010 USD</td></tr>'});document.getElementById('adTable').innerHTML=table;
   tempAdLevel=myAdLevel;updateAdUI();updateProfileUI();if(isAdmin)document.getElementById('profileBox').classList.add('gold');render();
   let reales=await getClicksRealesDeCualquierUsuario(currentUser);
@@ -444,25 +414,22 @@ async function showPanel(){
   render();
   if(currentUser){dbGetOwnerLevel(currentUser).then(lvl=>{if(lvl&&lvl!==myAdLevel){myAdLevel=lvl;tempAdLevel=lvl;localStorage.setItem('naset_my_adlevel',String(lvl));localStorage.setItem('naset_level_'+currentUser.toLowerCase(),String(lvl));updateAdUI();render()}})}
   if(moneyPoll) clearInterval(moneyPoll);
+  // POLL CADA 2 SEG: MIS CLICS + $ EN TIEMPO REAL
   moneyPoll=setInterval(async()=>{
     if(!currentUser) return;
     try{
       let total=await getClicksRealesDeCualquierUsuario(currentUser);
-      let lvlNube=await dbGetOwnerLevel(currentUser);
-      let cambioNivel = lvlNube && lvlNube!==myAdLevel;
-      if(cambioNivel){ myAdLevel=lvlNube; tempAdLevel=lvlNube; localStorage.setItem('naset_my_adlevel',String(lvlNube)); localStorage.setItem('naset_level_'+currentUser.toLowerCase(),String(lvlNube)); updateAdUI(); }
-      if(total!==getClicksOf(currentUser) || cambioNivel){
+      if(total!==getClicksOf(currentUser)){
         setClicksOf(currentUser,total);
         document.getElementById('totalClicks').innerText=total;
         document.getElementById('totalEarn').innerText='$'+getEarnOf(currentUser).toFixed(2);
-        document.getElementById('myLevel').innerText='Nivel '+myAdLevel;
         let lm=document.getElementById('liveMoney'); if(lm) lm.innerText='● En vivo: '+total+' clics • $'+getEarnOf(currentUser).toFixed(2)+' GANADO • Nivel '+myAdLevel;
-        render();
+        let rpt=document.getElementById('rankProgressText'); if(rpt) rpt.innerText=total+' clics • $'+getEarnOf(currentUser).toFixed(2)+' USD GANADO';
       }
     }catch(e){}
   },2000);
 }
-(function(){let isLink=initSlug();if(isLink){if(currentUser){document.getElementById('headerBar').style.display='flex';updateProfileUI()}return}startGlobalPoll();if(currentUser){if(isOwnerOrMod(currentUser)){if(currentUser.toLowerCase()===ADMIN_USER.toLowerCase()){isAdmin=true;isMod=false;ensureOwnerModInList(ADMIN_USER,ADMIN_PASS)}if(currentUser.toLowerCase()===MOD_USER.toLowerCase()){isMod=true;isAdmin=false;ensureOwnerModInList(MOD_USER,MOD_PASS)}showPanel()}else{let all=getAllUsers();let me=all.find(x=>x.user.toLowerCase()===currentUser.toLowerCase());if(me){isAdmin=false;isMod=false;showPanel()}else{localStorage.removeItem('naset_user');currentUser=null}}}setInterval(()=>{if(currentUser)render()},5000)})();
+(function(){let isLink=initSlug();if(isLink){if(currentUser){document.getElementById('headerBar').style.display='flex';updateProfileUI()}return}if(currentUser){if(isOwnerOrMod(currentUser)){if(currentUser.toLowerCase()===ADMIN_USER.toLowerCase()){isAdmin=true;isMod=false;ensureOwnerModInList(ADMIN_USER,ADMIN_PASS)}if(currentUser.toLowerCase()===MOD_USER.toLowerCase()){isMod=true;isAdmin=false;ensureOwnerModInList(MOD_USER,MOD_PASS)}showPanel()}else{let all=getAllUsers();let me=all.find(x=>x.user.toLowerCase()===currentUser.toLowerCase());if(me){isAdmin=false;isMod=false;showPanel()}else{localStorage.removeItem('naset_user');currentUser=null}}}setInterval(()=>{if(currentUser)render()},5000)})();
 </script>
 </body>
 </html>
