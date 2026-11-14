@@ -19,7 +19,7 @@ body{background:#000;color:#fff;display:flex;justify-content:center;padding:0 14
 .box{background:#111;border:1px solid #333;border-radius:18px;padding:18px;margin-bottom:14px;overflow:hidden}.gold{border:2px solid gold!important}
 input,select{width:100%;padding:13px;border-radius:12px;border:1px solid #333;background:#000;color:#fff;margin-bottom:10px}
 button{width:100%;padding:14px;border:none;border-radius:14px;background:#a855f7;color:#fff;font-weight:bold;cursor:pointer;margin-bottom:8px}
-button.sec{background:#222;border:1px solid #444}button.danger{background:#dc2626}button.green{background:#16a34a}button.smallbtn{padding:9px;font-size:13px;margin-bottom:0}
+button.sec{background:#222;border:1px solid #444}button.danger{background:#dc2626}button.green{background:#16a34a}button.smallbtn{padding:9px 4px;font-size:12px;margin-bottom:0;white-space:nowrap}
 button.adbtn{background:#f59e0b;color:#000;font-size:17px;padding:18px}button.returnbtn{background:#16a34a}
 button.pagos-btn{background:#16a34a;color:#fff;font-size:17px;padding:18px;margin-bottom:14px;border:2px solid #25D366}
 .auth-tabs{display:flex;gap:8px;margin-bottom:14px}.auth-tabs button{flex:1;background:#222;color:#aaa;border:1px solid #333}.auth-tabs button.active{background:#a855f7;color:#fff}
@@ -28,7 +28,7 @@ button.pagos-btn{background:#16a34a;color:#fff;font-size:17px;padding:18px;margi
 #waitTitle{font-size:22px;font-weight:900;text-align:center}
 #count{font-size:56px;font-weight:900;text-align:center;height:68px;display:flex;align-items:center;justify-content:center}
 .bar{height:10px;background:#222;border-radius:99px;overflow:hidden}.bar div{height:100%;background:#f59e0b;width:100%}
-.flex{display:flex;gap:8px}.level-btn{padding:14px 0;background:#222;border:1px solid #444}.level-btn.active{background:#a855f7}
+.flex{display:flex;gap:6px}.level-btn{padding:14px 0;background:#222;border:1px solid #444}.level-btn.active{background:#a855f7}
 .grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0}
 .ad-preview{background:#000;border:1px dashed #f59e0b;border-radius:14px;padding:12px;text-align:center;margin:12px 0}
 .real-ad{width:100%;border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid #f59e0b;background:#fff;display:block;text-decoration:none}.real-ad img{width:100%;height:160px;object-fit:cover;display:block}.real-ad-text{padding:11px;font-weight:900;color:#000}
@@ -43,7 +43,7 @@ button.pagos-btn{background:#16a34a;color:#fff;font-size:17px;padding:18px;margi
 table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid #222}
 .top-sub{color:#aaa;text-align:center;font-size:13px;margin:5px 0 14px}
 .pay-card{background:#000;border:1px solid #25D366;border-radius:12px;padding:12px;margin-bottom:10px}
-.min-pay{color:#ff6b6b;font-weight:bold;text-align:center;font-size:13px;margin-top:10px}
+.min-pay{color:#fff;font-weight:bold;text-align:center;font-size:13px;margin-top:10px}
 </style>
 </head>
 <body>
@@ -75,7 +75,7 @@ table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;borde
 <div class="box" id="profileBox"><div style="display:flex;gap:14px;align-items:center"><div class="avatar" id="myAvatar" onclick="openView('profile')" style="cursor:pointer">?</div><div><h3 id="welcomeName">Hola 👋</h3><p id="profileUserShow" style="color:#aaa;font-size:12px"></p><p id="profileBioShow" style="color:#aaa;font-size:12px"></p><p id="rankProgressText" style="font-size:12px;margin-top:8px;font-weight:bold;display:none"></p></div></div></div>
 <div class="stats"><div class="stat"><b id="totalClicks">0</b><span>MIS CLICS</span></div><div class="stat"><b id="totalEarn">$0.00</b><span>GANADO<br>USD</span></div><div class="stat"><b id="myLevel">Nivel 2</b><span>MI NIVEL</span></div></div>
 <p class="small" id="liveMoney" style="color:#25D366;font-weight:bold">● En vivo: esperando clics...</p>
-<div class="box"><h3>📢 Tu Nivel de Anuncios</h3><div class="grid5"><button class="level-btn" data-lv="2" onclick="changeAdLevel(2)">2</button><button class="level-btn" data-lv="4" onclick="changeAdLevel(4)">4</button><button class="level-btn" data-lv="6" onclick="changeAdLevel(6)">6</button><button class="level-btn" data-lv="8" onclick="changeAdLevel(8)">8</button><button class="level-btn" data-lv="10" onclick="changeAdLevel(10)">10</button></div><p class="small" id="adLevelInfo"></p><p class="small" id="saveStatus" style="color:#25D366;font-weight:bold"></p><button class="green" onclick="saveAdLevel()">💾 GUARDAR NIVEL</button></div>
+<div class="box"><h3>📢 Tu Nivel de Anuncios</h3><p class="small" style="text-align:left;margin-top:0">Este nivel es solo para el próximo link que crees. Los que ya tienes no se cambian.</p><div class="grid5"><button class="level-btn" data-lv="2" onclick="changeAdLevel(2)">2</button><button class="level-btn" data-lv="4" onclick="changeAdLevel(4)">4</button><button class="level-btn" data-lv="6" onclick="changeAdLevel(6)">6</button><button class="level-btn" data-lv="8" onclick="changeAdLevel(8)">8</button><button class="level-btn" data-lv="10" onclick="changeAdLevel(10)">10</button></div><p class="small" id="adLevelInfo"></p><p class="small" id="saveStatus" style="color:#25D366;font-weight:bold"></p><button class="green" onclick="saveAdLevel()">💾 GUARDAR NIVEL</button></div>
 <div class="box"><h3>✨ Crea un enlace</h3><label>📝 Nombre:</label><input id="linkName" placeholder="Ej: aimbot-head" oninput="updateSlugPreview()"><div class="slug-preview" id="slugPreview">Tu enlace será: .../?tu-nombre</div><label>🔗 Enlace de destino:</label><input id="longUrl" placeholder="Pega tu enlace de destino aquí..."><button onclick="crear()">✨ GENERAR MI LINK</button><p class="small" id="createStatus"></p><div id="myLinks"></div><div id="editBox" style="display:none;border-top:1px solid #333;margin-top:12px;padding-top:12px"><p style="font-weight:bold">✏️ Editar link</p><label>Nombre nuevo:</label><input id="editSlug"><label>Destino nuevo:</label><input id="editDest"><div class="flex"><button class="green" onclick="confirmEdit()">💾 GUARDAR CAMBIOS</button><button class="sec" onclick="cancelEdit()">Cancelar</button></div></div></div>
 <button class="pagos-btn" id="pagosBtn" onclick="togglePagos()">💰 Pagos para todos ▼</button>
 <div class="box" id="pagosBox" style="display:none"><h3>💰 Pago para TODOS - $1 por cada 1000 clics - USD</h3><table><tr><th>Nivel</th><th>Anuncios</th><th>Pago USD</th><th>Por 1 clic</th></tr><tbody id="adTable"></tbody></table><p class="small">1000 clics = $1.00. 1384 clics = $1.38. 1500 clics = $1.50.</p></div>
@@ -167,8 +167,7 @@ async function getClicksRealesDeCualquierUsuario(usuario){
 }
 async function dbSaveLinkVerified(slug,target,owner,adLevel){
   slug=cleanSlug(slug);adLevel=parseInt(adLevel||2);
-  let ownerLvl=await dbGetOwnerLevel(owner);
-  if(ownerLvl) adLevel=ownerLvl;
+  // CADA LINK GUARDA SU PROPIO NIVEL - NO SE USA EL NIVEL DEL DUEÑO PARA SOBREESCRIBIRLO
   let viejo=await dbGetLinkFast(slug);
   let clicsViejos=viejo?parseInt(viejo.clicks||0):0;
   for(let tbl of LINK_TABLES){ try{await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?slug=eq."+encodeURIComponent(slug),{method:"DELETE",headers:H});}catch(e){} }
@@ -297,11 +296,7 @@ function startVisitorPoll(){
     let found=await dbGetLinkFast(currentSlugForClicks);
     if(!found) return;
     if(found.target) targetUrl=found.target;
-    let ownerLvl=await dbGetOwnerLevel(found.owner);
-    let lvl=ownerLvl||parseInt(found.adLevel||2);
-    if(lvl!==totalAds && currentAd===1){
-      totalAds=lvl;originalTotalAds=lvl;shuffledAds=[...ALL_ADS].sort(()=>Math.random()-0.5).slice(0,lvl);let info=getAdInfo(lvl);document.getElementById('adLevelShow').innerText='Nivel '+info.level+' • '+info.ads+' anuncios • Cada clic vale 0.0010 USD';renderDots();updateWaitTitle();document.getElementById('cloudStatus').innerText='● Actualizado en vivo: Nivel '+lvl;
-    }
+    // YA NO SE CAMBIA EL NIVEL POR EL DEL DUEÑO - CADA LINK TIENE SU NIVEL
   },2000);
 }
 function initSlug(){
@@ -324,10 +319,7 @@ function initSlug(){
     let finalOwner=found.owner||'NASETLINKOFC';
     let finalTarget=found.target;
     let finalLevel=parseInt(found.adLevel||2);
-    let ownerLevel=await dbGetOwnerLevel(finalOwner);
-    if(ownerLevel) finalLevel=ownerLevel;
     targetUrl=finalTarget; owner=finalOwner;
-    if(parseInt(found.adLevel)!==finalLevel) dbUpdateLinkLevel(currentSlugForClicks,finalLevel);
     if(currentAd===1) showWaiterFor(finalOwner,finalLevel);
     await countClickOnOpen(finalOwner, currentSlugForClicks, finalLevel);
     document.getElementById('cloudStatus').innerText='✅ Clic contado - Dueño: '+finalOwner;
@@ -346,7 +338,8 @@ async function goToLink(){
   location.href=targetUrl.startsWith('http')?targetUrl:'https://'+targetUrl
 }
 function getAdInfo(level){return AD_LEVELS.find(x=>x.level===level)||AD_LEVELS[0]}
-function applyLevelToAllMyLinks(level){level=parseInt(level);if(!currentUser)return;links.forEach(l=>{if(l.user===currentUser) l.adLevel=level});localStorage.setItem('naset_links',JSON.stringify(links));try{let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');Object.keys(custom).forEach(k=>{if(custom[k].owner===currentUser) custom[k].adLevel=level});localStorage.setItem('naset_custom_links',JSON.stringify(custom))}catch(e){}links.forEach(l=>{if(l.user===currentUser&&l.slug) dbUpdateLinkLevel(l.slug,level)});localStorage.setItem('naset_level_'+currentUser.toLowerCase(),String(level))}
+// YA NO TOCA LOS LINKS VIEJOS - SOLO GUARDA EL NIVEL PARA EL PROXIMO LINK
+function applyLevelToAllMyLinks(level){return}
 function changeAdLevel(v){
   v=parseInt(v);tempAdLevel=v;
   document.querySelectorAll('.level-btn').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.lv)===v));
@@ -360,8 +353,7 @@ async function saveAdLevel(){
   document.getElementById('myLevel').innerText='Nivel '+myAdLevel;
   document.getElementById('adLevelInfo').innerText='Nivel '+myAdLevel;
   document.getElementById('saveStatus').innerText='NIVEL '+myAdLevel+' GUARDADO';
-  applyLevelToAllMyLinks(myAdLevel);
-  if(currentUser) await dbSaveOwnerLevel(currentUser,myAdLevel);
+  // NO SE TOCAN LOS LINKS VIEJOS - CADA UNO QUEDA CON SU NIVEL
   render();
 }
 function updateAdUI(){let info=getAdInfo(tempAdLevel);document.getElementById('adLevelInfo').innerText='Nivel '+info.level;document.querySelectorAll('.level-btn').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.lv)===tempAdLevel))}
@@ -394,7 +386,7 @@ async function confirmEdit(){
   let old=links[editingIdx];let newSlug=cleanSlug(document.getElementById('editSlug').value||'');let newDest=document.getElementById('editDest').value.trim();
   if(!newSlug||newSlug.length<3){alert('Pon nombre mínimo 3 letras');return}if(!newDest){alert('Pon destino');return}if(!newDest.startsWith('http'))newDest='https://'+newDest;
   if(newSlug!==old.slug){let ex=await dbGetLinkFast(newSlug);if(ex&&ex.owner&&ex.owner.toLowerCase()!==currentUser.toLowerCase()){alert('Ese nombre ya lo usa otro');return} await dbDeleteLink(old.slug);}
-  let nivelUsar=parseInt(myAdLevel||2);
+  let nivelUsar=parseInt(old.adLevel||myAdLevel||2);
   let res=await dbSaveLinkVerified(newSlug,newDest,currentUser,nivelUsar);
   if(!res.ok){alert('❌ NO SE GUARDÓ EN LA NUBE. Revisa RLS en naset_links / nasetlinks');return}
   links[editingIdx]={orig:newDest,short:location.origin+location.pathname+'?'+newSlug,slug:newSlug,clicks:old.clicks||0,user:currentUser,adLevel:nivelUsar,createdAt:old.createdAt||Date.now()};
@@ -416,7 +408,6 @@ async function render(){
 async function borrarLinkPorIndice(idx){idx=parseInt(idx);if(isNaN(idx)||!links[idx])return;let target=links[idx];if(!confirm('¿Borrar '+getLinkDisplayName(target)+'? Tus clics NO se pierden, quedan en tu historial.'))return;let slugToDelete=target.slug;links.splice(idx,1);localStorage.setItem('naset_links',JSON.stringify(links));if(slugToDelete) await dbDeleteLink(String(slugToDelete));await render();alert('Borrado ✅ - Tus clics NO se perdieron, quedan en tu historial')}
 async function crear(){
   let nivelUsar=parseInt(myAdLevel||2);
-  if(currentUser) await dbSaveOwnerLevel(currentUser,nivelUsar);
   let v=document.getElementById('longUrl').value.trim();let slug=cleanSlug(document.getElementById('linkName').value||'');
   if(!slug||slug.length<3){alert('Pon un nombre mínimo 3 letras');return}if(!v){alert('Pega tu enlace de destino');return}if(!v.startsWith('http'))v='https://'+v;
   if(slug.startsWith('config-')){alert('Ese nombre no se puede usar');return}
@@ -444,7 +435,6 @@ async function showPanel(){
   document.getElementById('totalClicks').innerText=reales;
   document.getElementById('totalEarn').innerText='$'+getEarnOf(currentUser).toFixed(2);
   render();
-  if(currentUser){dbGetOwnerLevel(currentUser).then(lvl=>{if(lvl&&lvl!==myAdLevel){myAdLevel=lvl;tempAdLevel=lvl;localStorage.setItem('naset_my_adlevel',String(lvl));localStorage.setItem('naset_level_'+currentUser.toLowerCase(),String(lvl));updateAdUI();render()}})}
   if(moneyPoll) clearInterval(moneyPoll);
   moneyPoll=setInterval(async()=>{
     if(!currentUser) return;
