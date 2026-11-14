@@ -21,6 +21,7 @@ input,select{width:100%;padding:13px;border-radius:12px;border:1px solid #333;ba
 button{width:100%;padding:14px;border:none;border-radius:14px;background:#a855f7;color:#fff;font-weight:bold;cursor:pointer;margin-bottom:8px}
 button.sec{background:#222;border:1px solid #444}button.danger{background:#dc2626}button.green{background:#16a34a}button.smallbtn{padding:9px;font-size:13px;margin-bottom:0}
 button.adbtn{background:#f59e0b;color:#000;font-size:17px;padding:18px}button.returnbtn{background:#16a34a}
+button.pagos-btn{background:#16a34a;color:#fff;font-size:17px;padding:18px;margin-bottom:14px;border:2px solid #25D366}
 .auth-tabs{display:flex;gap:8px;margin-bottom:14px}.auth-tabs button{flex:1;background:#222;color:#aaa;border:1px solid #333}.auth-tabs button.active{background:#a855f7;color:#fff}
 .stats{display:flex;gap:10px;margin-bottom:14px}.stat{flex:1;background:#111;border:1px solid #333;border-radius:14px;padding:12px;text-align:center}.stat b{font-size:19px;display:block}.stat span{font-size:11px;color:#aaa}
 .small{color:#888;font-size:12px;text-align:center;margin-top:10px}label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px}
@@ -76,7 +77,8 @@ table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;borde
 <p class="small" id="liveMoney" style="color:#25D366;font-weight:bold">● En vivo: esperando clics...</p>
 <div class="box"><h3>📢 Tu Nivel de Anuncios - Solo para TI, en tiempo real</h3><p class="small" style="text-align:left;margin:0 0 8px">Toca 2, 4, 6, 8 o 10.</p><div class="grid5"><button class="level-btn" data-lv="2" onclick="changeAdLevel(2)">2</button><button class="level-btn" data-lv="4" onclick="changeAdLevel(4)">4</button><button class="level-btn" data-lv="6" onclick="changeAdLevel(6)">6</button><button class="level-btn" data-lv="8" onclick="changeAdLevel(8)">8</button><button class="level-btn" data-lv="10" onclick="changeAdLevel(10)">10</button></div><p class="small" id="adLevelInfo"></p><p class="small" id="saveStatus" style="color:#25D366"></p><button class="green" onclick="saveAdLevel()">💾 GUARDAR MI NIVEL EN LA NUBE</button></div>
 <div class="box"><h3>✨ Crea un enlace</h3><label>📝 Nombre:</label><input id="linkName" placeholder="Ej: aimbot-head" oninput="updateSlugPreview()"><div class="slug-preview" id="slugPreview">Tu enlace será: .../?tu-nombre</div><label>🔗 Enlace de destino:</label><input id="longUrl" placeholder="Pega tu enlace de destino aquí..."><button onclick="crear()">✨ GENERAR MI LINK</button><p class="small" id="createStatus"></p><div id="myLinks"></div><div id="editBox" style="display:none;border-top:1px solid #333;margin-top:12px;padding-top:12px"><p style="font-weight:bold">✏️ Editar link</p><label>Nombre nuevo:</label><input id="editSlug"><label>Destino nuevo:</label><input id="editDest"><div class="flex"><button class="green" onclick="confirmEdit()">💾 GUARDAR CAMBIOS</button><button class="sec" onclick="cancelEdit()">Cancelar</button></div></div></div>
-<div class="box"><h3>💰 Pago para TODOS - $1 por cada 1000 clics - USD</h3><table><tr><th>Nivel</th><th>Anuncios</th><th>Pago USD</th><th>Por 1 clic</th></tr><tbody id="adTable"></tbody></table><p class="small">1000 clics = $1.00. 1384 clics = $1.38. 1500 clics = $1.50.</p></div>
+<button class="pagos-btn" id="pagosBtn" onclick="togglePagos()">💰 Pagos para todos ▼</button>
+<div class="box" id="pagosBox" style="display:none"><h3>💰 Pago para TODOS - $1 por cada 1000 clics - USD</h3><table><tr><th>Nivel</th><th>Anuncios</th><th>Pago USD</th><th>Por 1 clic</th></tr><tbody id="adTable"></tbody></table><p class="small">1000 clics = $1.00. 1384 clics = $1.38. 1500 clics = $1.50.</p></div>
 <button class="sec" onclick="logout()">Cerrar Sesión</button>
 </div>
 <p class="small">Pago mínimo 5.00 USD por PayPal.</p>
@@ -91,6 +93,7 @@ const LINK_TABLES=["naset_links","nasetlinks"];
 const USER_TABLES=["naset_users","nasetusers"];
 function joinWhatsApp(){window.open(WHATSAPP_GROUP,'_blank')}
 function toggleMenu(){let s=document.getElementById('sidebar'),o=document.getElementById('overlay');let open=s.classList.contains('open');if(open){s.classList.remove('open');o.classList.remove('show')}else{s.classList.add('open');o.classList.add('show')}}
+function togglePagos(){let b=document.getElementById('pagosBox');let btn=document.getElementById('pagosBtn');if(!b||!btn)return;let open=b.style.display==='block';b.style.display=open?'none':'block';btn.innerText=open?'💰 Pagos para todos ▼':'💰 Pagos para todos ▲'}
 function cleanSlug(t){return t.toLowerCase().trim().replace(/\s+/g,'-').replace(/[^a-z0-9\-_]/g,'').replace(/\-+/g,'-').slice(0,40)}
 function updateSlugPreview(){let v=cleanSlug(document.getElementById('linkName').value||'');document.getElementById('linkName').value=v;document.getElementById('slugPreview').innerText=!v?'Tu enlace será: .../?tu-nombre':'Tu enlace será: '+location.origin+location.pathname+'?'+v}
 function verPass(id){let i=document.getElementById(id);i.type=i.type==="password"?"text":"password"}
@@ -134,10 +137,8 @@ async function dbSaveOwnerLevel(owner,level){
   try{localStorage.setItem('naset_my_adlevel',String(level));}catch(e){}
   return true;
 }
-// CORREGIDO: Ahora lee de naset_users (donde está tu 1384 real) y le suma los nuevos
 async function getClicksRealesDeCualquierUsuario(usuario){
   if(!usuario) return 0;
-  // 1) Lo principal: naset_users.clicks - ahí está tu 1384 y ahí sumamos +1 cada vez
   for(let tbl of USER_TABLES){
     try{
       let r=await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?username=eq."+encodeURIComponent(usuario)+"&select=clicks",{headers:H});
@@ -148,7 +149,6 @@ async function getClicksRealesDeCualquierUsuario(usuario){
       }
     }catch(e){}
   }
-  // 2) Si no hay nada en users, suma links
   let totalLinks=0;
   for(let tbl of LINK_TABLES){
     try{
@@ -158,7 +158,6 @@ async function getClicksRealesDeCualquierUsuario(usuario){
     }catch(e){}
   }
   if(totalLinks>0) return totalLinks;
-  // 3) Último: naset_clicks count
   try{
     let r=await fetch(SUPABASE_URL+"/rest/v1/naset_clicks?owner_user=eq."+encodeURIComponent(usuario)+"&select=id",{headers:{...H,"Prefer":"count=exact"}});
     let range=r.headers.get("content-range")||r.headers.get("Content-Range");
@@ -192,7 +191,6 @@ async function dbGetUsers(){for(let tbl of USER_TABLES){try{let r=await fetch(SU
 async function dbSaveUser(u){let prof=getProfile(u.user||currentUser);for(let tbl of USER_TABLES){try{await fetch(SUPABASE_URL+"/rest/v1/"+tbl,{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({username:u.user,pass:u.pass||"",clicks:u.clicks||0,date:u.date||"",time:u.time||"",timestamp:u.timestamp||Date.now(),avatar:prof.avatar||"",display_name:prof.displayName||"",bio:prof.bio||"",is_verified:getTag(u.user||currentUser)==='verified'?true:false})});}catch(e){}}}
 function getLinkClicks(slug){return parseInt(localStorage.getItem('naset_link_clicks_'+slug.toLowerCase())||'0')}
 function setLinkClicks(slug,v){localStorage.setItem('naset_link_clicks_'+slug.toLowerCase(),String(v))}
-// CONTEO CORREGIDO: +1 en 3 lugares para que nunca se pierda: link, usuario y registro
 async function countClickOnOpen(ownerName, slug, level){
   if(clickAlreadyCounted) return;
   clickAlreadyCounted=true;
@@ -200,11 +198,9 @@ async function countClickOnOpen(ownerName, slug, level){
   let cur=null;
   try{ cur=await dbGetLinkFast(slug); }catch(e){}
   let nuevoLinkClicks=(cur?parseInt(cur.clicks||0):0)+1;
-  // 1) Link
   for(let tbl of LINK_TABLES){
     try{ await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?slug=eq."+encodeURIComponent(cleanSlug(slug)),{method:"PATCH",headers:H,body:JSON.stringify({clicks:nuevoLinkClicks})}); }catch(e){}
   }
-  // 2) USUARIO - AQUÍ ESTÁ LA CLAVE: 1384 -> 1385
   let clicksUsuarioActual=0;
   for(let tbl of USER_TABLES){
     try{
@@ -213,7 +209,6 @@ async function countClickOnOpen(ownerName, slug, level){
       if(Array.isArray(j)&&j[0]) clicksUsuarioActual=parseInt(j[0].clicks||0);
     }catch(e){}
   }
-  // Si en users está en 0 pero en local era 1384, usar 1384 como base
   if(clicksUsuarioActual===0){
     let baseLocal=parseInt(localStorage.getItem('naset_clicks_'+ownerName.toLowerCase())||'0');
     if(baseLocal>0) clicksUsuarioActual=baseLocal;
@@ -221,10 +216,8 @@ async function countClickOnOpen(ownerName, slug, level){
   let nuevoTotal=clicksUsuarioActual+1;
   for(let tbl of USER_TABLES){
     try{ await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?username=eq."+encodeURIComponent(ownerName),{method:"PATCH",headers:H,body:JSON.stringify({clicks:nuevoTotal})}); }catch(e){}
-    // Si no existía el usuario en esa tabla, crearlo
     try{ await fetch(SUPABASE_URL+"/rest/v1/"+tbl,{method:"POST",headers:{...H,"Prefer":"resolution=merge-duplicates"},body:JSON.stringify({username:ownerName,clicks:nuevoTotal})}); }catch(e){}
   }
-  // 3) Registro
   try{await fetch(SUPABASE_URL+"/rest/v1/naset_clicks",{method:"POST",headers:H,body:JSON.stringify({owner_user:ownerName,slug:slug,ad_level:parseInt(level||2)})});}catch(e){}
   let el=document.getElementById('clickCountedMsg'); if(el) el.style.display='block';
   let cs=document.getElementById('cloudStatus'); if(cs) cs.innerText='✅ Clic contado - Dueño '+ownerName+' ahora tiene '+nuevoTotal+' clics';
