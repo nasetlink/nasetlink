@@ -43,6 +43,7 @@ button.pagos-btn{background:#16a34a;color:#fff;font-size:17px;padding:18px;margi
 table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid #222}
 .top-sub{color:#aaa;text-align:center;font-size:13px;margin:5px 0 14px}
 .pay-card{background:#000;border:1px solid #25D366;border-radius:12px;padding:12px;margin-bottom:10px}
+.min-pay{color:#ff6b6b;font-weight:bold;text-align:center;font-size:13px;margin-top:10px}
 </style>
 </head>
 <body>
@@ -64,7 +65,6 @@ table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;borde
   <div class="menu-item logout" onclick="logout()"><span>↪</span><span>Cerrar sesión</span></div>
 </div>
 <div id="logoBig" style="text-align:center;padding:18px 0 4px"><div class="logo" style="font-size:34px">NASET<span>LINK</span></div></div>
-<p class="top-sub">📢 Sigue las instrucciones para continuar a tu enlace</p>
 <div id="viewProfile" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">✏️ Mi Perfil</p><div class="box" id="profileBoxSolo"></div></div>
 <div id="viewAdmin" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">👑 Solo Admin - Pagos</p><div class="box gold" id="adminPanelSolo"></div></div>
 <div id="viewStats" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">📊 Estadísticas y Pagos</p><div class="box"><div class="stats"><div class="stat"><b id="statsTotalUsers">0</b><span>USUARIOS</span></div><div class="stat"><b id="statsTotalClicks">0</b><span>CLICS TOTAL</span></div><div class="stat"><b id="statsTotalPay" style="color:#25D366">$0.00</b><span>GANADO TOTAL - USD</span></div></div><p class="small" style="text-align:left">💰 $1 por cada 1000 clics para todos.</p><label>🔍 Buscar usuario para pagar:</label><input id="statsSearch" placeholder="Nombre..." oninput="renderStats()"><div id="statsList"></div></div></div>
@@ -79,9 +79,8 @@ table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;borde
 <div class="box"><h3>✨ Crea un enlace</h3><label>📝 Nombre:</label><input id="linkName" placeholder="Ej: aimbot-head" oninput="updateSlugPreview()"><div class="slug-preview" id="slugPreview">Tu enlace será: .../?tu-nombre</div><label>🔗 Enlace de destino:</label><input id="longUrl" placeholder="Pega tu enlace de destino aquí..."><button onclick="crear()">✨ GENERAR MI LINK</button><p class="small" id="createStatus"></p><div id="myLinks"></div><div id="editBox" style="display:none;border-top:1px solid #333;margin-top:12px;padding-top:12px"><p style="font-weight:bold">✏️ Editar link</p><label>Nombre nuevo:</label><input id="editSlug"><label>Destino nuevo:</label><input id="editDest"><div class="flex"><button class="green" onclick="confirmEdit()">💾 GUARDAR CAMBIOS</button><button class="sec" onclick="cancelEdit()">Cancelar</button></div></div></div>
 <button class="pagos-btn" id="pagosBtn" onclick="togglePagos()">💰 Pagos para todos ▼</button>
 <div class="box" id="pagosBox" style="display:none"><h3>💰 Pago para TODOS - $1 por cada 1000 clics - USD</h3><table><tr><th>Nivel</th><th>Anuncios</th><th>Pago USD</th><th>Por 1 clic</th></tr><tbody id="adTable"></tbody></table><p class="small">1000 clics = $1.00. 1384 clics = $1.38. 1500 clics = $1.50.</p></div>
-<button class="sec" onclick="logout()">Cerrar Sesión</button>
 </div>
-<p class="small">Pago mínimo 5.00 USD por PayPal.</p>
+<p class="min-pay">🛡️ Pago mínimo 5 USD por PayPal.</p>
 </div>
 </div>
 <script>
@@ -249,7 +248,6 @@ function getProfile(user){
     return {avatar:cloud.avatar||local.avatar||"",displayName:displayName,bio:cloud.bio||local.bio||""}
   }catch(e){ return {avatar:cloud.avatar||"",displayName:String(user),bio:cloud.bio||""} }
 }
-// APODO: se respeta tal como lo escribes en editar perfil. USERNAME: siempre se muestra en minuscula
 function getDisplayName(user){let p=getProfile(user);return (p.displayName||String(user||'')).trim()||String(user||'')}
 function getUsernameLower(user){return String(user||'').toLowerCase()}
 function getTag(user){if(cloudVerified[(user||'').toLowerCase()])return 'verified';try{let s=localStorage.getItem('naset_tag_'+(user||'').toLowerCase());if(s==='verified'||s==='influencer')return s}catch(e){}return''}
@@ -349,14 +347,12 @@ async function goToLink(){
 }
 function getAdInfo(level){return AD_LEVELS.find(x=>x.level===level)||AD_LEVELS[0]}
 function applyLevelToAllMyLinks(level){level=parseInt(level);if(!currentUser)return;links.forEach(l=>{if(l.user===currentUser) l.adLevel=level});localStorage.setItem('naset_links',JSON.stringify(links));try{let custom=JSON.parse(localStorage.getItem('naset_custom_links')||'{}');Object.keys(custom).forEach(k=>{if(custom[k].owner===currentUser) custom[k].adLevel=level});localStorage.setItem('naset_custom_links',JSON.stringify(custom))}catch(e){}links.forEach(l=>{if(l.user===currentUser&&l.slug) dbUpdateLinkLevel(l.slug,level)});localStorage.setItem('naset_level_'+currentUser.toLowerCase(),String(level))}
-// SOLO SELECCIONA, NO GUARDA NADA TODAVIA - FAST
 function changeAdLevel(v){
   v=parseInt(v);tempAdLevel=v;
   document.querySelectorAll('.level-btn').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.lv)===v));
   document.getElementById('adLevelInfo').innerText='Nivel '+v+' seleccionado - Dale a GUARDAR NIVEL para guardarlo';
   document.getElementById('saveStatus').innerText='';
 }
-// AQUI SI GUARDA - CUANDO APRIETAS EL BOTON VERDE
 async function saveAdLevel(){
   myAdLevel=tempAdLevel;
   localStorage.setItem('naset_my_adlevel',String(myAdLevel));
