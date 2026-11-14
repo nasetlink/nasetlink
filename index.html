@@ -65,7 +65,7 @@ table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;borde
   <div class="menu-item logout" onclick="logout()"><span>↪</span><span>Cerrar sesión</span></div>
 </div>
 <div id="logoBig" style="text-align:center;padding:18px 0 4px"><div class="logo" style="font-size:34px">NASET<span>LINK</span></div></div>
-<div class="global-banner" id="globalBanner">👥 YA ENTRARON: <span id="globalTotal">0</span> PERSONAS <br><small style="font-weight:normal;font-size:11px">● EN VIVO - Sube cada 2 segundos</small></div>
+<div class="global-banner" id="globalBanner">👥 TUS CLICS: <span id="globalTotal">0</span> <br><small style="font-weight:normal;font-size:11px">● EN VIVO - Sube cada 2 segundos</small></div>
 <p class="top-sub">📢 Sigue las instrucciones para continuar a tu enlace</p>
 <div id="viewProfile" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">✏️ Mi Perfil</p><div class="box" id="profileBoxSolo"></div></div>
 <div id="viewAdmin" style="display:none"><div class="close-btn" onclick="closeView()">✕</div><p class="view-title">👑 Solo Admin - Pagos</p><div class="box gold" id="adminPanelSolo"></div></div>
@@ -104,25 +104,41 @@ let selectedAvatar='',currentView='home',prevView='home',humanInteracted=false,p
 let cloudProfiles={},cloudVerified={},currentSlugForClicks='',editingIdx=-1,visitorPoll=null,moneyPoll=null,clickAlreadyCounted=false,globalPoll=null;
 document.addEventListener('mousemove',()=>humanInteracted=true,{passive:true});document.addEventListener('touchstart',()=>humanInteracted=true,{passive:true});document.addEventListener('keydown',()=>humanInteracted=true,{passive:true});
 const H={"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"};
-// TOTAL GLOBAL EN VIVO - LO VE TODO EL MUNDO
+// ARREGLO: EL CARTEL AHORA ES TUS CLICS, NO EL TOTAL GLOBAL
+async function getCountFromUrl(url){
+  try{
+    let r=await fetch(url,{headers:{...H,"Prefer":"count=exact"}});
+    let range=r.headers.get("content-range")||r.headers.get("Content-Range")||"";
+    if(range && range.includes("/")) return parseInt(range.split("/")[1])||0;
+    let j=await r.json(); if(Array.isArray(j)) return j.length;
+  }catch(e){}
+  return 0;
+}
 async function updateGlobalTotal(){
   try{
-    let r=await fetch(SUPABASE_URL+"/rest/v1/naset_clicks?select=id",{headers:{...H,"Prefer":"count=exact"}});
-    let range=r.headers.get("content-range")||r.headers.get("Content-Range")||"";
-    let total=0;
-    if(range && range.includes("/")) total=parseInt(range.split("/")[1])||0;
-    else { let j=await r.json(); if(Array.isArray(j)) total=j.length; }
-    let g=document.getElementById('globalTotal'); if(g) g.innerText=total;
-    // total de ESTE link
-    if(currentSlugForClicks){
-      let r2=await fetch(SUPABASE_URL+"/rest/v1/naset_clicks?slug=eq."+encodeURIComponent(currentSlugForClicks)+"&select=id",{headers:{...H,"Prefer":"count=exact"}});
-      let range2=r2.headers.get("content-range")||r2.headers.get("Content-Range")||"";
-      let totalLink=0;
-      if(range2 && range2.includes("/")) totalLink=parseInt(range2.split("/")[1])||0;
-      else { let j2=await r2.json(); if(Array.isArray(j2)) totalLink=j2.length; }
-      let gl=document.getElementById('globalTotalLink'); if(gl) gl.innerText=totalLink;
-      let gb=document.getElementById('globalBanner'); if(gb) gb.innerHTML='👥 ESTE LINK YA LO ABRIERON: <span>'+totalLink+'</span> PERSONAS <br><small style="font-weight:normal;font-size:11px">● EN VIVO - Sube cada 2 segundos</small>';
+    // Si estoy logueado, el cartel = MIS CLICS
+    if(currentUser && !isVisitor){
+      let myTotal=await getCountFromUrl(SUPABASE_URL+"/rest/v1/naset_clicks?owner_user=eq."+encodeURIComponent(currentUser)+"&select=id");
+      let g=document.getElementById('globalTotal'); if(g) g.innerText=myTotal;
+      let gb=document.getElementById('globalBanner'); if(gb) gb.innerHTML='👥 TUS CLICS: <span>'+myTotal+'</span> <br><small style="font-weight:normal;font-size:11px">● EN VIVO - Sube cada 2 segundos • $'+(myTotal/1000).toFixed(2)+' USD</small>';
+      // Y TAMBIEN actualiza MIS CLICS y GANADO al mismo tiempo, para que no se quede pegado en 1384
+      let tc=document.getElementById('totalClicks'); if(tc) tc.innerText=myTotal;
+      let te=document.getElementById('totalEarn'); if(te) te.innerText='$'+(myTotal/1000).toFixed(2);
+      let lm=document.getElementById('liveMoney'); if(lm) lm.innerText='● En vivo: '+myTotal+' clics • $'+(myTotal/1000).toFixed(2)+' GANADO • Nivel '+myAdLevel;
+      setClicksOf(currentUser,myTotal);
+      return;
     }
+    // Si soy visitante, el cartel = clics de ESTE link
+    if(currentSlugForClicks){
+      let totalLink=await getCountFromUrl(SUPABASE_URL+"/rest/v1/naset_clicks?slug=eq."+encodeURIComponent(currentSlugForClicks)+"&select=id");
+      let g=document.getElementById('globalTotal'); if(g) g.innerText=totalLink;
+      let gb=document.getElementById('globalBanner'); if(gb) gb.innerHTML='👥 ESTE LINK YA LO ABRIERON: <span>'+totalLink+'</span> PERSONAS <br><small style="font-weight:normal;font-size:11px">● EN VIVO - Sube cada 2 segundos</small>';
+      let gl=document.getElementById('globalTotalLink'); if(gl) gl.innerText=totalLink;
+      return;
+    }
+    // Si no estoy logueado y no soy visitante, mostrar total global
+    let total=await getCountFromUrl(SUPABASE_URL+"/rest/v1/naset_clicks?select=id");
+    let g=document.getElementById('globalTotal'); if(g) g.innerText=total;
   }catch(e){}
 }
 function startGlobalPoll(){ if(globalPoll) clearInterval(globalPoll); updateGlobalTotal(); globalPoll=setInterval(updateGlobalTotal,2000); }
@@ -220,13 +236,6 @@ async function countClickOnOpen(ownerName, slug, level){
   let el=document.getElementById('clickCountedMsg'); if(el) el.style.display='block';
   let cs=document.getElementById('cloudStatus'); if(cs) cs.innerText='✅ Clic contado al abrir - Dueño: '+ownerName;
   updateGlobalTotal();
-}
-async function addClickToThisLink(slug,ownerName,levelAtClick){
-  if(!slug)return;
-  try{await fetch(SUPABASE_URL+"/rest/v1/naset_clicks",{method:"POST",headers:H,body:JSON.stringify({owner_user:ownerName,slug:slug,ad_level:parseInt(levelAtClick||2)})});}catch(e){}
-  for(let tbl of LINK_TABLES){try{let cur=await dbGetLinkFast(slug);let cloudC=cur?parseInt(cur.clicks||0):0;await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?slug=eq."+encodeURIComponent(cleanSlug(slug)),{method:"PATCH",headers:H,body:JSON.stringify({clicks:cloudC+1})});break;}catch(e){}}
-  let reales=await getClicksRealesDeCualquierUsuario(ownerName);
-  for(let tbl of USER_TABLES){try{await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?username=eq."+encodeURIComponent(ownerName),{method:"PATCH",headers:H,body:JSON.stringify({clicks:reales})});}catch(e){}}
 }
 function getAllUsers(){try{return JSON.parse(localStorage.getItem('naset_all_users')||'[]')}catch(e){return[]}}
 function saveAllUsers(arr){localStorage.setItem('naset_all_users',JSON.stringify(arr));users=arr}
@@ -334,7 +343,6 @@ function initSlug(){
   return true;
 }
 function isAdBot(){if(!humanInteracted)return true;if(Date.now()-pageLoadTime<1500)return true;return false}
-async function addClickToOwner(ownerName){ return; }
 function getCurrentAd(){return shuffledAds[currentAd-1]||ALL_ADS[0]}
 function updateWaitTitle(){document.getElementById('waitTitle').innerText='Anuncio '+currentAd;document.getElementById('adNum1').innerText=currentAd;let ad=getCurrentAd();document.getElementById('adImg').src=ad.img;document.getElementById('adText').innerText=ad.text;document.getElementById('adText').style.background=ad.bg}
 function empezarEspera(){if(currentAd>originalTotalAds)return;adStartTime=Date.now();document.getElementById('stateClick').style.display='none';document.getElementById('stateWait').style.display='block';document.getElementById('stateDone').style.display='none';let t=5,c=document.getElementById('count');c.innerText=t;let btn=document.getElementById('returnBtn');btn.disabled=true;btn.className='';btn.innerText='🔒 ESPERA 5 SEGUNDOS...';clearInterval(timerInt);timerInt=setInterval(()=>{t--;c.innerText=t>0?t:'¡Listo!';if(t<=0){clearInterval(timerInt);btn.disabled=false;btn.className='returnbtn';btn.innerText=(currentAd>=originalTotalAds?'✅ YA VI EL ANUNCIO, IR AL LINK':'✅ YA VI EL ANUNCIO, VER SIGUIENTE')}},1000)}
