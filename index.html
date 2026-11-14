@@ -63,6 +63,7 @@ table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;borde
   <div class="menu-item" id="menuStats" style="display:none" onclick="toggleMenu();openView('stats')"><span>📊</span><span>Estadísticas y Pagos</span></div>
   <div class="menu-item" onclick="toggleMenu();openView('profile')"><span>👤</span><span>Mi perfil</span></div>
   <div class="menu-item" onclick="toggleMenu();closeView()"><span>🔗</span><span>Inicio y mis enlaces</span></div>
+  <div class="menu-item" onclick="toggleMenu();retirarDinero()"><span>💰</span><span>Retirar dinero</span></div>
   <div class="menu-item logout" onclick="logout()"><span>↪</span><span>Cerrar sesión</span></div>
 </div>
 <div id="logoBig" style="text-align:center;padding:18px 0 4px"><div class="logo" style="font-size:34px">NASET<span>LINK</span></div></div>
@@ -94,6 +95,7 @@ const USER_TABLES=["naset_users","nasetusers"];
 const BASE_PRICE_PER_1000 = 1.00;
 function joinWhatsApp(){window.open(WHATSAPP_GROUP,'_blank')}
 function toggleMenu(){let s=document.getElementById('sidebar'),o=document.getElementById('overlay');let open=s.classList.contains('open');if(open){s.classList.remove('open');o.classList.remove('show')}else{s.classList.add('open');o.classList.add('show')}}
+function retirarDinero(){closeView();alert('💰 RETIRAR DINERO\n\nPago mínimo 5 USD por PayPal.\n\nSi ya tienes $5 o más, escribe al admin por WhatsApp para pedir tu pago.');}
 function togglePagos(){let b=document.getElementById('pagosBox');let btn=document.getElementById('pagosBtn');if(!b||!btn)return;let open=b.style.display==='block';b.style.display=open?'none':'block';btn.innerText=open?'💰 Pagos para todos ▼':'💰 Pagos para todos ▲'}
 function cleanSlug(t){return t.toLowerCase().trim().replace(/\s+/g,'-').replace(/[^a-z0-9\-_]/g,'').replace(/\-+/g,'-').slice(0,40)}
 function updateSlugPreview(){let v=cleanSlug(document.getElementById('linkName').value||'');document.getElementById('linkName').value=v;document.getElementById('slugPreview').innerText=!v?'Tu enlace será: .../?tu-nombre':'Tu enlace será: '+location.origin+location.pathname+'?'+v}
@@ -233,7 +235,6 @@ function getPer10ForLevel(level){
   let info=AD_LEVELS.find(x=>x.level===parseInt(level));
   return info?info.per10:0.10;
 }
-// GANADO REAL SIEMPRE FIJO EN $1.00 POR 1000 - NO CAMBIA AL CAMBIAR DE NIVEL
 function getEarnOf(user){
   let clics = getClicksOf(user);
   let total = clics / 1000 * BASE_PRICE_PER_1000;
