@@ -9,30 +9,32 @@
 html,body{background:#000;margin:0}
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
 body{color:#fff;display:flex;justify-content:center;padding:6px 14px calc(290px + env(safe-area-inset-bottom));min-height:100vh;background-attachment:fixed}
-/* DIFUMINADO SOLO LOGIN - TIPO PANTALLA COMPLETA, QUIETO */
 .top-glow{position:fixed!important;top:0!important;left:0!important;right:0!important;width:100%!important;height:100vh!important;background:radial-gradient(ellipse 110% 55% at 50% 0%, rgba(168,85,247,.85), rgba(147,51,234,.45) 30%, rgba(88,28,135,.18) 50%, transparent 70%);pointer-events:none;z-index:0}
 body.logged-in .top-glow{display:none!important}
 body.logged-in{background:#000!important}
 .card{width:100%;max-width:480px;overflow:hidden;padding-top:2px;position:relative;z-index:1;padding-bottom:90px}
 .header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 2px;position:sticky;top:0;background:#000;z-index:50;width:100%}
 .logo{font-size:26px;font-weight:900;text-align:center;cursor:pointer}.logo span{color:#a855f7}
-.hamburger{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#a855f7,#ec4899);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s ease!important}.hamburger:active{transform:scale(.92)!important}.hamburger .bars{display:flex;flex-direction:column;gap:5px}.hamburger .bars span{display:block;width:20px;height:3px;background:#fff;border-radius:99px}
+/* BOTON HAMBURGUESA COMO ANTES */
+.hamburger{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#a855f7,#ec4899);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s ease}.hamburger:active{transform:scale(.92)}.hamburger .bars{display:flex;flex-direction:column;gap:5px}.hamburger .bars span{display:block;width:20px;height:3px;background:#fff;border-radius:99px}
 .header-avatar{width:44px;height:44px;border-radius:99px;background:#a855f7;display:flex;align-items:center;justify-content:center;font-weight:900;border:2px solid #a855f7;cursor:pointer;overflow:hidden}.header-avatar img{width:100%;height:100%;object-fit:cover}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:99;display:none}.overlay.show{display:block}
 .sidebar{position:fixed;top:0;left:-300px;width:280px;height:100%;background:#111;border-right:1px solid #333;z-index:100;transition:left .3s;padding:20px;display:flex;flex-direction:column}.sidebar.open{left:0}
-.menu-item{display:flex;align-items:center;gap:12px;padding:14px 12px;border-radius:14px;background:#1a1a1a;border:1px solid #222;margin-bottom:10px;cursor:pointer;font-weight:bold;transition:none!important}.menu-item:active{transform:none!important;background:#1a1a1a}
+/* BOTONES DEL MENU COMO ANTES - CON ANIMACION */
+.menu-item{display:flex;align-items:center;gap:12px;padding:14px 12px;border-radius:14px;background:#1a1a1a;border:1px solid #222;margin-bottom:10px;cursor:pointer;font-weight:bold;transition:transform .15s ease, background .15s ease}.menu-item:active{transform:scale(.97);background:#2a2a2a}
 .menu-item span:first-child{width:28px;height:28px;min-width:28px;display:flex;align-items:center;justify-content:center;font-size:18px}
-.menu-item.logout{background:#2a0a0a;border-color:#dc2626;color:#ff6b6b;margin-top:auto}
+.menu-item.logout{background:#2a0a0a;border-color:#dc2626;color:#ff6b6b;margin-top:auto}.menu-item.logout:active{background:#3a0a0a}
 .close-menu{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:99px;background:#222;border:1px solid #444;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;padding:0}
 .box{background:#111;border:1px solid #333;border-radius:18px;padding:18px;margin-bottom:14px;overflow:hidden}.gold{border:2px solid gold!important}
 .admin-box{padding:14px!important}.admin-row{display:flex;gap:8px}.admin-row button{flex:1;padding:12px 4px!important;font-size:12px!important;margin-bottom:0!important;white-space:nowrap}
 input,select{width:100%;padding:13px;border-radius:12px;border:1px solid #333;background:#000;color:#fff;margin-bottom:10px}
-button{width:100%;padding:14px;border:none;border-radius:14px;background:#a855f7;color:#fff;font-weight:bold;cursor:pointer;margin-bottom:8px;transition:none!important}button:active{transform:none!important}
+/* TODOS LOS BOTONES COMO ANTES - CON ANIMACION */
+button{width:100%;padding:14px;border:none;border-radius:14px;background:#a855f7;color:#fff;font-weight:bold;cursor:pointer;margin-bottom:8px;transition:transform .15s ease, background .15s ease}button:active{transform:scale(.97)}
 button.sec{background:#222;border:1px solid #444}button.danger{background:#dc2626}button.green{background:#16a34a}button.smallbtn{padding:9px 4px;font-size:12px;margin-bottom:0;white-space:nowrap}
 button.adbtn{background:#f59e0b;color:#000;font-size:17px;padding:18px}button.returnbtn{background:#16a34a}
 button.pagos-btn{background:#16a34a;color:#fff;font-size:17px;padding:18px;margin-bottom:14px;border:2px solid #25D366}
+/* SOLO ESTOS 2 SIN ANIMACION, COMO TU ME PEDISTE */
 .no-anim{transition:none!important}.no-anim:active{transform:none!important}
-/* QUITA LO AMARILLO DE FACE ID / AUTOCOMPLETAR */
 input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus,input:-webkit-autofill:active{-webkit-text-fill-color:#fff!important;-webkit-box-shadow:0 0 0 1000px #000 inset!important;box-shadow:0 0 0 1000px #000 inset!important;background:#000!important;color:#fff!important;transition:background-color 9999s ease-in-out 0s!important}
 .input-wrap input:-webkit-autofill{-webkit-text-fill-color:#fff!important;-webkit-box-shadow:0 0 0 1000px #000 inset!important}
 .auth-tabs{display:flex;gap:8px;margin-bottom:20px;background:#000;border:1px solid #333;border-radius:14px;padding:5px}.auth-tabs button{flex:1;background:transparent;color:#aaa;border:none;margin-bottom:0;padding:13px 4px;border-radius:10px}.auth-tabs button.active{background:#a855f7;color:#fff}
@@ -114,11 +116,10 @@ const ADMIN_USER="NASETLINKOFC",ADMIN_PASS="NASET12CLICKS",MOD_USER="DANYXITERS"
 const WHATSAPP_GROUP="https://chat.whatsapp.com/JAqf2gVEFlz59saw6MVveK?s=cl&p=i&mlr=4&ilr=4&iam=2";
 const LINK_TABLES=["naset_links","nasetlinks"],USER_TABLES=["naset_users","nasetusers"];
 const H={"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"};
-// PAGO FIJO - 1 CENTAVO POR 10 CLICS = $1 POR 1000 - NO CAMBIA CON EL NIVEL
 const AD_LEVELS=[{level:2,ads:2,price:1.00,per10:0.01},{level:4,ads:4,price:1.00,per10:0.01},{level:6,ads:6,price:1.00,per10:0.01},{level:8,ads:8,price:1.00,per10:0.01},{level:10,ads:10,price:1.00,per10:0.01}];
 const ALL_ADS=[{bg:"#f59e0b",img:"https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=300&fit=crop",text:"🔥 ¡GANA $5 DIARIOS! 👉 TOCA AQUÍ"},{bg:"#22c55e",img:"https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=600&h=300&fit=crop",text:"🎮 ¡JUEGA Y GANA! 👉 TOCA AQUÍ"},{bg:"#3b82f6",img:"https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=300&fit=crop",text:"📱 APP QUE PAGA 👉 TOCA AQUÍ"},{bg:"#a855f7",img:"https://images.unsplash.com/photo-1513151233558-d860c5398176?w=600&h=300&fit=crop",text:"🎁 ¡GANASTE PREMIO! 👉 TOCA AQUÍ"}];
 const PRESET_AVATARS=["https://i.pravatar.cc/150?img=12","https://i.pravatar.cc/150?img=32","https://i.pravatar.cc/150?img=5","https://i.pravatar.cc/150?img=47","https://i.pravatar.cc/150?img=68","https://i.pravatar.cc/150?img=15","https://i.pravatar.cc/150?img=8","https://i.pravatar.cc/150?img=60"];
-let authMode='login',currentUser=localStorage.getItem('naset_user')||'',links=JSON.parse(localStorage.getItem('naset_links')||'[]'),isAdmin=localStorage.getItem('naset_is_admin')==='1',isMod=localStorage.getItem('naset_is_mod')==='1',myAdLevel=parseInt(localStorage.getItem('naset_my_adlevel')||'2'),tempAdLevel=myAdLevel,selectedAvatar='',currentView='home',prevView='home',editingIdx=-1,targetUrl='',totalAds=2,currentAd=1,timerInt=null,shuffledAds=[],adStartTime=0,originalTotalAds=2,clickAlreadyCounted=false,selectedWithdraw=5,isVisitor=false,owner='',currentSlugForClicks='',statsPoll=null,statsLoading=false,cloudProfiles={},cloudVerified={};
+let authMode='login',currentUser='',links=JSON.parse(localStorage.getItem('naset_links')||'[]'),isAdmin=false,isMod=false,myAdLevel=parseInt(localStorage.getItem('naset_my_adlevel')||'2'),tempAdLevel=myAdLevel,selectedAvatar='',currentView='home',prevView='home',editingIdx=-1,targetUrl='',totalAds=2,currentAd=1,timerInt=null,shuffledAds=[],adStartTime=0,originalTotalAds=2,clickAlreadyCounted=false,selectedWithdraw=5,isVisitor=false,owner='',currentSlugForClicks='',statsPoll=null,statsLoading=false,cloudProfiles={},cloudVerified={};
 function joinWhatsApp(){window.open(WHATSAPP_GROUP,'_blank')}
 function handleForgotClick(){if(authMode!=='login')return;alert('Escríbele al admin en la comunidad para recuperar tu contraseña')}
 function cleanSlug(t){return String(t||'').toLowerCase().trim().replace(/\s+/g,'-').replace(/[^a-z0-9\-_]/g,'').replace(/\-+/g,'-').slice(0,40)}
@@ -183,6 +184,7 @@ function setMode(mode){authMode=mode;let ui=document.getElementById('user'),pi=d
 function submitAuth(){if(authMode==='login')login();else register()}
 async function login(){let u=document.getElementById('user').value.trim(),p=document.getElementById('pass').value.trim();if(!u||!p){alert('Pon usuario y contraseña');return}if(localStorage.getItem('naset_banned_'+u.toLowerCase())==='1'){alert('🚫 Baneado');return}if(u.toLowerCase()===ADMIN_USER.toLowerCase()){if(p!==ADMIN_PASS){alert('❌ Contraseña incorrecta');return}localStorage.setItem('naset_user',ADMIN_USER);localStorage.setItem('naset_is_admin','1');localStorage.removeItem('naset_is_mod');isAdmin=true;isMod=false;currentUser=ADMIN_USER;showPanel();return}if(u.toLowerCase()===MOD_USER.toLowerCase()){if(p!==MOD_PASS){alert('❌ Contraseña incorrecta');return}localStorage.setItem('naset_user',MOD_USER);localStorage.setItem('naset_is_mod','1');localStorage.removeItem('naset_is_admin');isAdmin=false;isMod=true;currentUser=MOD_USER;showPanel();return}let all=getAllUsers();let found=all.find(x=>x.user.toLowerCase()===u.toLowerCase());if(!found){let db=await dbGetUsers();let f=db.find(x=>(x.username||'').toLowerCase()===u.toLowerCase());if(f){found={user:f.username,pass:f.pass||'',clicks:f.clicks||0,date:'Hoy',time:''};all.push(found);saveAllUsers(all);setClicksOf(found.user,found.clicks)}}if(!found){alert('❌ Esa cuenta NO existe. Dale a Registrarme');return}if(found.pass&&found.pass!==p){alert('❌ Contraseña incorrecta');return}if(!found.pass){found.pass=p;saveAllUsers(all);try{await dbSaveUser(found)}catch(e){}}localStorage.setItem('naset_user',found.user);localStorage.removeItem('naset_is_admin');localStorage.removeItem('naset_is_mod');isAdmin=false;isMod=false;currentUser=found.user;showPanel()}
 async function register(){let u=document.getElementById('user').value.trim(),p=document.getElementById('pass').value.trim();if(!u||!p){alert('Pon usuario y contraseña');return}if(localStorage.getItem('naset_banned_'+u.toLowerCase())==='1'){alert('🚫 Baneado');return}if(u.toLowerCase()===ADMIN_USER.toLowerCase()||u.toLowerCase()===MOD_USER.toLowerCase()){alert('Ese usuario no se puede usar');return}let all=getAllUsers();if(all.find(x=>x.user.toLowerCase()===u.toLowerCase())){alert('Ese usuario ya existe. Dale a Iniciar Sesión');setMode('login');return}let db=await dbGetUsers();if(db.find(x=>(x.username||'').toLowerCase()===u.toLowerCase())){alert('Ese usuario ya existe');setMode('login');return}let now=new Date();let nu={user:u,pass:p,date:now.toLocaleDateString(),time:now.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}),timestamp:now.getTime(),clicks:0};all.push(nu);saveAllUsers(all);setClicksOf(u,0);localStorage.setItem('naset_paid_'+u.toLowerCase(),'0');localStorage.setItem('naset_level_'+u.toLowerCase(),'2');let av=PRESET_AVATARS[Math.floor(Math.random()*PRESET_AVATARS.length)];localStorage.setItem('naset_profile_'+u.toLowerCase(),JSON.stringify({avatar:av,displayName:u,bio:""}));cloudProfiles[u.toLowerCase()]={avatar:av,displayName:u,bio:""};try{await dbSaveUser(nu)}catch(e){}localStorage.setItem('naset_user',u);localStorage.removeItem('naset_is_admin');localStorage.removeItem('naset_is_mod');isAdmin=false;isMod=false;currentUser=u;alert('✅ Registrado! Bienvenido '+u+' - Nivel 2, $1 por 1000 clics');showPanel()}
+// UNICO LUGAR DONDE SE BORRA LA SESION - SOLO CON EL BOTON DE HAMBURGUESA
 function logout(){document.body.classList.remove('logged-in');localStorage.removeItem('naset_user');localStorage.removeItem('naset_is_admin');localStorage.removeItem('naset_is_mod');location.href='/'}
 function showPanel(){document.getElementById('authBox').style.display='none';document.getElementById('authWelcome').style.display='none';document.getElementById('waiter').style.display='none';document.getElementById('panel').style.display='block';document.getElementById('mainView').style.display='block';updateProfileUI();updateAdUI();render();updateMoneyUI();syncMyMoneyLive();updateGlow()}
 function togglePagos(){let b=document.getElementById('pagosBox'),btn=document.getElementById('pagosBtn');let open=b.style.display==='block';b.style.display=open?'none':'block';btn.innerText=open?'💰 Pagos para todos ▼':'💰 Pagos para todos ▲'}
@@ -205,25 +207,35 @@ function empezarEspera(){if(currentAd>originalTotalAds)return;adStartTime=Date.n
 function confirmReturn(){if(Date.now()-adStartTime<4000){alert('🛡️ Espera los 5 seg completos');return}if(currentAd>=originalTotalAds){document.getElementById('stateWait').style.display='none';document.getElementById('stateClick').style.display='none';document.getElementById('stateDone').style.display='block';document.getElementById('barFill').style.width='100%';currentAd=originalTotalAds+1;let h='';for(let i=1;i<=originalTotalAds;i++)h+='<div class="dot done">✓</div>';document.getElementById('dots').innerHTML=h;document.getElementById('waitTitle').innerText='¡Completaste!';return}currentAd++;renderDots();updateWaitTitle();document.getElementById('stateWait').style.display='none';document.getElementById('stateClick').style.display='block';document.getElementById('stateDone').style.display='none'}
 async function goToLink(){if(!targetUrl){let f=await dbGetLinkFast(currentSlugForClicks);if(f&&f.target)targetUrl=f.target}if(!targetUrl){alert('No se encontró destino para ?'+currentSlugForClicks);return}location.href=targetUrl.startsWith('http')?targetUrl:'https://'+targetUrl}
 async function initSlug(){if(!slugParam)return false;isVisitor=true;currentSlugForClicks=cleanSlug(slugParam);document.getElementById('authBox').style.display='none';document.getElementById('panel').style.display='none';document.getElementById('authWelcome').style.display='none';showWaiterFor('NASETLINKOFC',2);let found=null;for(let i=0;i<6;i++){found=await dbGetLinkFast(currentSlugForClicks);if(found&&found.target)break;await new Promise(r=>setTimeout(r,800))}if(!found||!found.target){document.getElementById('waitTitle').innerText='Link no encontrado';document.getElementById('stateClick').style.display='none';return true}targetUrl=found.target;owner=found.owner||'NASETLINKOFC';if(currentAd===1)showWaiterFor(owner,found.adLevel||2);await countClickOnOpen(owner,currentSlugForClicks,found.adLevel||2);return true}
+// INIT CORREGIDO - PRIMERO LEE SESION, LUEGO DECIDE
 (function init(){
   let eye=document.getElementById('eyeLoginBtn');
   if(eye) eye.innerHTML=eyeClosedSVG();
-  // SESION PERSISTENTE - SOLO SE CIERRA CON EL BOTON DE HAMBURGUESA
-  let saved = localStorage.getItem('naset_user');
-  if(saved){
+  // 1. LEER SESION GUARDADA - SIEMPRE
+  let saved = null;
+  try{ saved = localStorage.getItem('naset_user'); }catch(e){ saved = null; }
+  if(saved && saved.trim()!==''){
     currentUser = saved;
-    isAdmin = localStorage.getItem('naset_is_admin')==='1';
-    isMod = localStorage.getItem('naset_is_mod')==='1';
+    try{ isAdmin = localStorage.getItem('naset_is_admin')==='1'; }catch(e){}
+    try{ isMod = localStorage.getItem('naset_is_mod')==='1'; }catch(e){}
+    // Si hay slug de link, es visitante, no lo saques, pero guarda sesion para despues
+    if(!slugParam){
+      showPanel();
+      updateGlow();
+      setInterval(()=>{ syncMyMoneyLive() },2000);
+      return;
+    }
   }
+  // 2. SI NO HAY SESION O ES VISITANTE DE LINK
   if(!initSlug()){
-    if(currentUser){
+    if(currentUser && !slugParam){
       showPanel();
     }else{
       updateAdUI();
     }
   }
   updateGlow();
-  if(currentUser){ setInterval(()=>{ syncMyMoneyLive() },2000); }
+  if(currentUser && !slugParam){ setInterval(()=>{ syncMyMoneyLive() },2000); }
 })();
 </script>
 </body>
