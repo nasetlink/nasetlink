@@ -9,10 +9,10 @@
 <style>
 html,body{background:#000;margin:0}
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,-apple-system,sans-serif;-webkit-tap-highlight-color:transparent}
-body{color:#fff;display:flex;justify-content:center;padding:6px 14px calc(320px + env(safe-area-inset-bottom));min-height:100vh}
+body{color:#fff;display:flex;justify-content:center;padding:6px 14px calc(20px + env(safe-area-inset-bottom));min-height:100vh}
 .top-glow{position:fixed!important;top:0!important;left:0!important;right:0!important;width:100%!important;height:100vh!important;background:radial-gradient(ellipse 110% 55% at 50% 0%, rgba(168,85,247,.85), rgba(147,51,234,.45) 30%, rgba(88,28,135,.18) 50%, transparent 70%);pointer-events:none;z-index:0}
 body.logged-in .top-glow{display:none!important}
-.card{width:100%;max-width:480px;overflow:visible!important;padding-top:2px;position:relative;z-index:1;padding-bottom:90px}
+.card{width:100%;max-width:480px;overflow:visible!important;padding-top:2px;position:relative;z-index:1;padding-bottom:10px}
 .header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 2px 4px;position:sticky;top:0;background:#000;z-index:50;width:100%}
 .logo{font-size:26px;font-weight:900;text-align:center;cursor:pointer}.logo span{color:#a855f7}
 .hamburger{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#a855f7,#ec4899);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}.hamburger:active{transform:scale(.92)}.hamburger .bars{display:flex;flex-direction:column;gap:5px}.hamburger .bars span{display:block;width:20px;height:3px;background:#fff;border-radius:99px}
@@ -51,7 +51,7 @@ input:-webkit-autofill{-webkit-text-fill-color:#fff!important;-webkit-box-shadow
 .avatar-small{width:32px;height:32px;border-radius:99px;border:2px solid #a855f7;background:#222;display:flex;align-items:center;justify-content:center;font-weight:900;overflow:hidden;flex-shrink:0}.avatar-small img{width:100%;height:100%;object-fit:cover}
 .avatar-option{width:56px;height:56px;border-radius:99px;cursor:pointer;border:3px solid transparent;object-fit:cover}.avatar-option.selected{border-color:#25D366}
 .close-btn{width:46px!important;height:46px!important;min-width:46px!important;border-radius:99px!important;background:#333!important;border:2px solid #777!important;color:#fff!important;font-size:22px!important;font-weight:900!important;display:flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important;margin:14px 0 10px 2px!important;flex-shrink:0!important}
-#viewProfile,#viewWithdraw,#viewAdmin,#viewStats{margin-top:-6px!important;padding-top:0!important;padding-bottom:300px!important}
+#viewProfile,#viewWithdraw,#viewAdmin,#viewStats{margin-top:-6px!important;padding-top:0!important;padding-bottom:60px!important}
 #viewProfile .view-title,#viewWithdraw .view-title{margin-bottom:8px!important;margin-top:0!important}
 .view-title{font-size:20px;font-weight:900;margin-bottom:12px;text-align:center}
 #viewProfile .box,#viewWithdraw .box{padding-bottom:26px!important}
@@ -94,7 +94,7 @@ table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;borde
 .btn-community{background:#22c55e!important;color:#fff!important;font-size:16px!important;padding:16px!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:9px}
 .auth-foot{display:flex;align-items:center;justify-content:center;gap:8px;color:#9ca3af;font-size:13px;margin-top:18px;text-align:center;padding-bottom:30px!important}.auth-foot b{color:#e5e7eb;font-weight:500}.auth-foot svg{width:22px;height:22px;flex-shrink:0}
 #mainAuthBtn{font-size:17px!important;padding:16px!important;border-radius:14px!important}
-.bottom-spacer{height:190px!important;width:100%!important;background:transparent!important}
+.bottom-spacer{height:0px!important;width:100%!important;background:transparent!important;display:none!important}
 </style>
 </head>
 <body>
@@ -130,7 +130,6 @@ let isAdmin=false,isMod=false,myAdLevel=2;try{myAdLevel=parseInt(localStorage.ge
 let tempAdLevel=myAdLevel,selectedAvatar='',currentView='home',prevView='home',editingIdx=-1,targetUrl='',totalAds=2,currentAd=1,timerInt=null,shuffledAds=[],adStartTime=0,originalTotalAds=2,clickAlreadyCounted=false,selectedWithdraw=5,isVisitor=false,owner='',currentSlugForClicks='',statsPoll=null,statsLoading=false,cloudProfiles={},cloudVerified={},menuBusy=false;
 function saveView(v){try{localStorage.setItem('naset_view',v||'home')}catch(e){}}
 function getSavedView(){try{return localStorage.getItem('naset_view')||'home'}catch(e){return 'home'}}
-function showPage(){}
 function menuPress(el,action){if(menuBusy)return;menuBusy=true;if(el)el.classList.add('pressing');setTimeout(()=>{if(el)el.classList.remove('pressing');menuBusy=false;toggleMenu();if(action==='profile')openView('profile');else if(action==='home')goHome();else if(action==='withdraw')retirarDinero();else if(action==='admin')openView('admin');else if(action==='stats')openView('stats');else if(action==='logout')logout();},160)}
 function joinWhatsApp(){window.open(WHATSAPP_GROUP,'_blank')}
 function handleForgotClick(){if(authMode!=='login')return;alert('Escríbele al admin en la comunidad para recuperar tu contraseña')}
@@ -198,7 +197,7 @@ async function register(){let u=document.getElementById('user').value.trim(),p=d
 function logout(){document.body.classList.remove('logged-in');try{localStorage.removeItem('naset_user');localStorage.removeItem('naset_is_admin');localStorage.removeItem('naset_is_mod');localStorage.removeItem('naset_view')}catch(e){}location.href='/'}
 function showPanel(){document.getElementById('authBox').style.display='none';document.getElementById('authWelcome').style.display='none';document.getElementById('waiter').style.display='none';document.getElementById('panel').style.display='block';document.getElementById('mainView').style.display='block';updateProfileUI();updateAdUI();render();updateMoneyUI();syncMyMoneyLive();updateGlow()}
 function toggleLinks(){let b=document.getElementById('linksBox'),btn=document.getElementById('linksBtn');let open=b.style.display==='block';b.style.display=open?'none':'block';btn.innerText=open?'🔗 Mis Enlaces ▼':'🔗 Mis Enlaces ▲';if(!open){render();setTimeout(()=>{b.scrollIntoView({behavior:'smooth',block:'start'})},50)}}
-function togglePagos(){let b=document.getElementById('pagosBox'),btn=document.getElementById('pagosBtn');let open=b.style.display==='block';b.style.display=open?'none':'block';btn.innerText=open?'💰 Pagos para todos ▼':'💰 Pagos para todos ▲'}
+function togglePagos(){let b=document.getElementById('pagosBox'),btn=document.getElementById('pagosBtn');let open=b.style.display==='block';b.style.display=open?'none':'block';btn.innerText=open?'💰 Pagos para todos ▼':'💰 Pagos para todos ▲';if(!open){setTimeout(()=>{b.scrollIntoView({behavior:'smooth',block:'start'})},50)}}
 function changeAdLevel(v){tempAdLevel=parseInt(v);document.querySelectorAll('.level-btn').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.lv)===tempAdLevel));let info=getAdInfo(tempAdLevel);document.getElementById('adLevelInfo').innerText='Nivel '+tempAdLevel+' seleccionado - $'+info.price.toFixed(2)+' por 1000 clics - Dale a GUARDAR NIVEL';document.getElementById('saveStatus').innerText=''}
 async function saveAdLevel(){myAdLevel=tempAdLevel;try{localStorage.setItem('naset_my_adlevel',String(myAdLevel));localStorage.setItem('naset_level_'+currentUser.toLowerCase(),String(myAdLevel))}catch(e){}document.getElementById('myLevel').innerText='Nivel '+myAdLevel;let info=getAdInfo(myAdLevel);document.getElementById('adLevelInfo').innerText='Nivel '+myAdLevel+' - $'+info.price.toFixed(2)+' por 1000 clics';document.getElementById('saveStatus').innerText='NIVEL '+myAdLevel+' GUARDADO';for(let tbl of LINK_TABLES){try{await fetch(SUPABASE_URL+"/rest/v1/"+tbl+"?owner_user=eq."+encodeURIComponent(currentUser),{method:"PATCH",headers:H,body:JSON.stringify({ad_level:myAdLevel})})}catch(e){}}render();updateMoneyUI()}
 function updateAdUI(){let info=getAdInfo(tempAdLevel);let el=document.getElementById('adLevelInfo');if(el)el.innerText='Nivel '+info.level+' - $'+info.price.toFixed(2)+' por 1000 clics';document.querySelectorAll('.level-btn').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.lv)===tempAdLevel));let tb=document.getElementById('adTable');if(tb)tb.innerHTML=AD_LEVELS.map(x=>'<tr><td>Nivel '+x.level+'</td><td>'+x.ads+'</td><td>$'+x.price.toFixed(2)+'</td><td>$'+x.per10.toFixed(2)+'</td></tr>').join('')}
