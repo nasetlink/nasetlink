@@ -72,9 +72,8 @@ table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;borde
 #waiter #stateDone p{margin-bottom:16px}
 #waiter #stateDone button{font-size:16px!important;padding:16px 12px!important;border-radius:14px!important}
 .wait-nivel{text-align:center;font-size:15px;font-weight:900;color:#aaa;letter-spacing:1px;margin:12px 0 18px;padding-left:2px}
-.eye-btn{width:52px!important;min-width:52px;background:#a855f7!important;border:none!important;font-size:20px!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0!important;transition:transform .18s}
-.eye-btn.pop{animation:eyePop .28s ease}
-@keyframes eyePop{0%{transform:scale(.7) rotate(-12deg)}50%{transform:scale(1.25)}100%{transform:scale(1)}}
+.eye-btn{width:52px!important;min-width:52px;background:#a855f7!important;border:none!important;font-size:20px!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0!important;transition:none!important;transform:none!important;animation:none!important}
+.eye-btn:active{transform:none!important}
 #passActualSolo,#passNuevaSolo,#passConfirmSolo{text-align:left;letter-spacing:0;font-size:16px}
 </style>
 </head>
@@ -116,7 +115,7 @@ function requestWithdraw(){if(!currentUser)return;let saldo=getEarnOf(currentUse
 function togglePagos(){let b=document.getElementById('pagosBox');let btn=document.getElementById('pagosBtn');if(!b||!btn)return;let open=b.style.display==='block';b.style.display=open?'none':'block';btn.innerText=open?'💰 Pagos para todos ▼':'💰 Pagos para todos ▲'}
 function cleanSlug(t){return t.toLowerCase().trim().replace(/\s+/g,'-').replace(/[^a-z0-9\-_]/g,'').replace(/\-+/g,'-').slice(0,40)}
 function updateSlugPreview(){let v=cleanSlug(document.getElementById('linkName').value||'');document.getElementById('linkName').value=v;document.getElementById('slugPreview').innerText=!v?'Tu enlace será: .../?tu-nombre':'Tu enlace será: '+location.origin+location.pathname+'?'+v}
-function verPass(id,btn){let i=document.getElementById(id);if(!i)return;let isPass=i.type==="password";i.type=isPass?"text":"password";if(btn){btn.innerText=isPass?"👁️":"🙈";btn.classList.remove('pop');void btn.offsetWidth;btn.classList.add('pop')}else{let b=document.querySelector('[data-eye-for="'+id+'"]');if(b){b.innerText=isPass?"👁️":"🙈";b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop')}}}
+function verPass(id,btn){let i=document.getElementById(id);if(!i)return;let isPass=i.type==="password";i.type=isPass?"text":"password";if(btn){btn.innerText=isPass?"👁️":"🙈"}else{let b=document.querySelector('[data-eye-for="'+id+'"]');if(b){b.innerText=isPass?"👁️":"🙈"}}}
 let authMode='login';
 const PRESET_AVATARS=["https://i.pravatar.cc/150?img=12","https://i.pravatar.cc/150?img=32","https://i.pravatar.cc/150?img=5","https://i.pravatar.cc/150?img=47","https://i.pravatar.cc/150?img=68","https://i.pravatar.cc/150?img=15","https://i.pravatar.cc/150?img=8","https://i.pravatar.cc/150?img=60"];
 let selectedAvatar='',currentView='home',prevView='home',humanInteracted=false,pageLoadTime=Date.now();
