@@ -3,17 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#7c3aed">
+<meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>NASETLINK - MONETIZA TUS ENLACES</title>
 <style>
-html{background:#2e1065;background:linear-gradient(to bottom,#7c3aed 0%,#4c1d95 18%,#000 42%,#000 100%);overscroll-behavior-y:auto}
+html{background:#000}
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-body{background:linear-gradient(to bottom,rgba(124,58,237,.85) 0%,rgba(76,29,149,.65) 120px,rgba(0,0,0,0) 280px),#000;color:#fff;display:flex;justify-content:center;padding:32px 14px 110px;min-height:100vh;overscroll-behavior-y:auto}
-body::before{content:"";position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;height:280px;background:radial-gradient(ellipse at top,rgba(168,85,247,.85) 0%,rgba(168,85,247,.45) 45%,transparent 75%);filter:blur(12px);pointer-events:none;z-index:0}
-body::after{content:"";position:fixed;top:0;left:0;right:0;height:90px;background:linear-gradient(to bottom,rgba(168,85,247,.55),transparent);pointer-events:none;z-index:0}
-.card{width:100%;max-width:480px;overflow:hidden;padding-top:18px;position:relative;z-index:1;padding-bottom:20px}
+body{background:#000;color:#fff;display:flex;justify-content:center;padding:32px 14px calc(180px + env(safe-area-inset-bottom));min-height:100vh}
+body::before{content:"";position:fixed;top:-30px;left:50%;transform:translateX(-50%);width:340px;height:140px;background:radial-gradient(closest-side,rgba(168,85,247,.42),rgba(168,85,247,.12) 55%,transparent 78%);filter:blur(14px);pointer-events:none;z-index:0}
+.card{width:100%;max-width:480px;overflow:hidden;padding-top:18px;position:relative;z-index:1;padding-bottom:40px}
 .header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 2px;position:sticky;top:0;background:#000;z-index:50;width:100%}
 .logo{font-size:26px;font-weight:900;text-align:center;cursor:pointer}.logo span{color:#a855f7}
 .hamburger{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#a855f7,#ec4899);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}.hamburger .bars{display:flex;flex-direction:column;gap:5px}.hamburger .bars span{display:block;width:20px;height:3px;background:#fff;border-radius:99px}
@@ -82,7 +81,7 @@ table{width:100%;font-size:12px;border-collapse:collapse}td,th{padding:8px;borde
 .eye-btn:active{transform:none!important}
 #passActualSolo,#passNuevaSolo,#passConfirmSolo{text-align:left;letter-spacing:0;font-size:16px}
 #logoBig{padding:28px 0 10px!important}
-#authBox{margin-top:6px;background:#141414!important;border-color:#2a2a2a!important;border-radius:22px!important;padding:20px!important}
+#authBox{margin-top:6px;margin-bottom:30px;background:#141414!important;border-color:#2a2a2a!important;border-radius:22px!important;padding:20px!important}
 .auth-welcome{text-align:center;margin:6px 0 18px}.auth-welcome h2{font-size:30px;font-weight:900;line-height:1.1}.auth-welcome p{color:#9ca3af;font-size:15px;margin-top:8px}
 .auth-label{font-size:14px;color:#e5e7eb;display:block;margin:14px 0 7px;font-weight:500}
 .input-wrap{display:flex;align-items:center;gap:10px;background:#000;border:1px solid #333;border-radius:14px;padding:0 12px;margin-bottom:2px}.input-wrap input{border:none!important;background:transparent!important;padding:15px 0!important;margin-bottom:0!important;outline:none;font-size:15px}.input-wrap input::placeholder{color:#6b7280}.input-icon{font-size:19px;opacity:.85;flex-shrink:0}
