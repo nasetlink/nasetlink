@@ -20,7 +20,6 @@ body.logged-in .top-glow{display:none!important}
 .header-avatar{width:44px;height:44px;border-radius:99px;background:#a855f7;display:flex;align-items:center;justify-content:center;font-weight:900;border:2px solid #a855f7;cursor:pointer;overflow:hidden}.header-avatar img{width:100%;height:100%;object-fit:cover}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:99;display:none}.overlay.show{display:block}
 .sidebar{position:fixed;top:0;left:-300px;width:280px;height:100%;background:#111;border-right:1px solid #333;z-index:100;transition:left .3s;padding:20px;display:flex;flex-direction:column}.sidebar.open{left:0}
-/* BOTONES HAMBURGUESA - ANIMACION AL DAR CLIC, YA NO TIESOS */
 .menu-item{display:flex;align-items:center;gap:12px;padding:14px 12px;border-radius:14px;background:#1a1a1a;border:1px solid #222;margin-bottom:10px;cursor:pointer;font-weight:bold;touch-action:manipulation;transition:transform .18s ease, background .18s ease, box-shadow .18s ease, border-color .18s ease}
 .menu-item:active,.menu-item.pressing{transform:scale(.93)!important;background:#333!important;border-color:#a855f7!important;box-shadow:inset 0 3px 10px rgba(0,0,0,.7)!important}
 .menu-item span:first-child{width:28px;height:28px;min-width:28px;display:flex;align-items:center;justify-content:center;font-size:18px}
@@ -34,7 +33,7 @@ button.sec{background:#222;border:1px solid #444}button.danger{background:#dc262
 button.adbtn{background:#f59e0b;color:#000;font-size:17px;padding:18px}button.returnbtn{background:#16a34a}
 button.pagos-btn{background:#16a34a;color:#fff;font-size:17px;padding:18px;margin-bottom:14px;border:2px solid #25D366}
 .no-anim{transition:none!important}.no-anim:active{transform:none!important}
-input:-webkit-autofill{ -webkit-text-fill-color:#fff!important;-webkit-box-shadow:0 0 0 1000px #000 inset!important}
+input:-webkit-autofill{-webkit-text-fill-color:#fff!important;-webkit-box-shadow:0 0 0 1000px #000 inset!important}
 .auth-tabs{display:flex;gap:8px;margin-bottom:20px;background:#000;border:1px solid #333;border-radius:14px;padding:5px}.auth-tabs button{flex:1;background:transparent;color:#aaa;border:none;margin-bottom:0;padding:13px 4px;border-radius:10px}.auth-tabs button.active{background:#a855f7;color:#fff}
 .stats{display:flex;gap:10px;margin-bottom:12px}.stat{flex:1;background:#111;border:1px solid #333;border-radius:14px;padding:12px;text-align:center}.stat b{font-size:19px;display:block}.stat span{font-size:11px;color:#aaa}
 .small{color:#888;font-size:12px;text-align:center;margin-top:10px}label{font-size:12px;color:#aaa;display:block;margin:8px 0 4px}
@@ -52,12 +51,12 @@ input:-webkit-autofill{ -webkit-text-fill-color:#fff!important;-webkit-box-shado
 .avatar{width:72px;height:72px;border-radius:99px;object-fit:cover;border:3px solid #a855f7;background:#222;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}
 .avatar-small{width:32px;height:32px;border-radius:99px;border:2px solid #a855f7;background:#222;display:flex;align-items:center;justify-content:center;font-weight:900;overflow:hidden;flex-shrink:0}.avatar-small img{width:100%;height:100%;object-fit:cover}
 .avatar-option{width:56px;height:56px;border-radius:99px;cursor:pointer;border:3px solid transparent;object-fit:cover}.avatar-option.selected{border-color:#25D366}
-/* X COMPLETA - NO CORTADA */
 .close-btn{width:42px!important;height:42px!important;min-width:42px!important;border-radius:99px!important;background:#222!important;border:2px solid #555!important;color:#fff!important;font-size:20px!important;font-weight:900!important;display:flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important;margin:2px 0 6px 0!important;flex-shrink:0!important;overflow:visible!important}
-/* MI PERFIL Y RETIRAR MAS ARRIBITA */
-#viewProfile,#viewWithdraw,#viewAdmin,#viewStats{margin-top:-10px!important;padding-top:0!important;padding-bottom:140px!important}
+#viewProfile,#viewWithdraw,#viewAdmin,#viewStats{margin-top:-10px!important;padding-top:0!important;padding-bottom:220px!important}
 #viewProfile .view-title,#viewWithdraw .view-title{margin-bottom:6px!important;margin-top:0!important}
 .view-title{font-size:20px;font-weight:900;margin-bottom:12px;text-align:center}
+#viewProfile .box,#viewWithdraw .box{padding-bottom:26px!important}
+#profileBoxSolo button.green,#viewWithdraw button.green{margin-bottom:18px!important;padding-bottom:18px!important}
 .link-item{background:#000;border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:10px;font-size:12px;word-break:break-all}
 .slug-preview{background:#000;border:1px dashed #a855f7;border-radius:12px;padding:10px;text-align:center;color:#a855f7;margin-bottom:10px;word-break:break-all}
 .step-dots{display:flex;gap:8px;justify-content:center;margin:16px 0 12px;flex-wrap:wrap}.dot{width:32px;height:32px;border-radius:99px;background:#222;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:13px;color:#aaa}.dot.done{background:#16a34a;color:#fff}.dot.current{background:#f59e0b;color:#000;transform:scale(1.08)}
@@ -122,7 +121,6 @@ let authMode='login',currentUser='',links=JSON.parse(localStorage.getItem('naset
 function saveView(v){try{localStorage.setItem('naset_view',v||'home')}catch(e){}}
 function getSavedView(){try{return localStorage.getItem('naset_view')||'home'}catch(e){return 'home'}}
 function showPage(){document.documentElement.classList.add('ready')}
-// ANIMACION HAMBURGUESA - PRIMERO SE VE EL CLIC, LUEGO ABRE
 function menuPress(el,action){if(menuBusy)return;menuBusy=true;if(el)el.classList.add('pressing');setTimeout(()=>{if(el)el.classList.remove('pressing');menuBusy=false;toggleMenu();if(action==='profile')openView('profile');else if(action==='home')goHome();else if(action==='withdraw')retirarDinero();else if(action==='admin')openView('admin');else if(action==='stats')openView('stats');else if(action==='logout')logout();},160)}
 function joinWhatsApp(){window.open(WHATSAPP_GROUP,'_blank')}
 function handleForgotClick(){if(authMode!=='login')return;alert('Escríbele al admin en la comunidad para recuperar tu contraseña')}
