@@ -11,6 +11,7 @@ input{width:100%;padding:13px;border-radius:12px;margin-bottom:10px;font-size:16
 input:focus{border:1px solid #000!important;outline:none!important;box-shadow:none!important}
 input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus,input:-webkit-autofill:active,input:-internal-autofill-selected,input:autofill{-webkit-box-shadow:0 0 0 1000px #000 inset!important;box-shadow:0 0 0 1000px #000 inset!important;-webkit-text-fill-color:#fff!important;color:#fff!important;caret-color:#fff!important;background-color:#000!important;background-image:none!important;border:1px solid #000!important;outline:none!important;filter:none!important;transition:background-color 999999s ease-in-out 0s!important;-webkit-transition:background-color 999999s ease-in-out 0s!important;animation-name:autofillBlack!important}
 input:-webkit-autofill::first-line{color:#fff!important;-webkit-text-fill-color:#fff!important}
+input::-webkit-contacts-auto-fill-button{visibility:hidden!important;display:none!important;pointer-events:none!important;position:absolute!important;right:0!important}
 #linkName::placeholder,#longUrl::placeholder{color:#555!important;opacity:.45!important}
 #user::placeholder,#pass::placeholder{color:#6b7280!important;opacity:.6!important}
 button{width:100%;padding:14px;border:none;border-radius:14px;background:#a855f7;color:#fff;font-weight:bold;cursor:pointer;display:flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;line-height:1!important;text-align:center}button.sec{background:#222;border:1px solid #444}button.danger{background:#dc2626}button.green{background:#16a34a}button.smallbtn{padding:9px 4px;font-size:12px}button.adbtn{background:#f59e0b;color:#000;font-size:17px;padding:18px}.inner-expand{background:#000;border:1px solid #333;border-radius:12px;padding:12px}.auth-tabs{display:flex;gap:8px;margin-bottom:20px;background:#000;border:1px solid #333;border-radius:14px;padding:5px}.auth-tabs button{flex:1;background:transparent;color:#aaa;margin:0!important;padding:17px 0!important;font-size:16px}.auth-tabs button.active{background:#a855f7;color:#fff}
@@ -27,6 +28,14 @@ button:not(:active){transform:scale(1)}
 .avatar-option:active{transform:scale(.9)!important}
 .hamburger:active{transform:scale(.9) rotate(-3deg)!important}
 .close-btn:active,.close-menu:active{transform:scale(.85) rotate(90deg)!important}
+/* ANIMACION MENU HAMBURGUESA + TODOS LOS BOTONES DEL MENU - SIN DAÑAR NADA MAS */
+.sidebar .menu-item{transition:transform .15s ease,background .15s ease,border-color .15s ease,box-shadow .15s ease!important;position:relative;overflow:hidden}
+.sidebar .menu-item:active{transform:scale(.93) translateX(6px)!important;background:#a855f7!important;border-color:#a855f7!important;color:#fff!important;box-shadow:0 0 0 2px rgba(168,85,247,.4),0 8px 20px rgba(168,85,247,.3)!important}
+.sidebar .menu-item.logout:active{transform:scale(.93) translateX(6px)!important;background:#dc2626!important;border-color:#dc2626!important;color:#fff!important;box-shadow:0 0 0 2px rgba(220,38,38,.4)!important}
+.hamburger{transition:transform .2s ease,background .2s ease!important}
+.hamburger:active{transform:scale(.85) rotate(-8deg)!important;background:#a855f7!important}
+.hamburger span{transition:transform .2s ease,opacity .2s ease!important}
+.smallbtn:active{transform:scale(.96)!important;box-shadow:none!important}
 </style></head><body><div class="card">
 <div class="header" id="headerBar" style="display:none"><button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button><div class="logo" onclick="closeView()">NASET<span>LINK</span></div><div class="header-avatar" id="topAvatar" onclick="openProfileFromAvatar(event)">?</div></div>
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
