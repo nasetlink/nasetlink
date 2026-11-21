@@ -119,6 +119,14 @@ function restoreSavedView(){
   if(v==='stats'&&(isAdmin||isMod)){openView('stats');return;}
   goHome();
 }
-(function init(){let u=null
+(function init(){
+  let u=null;
+  try{ u=localStorage.getItem('naset_user'); }catch(e){}
+  try{ isAdmin=localStorage.getItem('naset_is_admin')==='1'; isMod=localStorage.getItem('naset_is_mod')==='1'; }catch(e){}
+  if(u){ currentUser=u; }
+  if(isLinkUrl()){ initFromUrl(); return; }
+  if(currentUser){ restoreSavedView(); }
+  else{ setMode('login',false); }
+})();
 </script>
 </body></html>
